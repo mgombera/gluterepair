@@ -20,7 +20,7 @@ Scope and design canvas approved 10/31/2026. Milestone 1 (shell) built 10/31/202
 - Copy: no em dashes anywhere, including comments that render. Dates display as MM/DD/YYYY. Plain words, short sentences, large type. Procedure names in title case: "Open Gluteus Tendon Repair", "Gluteus Maximus Transfer".
 - Notices word for word (scope section 8): standard-protocol notice, therapist override on every exercise page, medications "take as directed" notice, and the two video notices.
 - No patient data leaves the browser: no forms, accounts, cookies or trackers. Date, procedure and ticks live in localStorage only; never a date or name in a URL. The one exception is cookieless Vercel Web Analytics page views: paths only, query strings stripped, no custom events, visible only in his Vercel dashboard.
-- Footer only: the audience statement linking to gomberamd.com and "Content reviewed by Dr. Gombera." with no date. No reviewed-by line on pages.
+- Header: the gomberamd.com logo and the title "Gluteus Tendon Repair" (10/31/2026). Footer: the Red flags link, the audience statement linking to gomberamd.com, and "Content reviewed by Dr. Gombera." with no date. No reviewed-by line on pages.
 - Images: only images Dr. Gombera confirms are his. No third-party images. The anatomy model uses HuBMAP Visible Human meshes (CC BY 4.0), credited under the model.
 - Accessibility: WCAG 2.2 AA, 48px touch targets (44px minimum), real buttons and links, axe clean in both themes.
 - Print sheets are generated until he supplies his edited PDFs; drop them in `public/print/` and set them in `src/content/print.ts`.
