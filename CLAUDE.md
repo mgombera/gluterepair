@@ -5,12 +5,12 @@ Patient companion site for Dr. Mufaddal Gombera's open gluteus tendon repair and
 - Full spec, approved 10/31/2026: `docs/scope.md`. Section 11 holds every clinical decision.
 - Approved screens: `docs/design/` (option A palette, phone width).
 - Clinical source documents: `docs/source/` (docx plus .txt extractions).
-- fixmyhips reference (its scope, its source documents, its Phase IV): `docs/reference-fixmyhips/`. The code in `src/` still holds fixmyhips hip content until milestones 1 and 2 replace it.
+- fixmyhips reference (its scope, its source documents, its Phase IV): `docs/reference-fixmyhips/`. Milestone 1 replaced the fixmyhips pages with placeholders; `src/content/` and the dashboard components still hold fixmyhips hip content until milestones 2 to 5 rewrite them.
 - 3D mesh scripts from fixmyhips, the starting point for the glute model: `docs/3d/scripts/`.
 
 ## Where things stand
 
-Scope and design canvas approved 10/31/2026. Next: milestone 1 (scope section 10). Patients are mostly 50 to 70 years old: light theme by default, 18px body text, 48px touch targets, no condensed fonts.
+Scope and design canvas approved 10/31/2026. Milestone 1 (shell) built 10/31/2026 on branch `milestone-1-shell`, waiting for Dr. Gombera's review. Next: milestone 2 (scope section 10). Patients are mostly 50 to 70 years old: light theme by default, 18px body text, 48px touch targets, no condensed fonts.
 
 ## Rules
 
@@ -20,7 +20,7 @@ Scope and design canvas approved 10/31/2026. Next: milestone 1 (scope section 10
 - Copy: no em dashes anywhere, including comments that render. Dates display as MM/DD/YYYY. Plain words, short sentences, large type. Procedure names in title case: "Open Gluteus Tendon Repair", "Gluteus Maximus Transfer".
 - Notices word for word (scope section 8): standard-protocol notice, therapist override on every exercise page, medications "take as directed" notice, and the two video notices.
 - No patient data leaves the browser: no forms, accounts, cookies or trackers. Date, procedure and ticks live in localStorage only; never a date or name in a URL. The one exception is cookieless Vercel Web Analytics page views: paths only, query strings stripped, no custom events, visible only in his Vercel dashboard.
-- Footer only: the audience statement linking to gomberamd.com and "Content reviewed by Dr. Gombera." with no date. No reviewed-by line on pages.
+- Header: the gomberamd.com logo and the title "Gluteus Tendon Repair" (10/31/2026). Footer: the Red flags link, the audience statement linking to gomberamd.com, and "Content reviewed by Dr. Gombera." with no date. No reviewed-by line on pages.
 - Images: only images Dr. Gombera confirms are his. No third-party images. The anatomy model uses HuBMAP Visible Human meshes (CC BY 4.0), credited under the model.
 - Accessibility: WCAG 2.2 AA, 48px touch targets (44px minimum), real buttons and links, axe clean in both themes.
 - Print sheets are generated until he supplies his edited PDFs; drop them in `public/print/` and set them in `src/content/print.ts`.

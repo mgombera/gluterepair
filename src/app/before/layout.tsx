@@ -2,9 +2,8 @@ import { SectionNav } from "@/components/SectionNav";
 
 const ITEMS = [
   { href: "/before", label: "Checklist" },
-  { href: "/before/surgery-day", label: "Surgery day" },
-  { href: "/before/diagnosis", label: "Your diagnosis" },
-  { href: "/before/prehab", label: "Prehab" },
+  { href: "/before/surgery-day", label: "Surgery Day" },
+  { href: "/before/diagnosis", label: "Your Diagnosis" },
   { href: "/before/add-ons", label: "Add-ons" },
 ];
 

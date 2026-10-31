@@ -1,5 +1,4 @@
 import type { NextConfig } from "next";
-import { LEGACY_REDIRECTS } from "./src/lib/routes";
 
 const nextConfig: NextConfig = {
   images: {
@@ -10,12 +9,11 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
-      ...LEGACY_REDIRECTS.map((r) => ({ ...r, permanent: true })),
       // www to apex
       {
         source: "/:path*",
-        has: [{ type: "host" as const, value: "www.fixmyhips.com" }],
-        destination: "https://fixmyhips.com/:path*",
+        has: [{ type: "host" as const, value: "www.gluterepair.com" }],
+        destination: "https://gluterepair.com/:path*",
         permanent: true,
       },
     ];
