@@ -81,9 +81,9 @@ describe("search", () => {
 
 describe("shell copy", () => {
   // The fixmyhips name must not survive anywhere a patient can see it. The
-  // content files and their tests are rewritten in milestone 2.
+  // internal /proof page names it as a source for Dr. Gombera's review.
   const shell = [
-    ...sourceFiles(appDir),
+    ...sourceFiles(appDir).filter((f) => !f.includes(join("app", "proof"))),
     join(srcDir, "components", "SiteHeader.tsx"),
     join(srcDir, "components", "SiteFooter.tsx"),
     join(srcDir, "components", "Placeholder.tsx"),

@@ -16,7 +16,7 @@ export type Profile = {
 
 const KEY = "gluterepair:profile";
 const PRESET_KEY = "gluterepair:preset";
-const PROCEDURES: Procedure[] = ["standard", "revision", "glute", "different"];
+const PROCEDURES: Procedure[] = ["standard", "max-transfer", "different"];
 
 let memory: Profile | null = null; // used when storage is blocked (private browsing)
 let storageOk: boolean | null = null;

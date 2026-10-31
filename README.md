@@ -8,7 +8,7 @@ A personal companion for patients scheduled for open gluteus tendon repair or gl
 - Sibling site and code origin: fixmyhips.com ([docs/reference-fixmyhips](docs/reference-fixmyhips))
 - Stack: Next.js (App Router), TypeScript, Tailwind CSS, Vitest; hosted on Vercel
 
-Milestone 1 (the shell) is built: option A design, header, footer, every route as a placeholder, and search metadata for gluterepair.com. The data in `src/content/` is still fixmyhips content until milestone 2 replaces it.
+Milestone 1 (the shell) is built: option A design, header, footer, every route as a placeholder, and search metadata for gluterepair.com. Milestone 2 rewrote `src/content/` for Open Gluteus Tendon Repair and Gluteus Maximus Transfer; the /proof page (and its PDF in `docs/proof/`) is waiting for Dr. Gombera's clinical sign-off.
 
 ## Develop
 

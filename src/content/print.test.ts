@@ -11,8 +11,8 @@ describe("print center", () => {
   });
 
   it("prefers a procedure PDF over the all-procedures PDF", () => {
-    const s = { ...PRINT_SHEETS[1], pdf: { all: "/print/a.pdf", glute: "/print/g.pdf" } };
-    expect(pdfFor(s, "glute")).toBe("/print/g.pdf");
+    const s = { ...PRINT_SHEETS[1], pdf: { all: "/print/a.pdf", "max-transfer": "/print/m.pdf" } };
+    expect(pdfFor(s, "max-transfer")).toBe("/print/m.pdf");
     expect(pdfFor(s, "standard")).toBe("/print/a.pdf");
   });
 

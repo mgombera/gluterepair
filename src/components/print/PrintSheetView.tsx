@@ -33,8 +33,7 @@ import { PRACTICE } from "@/lib/site";
 
 const PROC_LABEL: Record<ProtocolId, string> = {
   standard: procedureLabel("standard"),
-  revision: procedureLabel("revision"),
-  glute: procedureLabel("glute"),
+  "max-transfer": procedureLabel("max-transfer"),
 };
 
 function List({ items }: { items: string[] }) {

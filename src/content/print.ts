@@ -1,6 +1,6 @@
 import type { ProtocolId } from "./types";
 
-// Print center (scope 6.12). Each sheet is generated from the site's content
+// Print center (scope 6.10). Four sheets for each procedure. Each sheet is generated from the site's content
 // until Dr. Gombera supplies his own edited PDF. To substitute a PDF:
 //   1. Put the file in public/print/ (name it YYYY-MM-DD-descriptive-name.pdf).
 //   2. Set `pdf` below: `all` for one file for every procedure, or one entry
@@ -23,7 +23,7 @@ export const PRINT_SHEETS: PrintSheet[] = [
   {
     id: "checklist",
     title: "Before surgery checklist",
-    summary: "PreAdmit, medications, fasting and what to bring, with your deadlines if you added a date.",
+    summary: "PreAdmit, fasting, medications and packing for one night, with your deadlines if you added a date.",
     matches: "Pre-op letter",
     pdf: {},
   },
@@ -31,7 +31,7 @@ export const PRINT_SHEETS: PrintSheet[] = [
     id: "protocol",
     title: "Physical therapy protocol",
     summary: "Your four phases, restrictions, goals and when to move on. Bring it to your therapist.",
-    matches: "PT protocol for your procedure",
+    matches: "PT protocol: Open Gluteus Tendon Repair",
     pdf: {},
   },
   {
