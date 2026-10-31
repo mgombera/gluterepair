@@ -19,6 +19,7 @@ export const PRACTICE = {
 
 export const SITE_URL = "https://gluterepair.com";
 export const SITE_NAME = "gluterepair.com";
+export const SITE_TITLE = "Gluteus Tendon Repair"; // header and browser tab
 
 // Footer only (scope section 1). The last part links to gomberamd.com.
 export const AUDIENCE_STATEMENT =

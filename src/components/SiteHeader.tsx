@@ -1,15 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { PRIMARY_NAV } from "@/lib/routes";
-import { PRACTICE, SITE_NAME } from "@/lib/site";
-import { PhoneIcon, MenuIcon, CloseIcon, AlertIcon } from "./icons";
+import { PRACTICE, SITE_TITLE } from "@/lib/site";
+import { PhoneIcon, MenuIcon, CloseIcon } from "./icons";
 import { ThemeToggle } from "./ThemeToggle";
 
-// Navy band with the site name and Call button, then the Before / After
-// switch and the Red flags link (scope section 3, docs/design).
+// Navy band with the gomberamd.com logo, the site title and the Call button,
+// then the Before / After switch. Red flags live in the footer.
 
 function ModeSwitch({ pathname }: { pathname: string }) {
   const isBefore = pathname.startsWith("/before");
@@ -40,9 +41,11 @@ export function SiteHeader() {
     <header className="print:hidden">
       <div className="bg-brand text-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3.5">
-          <Link href="/" className="flex flex-col leading-tight text-white no-underline" aria-current={pathname === "/" ? "page" : undefined}>
-            <span className="text-[19px] font-bold">{SITE_NAME}</span>
-            <span className="text-sm text-[#D6DBEA]">Dr. Mufaddal Gombera</span>
+          <Link href="/" className="flex min-w-0 flex-col items-start gap-1.5 text-white no-underline" aria-current={pathname === "/" ? "page" : undefined}>
+            <span className="flex rounded-md bg-white px-2 py-1">
+              <Image src={PRACTICE.logoUrl} alt="Mufaddal Gombera, MD, Orthopedic Surgery and Sports Medicine" width={367} height={61} className="h-6 w-auto sm:h-7" priority />
+            </span>
+            <span className="text-[19px] leading-tight font-bold sm:text-[22px]">{SITE_TITLE}</span>
           </Link>
 
           <nav aria-label="Main" className="hidden lg:block">
@@ -61,10 +64,11 @@ export function SiteHeader() {
             <ThemeToggle className="hidden min-h-12 min-w-12 items-center justify-center rounded-[10px] border border-white/40 text-white hover:bg-white/10 lg:inline-flex" />
             <a
               href={`tel:${PRACTICE.office.tel}`}
-              className="inline-flex min-h-12 items-center gap-2 rounded-[10px] bg-[#B54708] px-[18px] text-[17px] font-semibold text-white no-underline"
+              className="inline-flex min-h-12 min-w-12 items-center justify-center gap-2 rounded-[10px] bg-[#B54708] px-3 sm:px-[18px] text-[17px] font-semibold text-white no-underline"
+              aria-label={`Call the office, ${PRACTICE.office.label}`}
             >
               <PhoneIcon />
-              Call
+              <span className="hidden sm:inline">Call</span>
             </a>
             <button
               type="button"
@@ -104,18 +108,10 @@ export function SiteHeader() {
       </div>
 
       <div className="border-b border-border bg-surface">
-        <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center">
+        <div className="mx-auto max-w-6xl px-4 py-3">
           <div className="sm:w-[28rem]">
             <ModeSwitch pathname={pathname} />
           </div>
-          <Link
-            href="/red-flags"
-            aria-current={pathname === "/red-flags" ? "page" : undefined}
-            className="flex min-h-12 items-center justify-center gap-2 rounded-[10px] px-3 font-semibold text-alert no-underline hover:bg-alert-surface sm:ml-auto"
-          >
-            <AlertIcon />
-            Red flags: when to call
-          </Link>
         </div>
       </div>
     </header>

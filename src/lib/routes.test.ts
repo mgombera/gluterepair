@@ -100,6 +100,18 @@ describe("shell copy", () => {
     }
   });
 
+  it("titles the header Gluteus Tendon Repair with the gomberamd.com logo", () => {
+    const header = readFileSync(join(srcDir, "components", "SiteHeader.tsx"), "utf8");
+    expect(readFileSync(join(srcDir, "lib", "site.ts"), "utf8")).toMatch(/SITE_TITLE = "Gluteus Tendon Repair"/);
+    expect(header).toMatch(/\{SITE_TITLE\}/);
+    expect(header).toMatch(/PRACTICE\.logoUrl/);
+  });
+
+  it("links Red flags from the footer, not the header", () => {
+    expect(readFileSync(join(srcDir, "components", "SiteFooter.tsx"), "utf8")).toMatch(/href="\/red-flags"/);
+    expect(readFileSync(join(srcDir, "components", "SiteHeader.tsx"), "utf8")).not.toMatch(/red-flags/);
+  });
+
   it("uses no condensed font", () => {
     expect(readFileSync(join(appDir, "globals.css"), "utf8")).not.toMatch(/condensed/i);
   });
