@@ -13,12 +13,14 @@ export const PRACTICE = {
   preAdmit: { label: "(713) 395-6607", tel: "+17133956607" },
   email: "info@gomberamd.com",
   portalUrl: "https://15533-8.portal.athenahealth.com",
-  consultUrl: "https://www.gomberamd.com/",
+  consultUrl: "https://www.gomberamd.com/contact.html", // appointment request form
   logoUrl: logo.src, // local copy made by scripts/fetch-logo.mjs, or the gomberamd.com address
 } as const;
 
-export const AUDIENCE_STATEMENT =
-  "This site is for patients who are scheduled for Hip Arthroscopy with Dr. Gombera.";
+export const SITE_URL = "https://gluterepair.com";
+export const SITE_NAME = "gluterepair.com";
 
-export const DISCLAIMER =
-  "General education only. It does not replace advice from your care team. In an emergency, go to the nearest emergency room.";
+// Footer only (scope section 1). The last part links to gomberamd.com.
+export const AUDIENCE_STATEMENT =
+  "This site is for patients who are scheduled for gluteus tendon surgery with Dr. Gombera. To learn more or to be evaluated,";
+export const AUDIENCE_LINK_TEXT = "request a consultation at gomberamd.com";

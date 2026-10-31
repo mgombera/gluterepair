@@ -4,8 +4,7 @@ const ITEMS = [
   { href: "/after", label: "Dashboard" },
   { href: "/after/timeline", label: "Timeline" },
   { href: "/after/exercises", label: "Exercises" },
-  { href: "/after/care", label: "Home care" },
-  { href: "/after/when-to-call", label: "When to call" },
+  { href: "/after/care", label: "Home Care" },
 ];
 
 export default function AfterLayout({ children }: { children: React.ReactNode }) {

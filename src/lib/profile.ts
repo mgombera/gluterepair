@@ -14,8 +14,8 @@ export type Profile = {
   exercises: Record<string, string[]>; // "YYYY-Www" -> exercise ids ticked that week
 };
 
-const KEY = "fixmyhips:profile";
-const PRESET_KEY = "fixmyhips:preset";
+const KEY = "gluterepair:profile";
+const PRESET_KEY = "gluterepair:preset";
 const PROCEDURES: Procedure[] = ["standard", "revision", "glute", "different"];
 
 let memory: Profile | null = null; // used when storage is blocked (private browsing)

@@ -5,12 +5,12 @@ Patient companion site for Dr. Mufaddal Gombera's open gluteus tendon repair and
 - Full spec, approved 10/31/2026: `docs/scope.md`. Section 11 holds every clinical decision.
 - Approved screens: `docs/design/` (option A palette, phone width).
 - Clinical source documents: `docs/source/` (docx plus .txt extractions).
-- fixmyhips reference (its scope, its source documents, its Phase IV): `docs/reference-fixmyhips/`. The code in `src/` still holds fixmyhips hip content until milestones 1 and 2 replace it.
+- fixmyhips reference (its scope, its source documents, its Phase IV): `docs/reference-fixmyhips/`. Milestone 1 replaced the fixmyhips pages with placeholders; `src/content/` and the dashboard components still hold fixmyhips hip content until milestones 2 to 5 rewrite them.
 - 3D mesh scripts from fixmyhips, the starting point for the glute model: `docs/3d/scripts/`.
 
 ## Where things stand
 
-Scope and design canvas approved 10/31/2026. Next: milestone 1 (scope section 10). Patients are mostly 50 to 70 years old: light theme by default, 18px body text, 48px touch targets, no condensed fonts.
+Scope and design canvas approved 10/31/2026. Milestone 1 (shell) built 10/31/2026 on branch `milestone-1-shell`, waiting for Dr. Gombera's review. Next: milestone 2 (scope section 10). Patients are mostly 50 to 70 years old: light theme by default, 18px body text, 48px touch targets, no condensed fonts.
 
 ## Rules
 
