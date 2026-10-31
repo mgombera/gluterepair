@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Home and setup</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#0F766E}a:hover{color:#0B5A54}
+</style>
+</helmet>
+<div style="width: 390px; min-height: 1040px; background: #F7F5F0; font-family: Inter, system-ui, sans-serif; color: #1F2937; font-size: 18px; line-height: 1.6; display: flex; flex-direction: column">
+<header style="background: #313E6B; color: #FFFFFF; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px">
+<div style="display: flex; flex-direction: column; line-height: 1.2">
+<span style="font-size: 19px; font-weight: 700">gluterepair.com</span>
+<span style="font-size: 14px; color: #D6DBEA">Dr. Mufaddal Gombera</span>
+</div>
+<a href="tel:+17137943457" style="background: #B54708; color: #FFFFFF; text-decoration: none; font-weight: 600; font-size: 17px; padding: 0 18px; min-height: 48px; display: flex; align-items: center; gap: 8px; border-radius: 10px">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2"/></svg>Call</a>
+</header>
+<main style="padding: 24px 16px 32px; display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<h1 style="margin: 0; font-size: 30px; line-height: 1.2; font-weight: 700; color: #313E6B">Your guide to gluteus tendon surgery</h1>
+<p style="margin: 0; color: #4B5563">Tell us two things and we will show you what to do today, from now until one year after surgery.</p>
+</div>
+<section style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 14px; padding: 20px 16px; display: flex; flex-direction: column; gap: 16px">
+<h2 style="margin: 0; font-size: 21px; font-weight: 700; color: #313E6B">1. Your surgery date</h2>
+<label for="date" style="font-weight: 600; font-size: 17px">Date of surgery (MM/DD/YYYY)</label>
+<input id="date" type="text" value="11/12/2026" style="min-height: 56px; font-size: 20px; font-family: inherit; padding: 0 14px; border: 2px solid #9AA3B5; border-radius: 10px; color: #1F2937; background: #FFFFFF">
+<label style="display: flex; align-items: center; gap: 12px; min-height: 48px; font-size: 18px"><input type="checkbox" style="width: 24px; height: 24px; accent-color: #0F766E">My surgery is not scheduled yet</label>
+</section>
+<section style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 14px; padding: 20px 16px; display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 21px; font-weight: 700; color: #313E6B">2. Your surgery</h2>
+<label style="display: flex; align-items: flex-start; gap: 12px; padding: 14px; border: 2px solid #0F766E; background: #E6F2F0; border-radius: 10px; font-size: 18px"><input type="radio" name="p" checked style="width: 24px; height: 24px; margin-top: 2px; accent-color: #0F766E"><span><span style="font-weight: 600">Open Gluteus Tendon Repair</span><br><span style="font-size: 16px; color: #4B5563">Most patients. With or without bursa removal.</span></span></label>
+<label style="display: flex; align-items: flex-start; gap: 12px; padding: 14px; border: 1px solid #C9C4B8; border-radius: 10px; font-size: 18px"><input type="radio" name="p" style="width: 24px; height: 24px; margin-top: 2px; accent-color: #0F766E"><span style="font-weight: 600">Gluteus Maximus Transfer</span></label>
+<label style="display: flex; align-items: flex-start; gap: 12px; padding: 14px; border: 1px solid #C9C4B8; border-radius: 10px; font-size: 18px"><input type="radio" name="p" style="width: 24px; height: 24px; margin-top: 2px; accent-color: #0F766E"><span><span style="font-weight: 600">My protocol is different</span><br><span style="font-size: 16px; color: #4B5563">Follow the paper protocol you were given.</span></span></label>
+</section>
+<button type="button" style="min-height: 56px; background: #0F766E; color: #FFFFFF; border: none; border-radius: 12px; font-family: inherit; font-size: 20px; font-weight: 600">Show my plan</button>
+<p style="margin: 0; font-size: 16px; color: #4B5563">Your date stays on this device only. Nothing is sent to us or anyone else.</p>
+</main>
+<footer style="margin-top: auto; background: #EFECE4; border-top: 1px solid #E2DED5; padding: 20px 16px; font-size: 15px; color: #4B5563; display: flex; flex-direction: column; gap: 8px">
+<span>This site is for patients who are scheduled for gluteus tendon surgery with Dr. Gombera. To learn more or to be evaluated, <a href="https://www.gomberamd.com">request a consultation at gomberamd.com</a>.</span>
+<span>Content reviewed by Dr. Gombera.</span>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1040}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>
