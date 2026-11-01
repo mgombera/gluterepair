@@ -1,7 +1,11 @@
 import type { ChecklistItem, InfoSection } from "./types";
 
-// Pre-op checklist, surgery day and add-ons.
-// Sources: pre-op letter, discharge sheet, Dr. Gombera's decisions (10/30/2026).
+// Pre-op checklist, surgery day and add-ons (scope 6.2 and 6.9).
+// Sources: pre-op letter, discharge sheet, Dr. Gombera's decisions of
+// 10/31/2026, and the fixmyhips logistics he kept ("Same as fixmyhips").
+// The PreAdmit number is the decision's (713) 395-6607, not the letter's.
+// Week-before order and the removed anesthesia-history item (PreAdmit covers
+// it) follow the decisions of 11/01/2026.
 
 export const PREADMIT_WINDOW = { opensDaysBefore: 30, closesDaysBefore: 7 };
 
@@ -24,30 +28,6 @@ export const CHECKLIST: ChecklistItem[] = [
       "PreAdmit is required for clearance to receive anesthesia. It is on the 3rd floor of Texas Orthopedic Hospital, where the nursing and anesthesiology teams will interview you and order any tests needed, such as blood tests or an EKG. Complete it within 30 days of surgery and at least one week before. Call (713) 395-6607 to schedule, or walk in 8 a.m. to 5 p.m., Monday through Friday.",
     dueOffsetDays: -7,
     link: { label: "Call PreAdmit (713) 395-6607", href: "tel:+17133956607" },
-    source: ["preop-letter"],
-  },
-  {
-    id: "anesthesia-history",
-    block: "now",
-    title: "Tell the anesthesia team your history",
-    detail:
-      "If you are prone to nausea or vomiting after anesthesia, or have had complications with anesthesia, let the anesthesia team know.",
-    source: ["preop-letter"],
-  },
-  {
-    id: "cold-therapy",
-    block: "week-before",
-    title: "Decide on a cold therapy device",
-    detail:
-      "A cold therapy device helps decrease pain and swelling after surgery. It is optional and may or may not be covered by your insurance, so check with your insurance company. You can also purchase one to own. Contact us with questions.",
-    source: ["preop-letter"],
-  },
-  {
-    id: "biologics",
-    block: "week-before",
-    title: "Optional: decide on a biologic add-on",
-    detail:
-      "PRP, stem cell or connective tissue matrix treatment can be added during surgery. It is not covered by insurance. Call the office for pricing before surgery day.",
     source: ["preop-letter", "decisions"],
   },
   {
@@ -55,17 +35,52 @@ export const CHECKLIST: ChecklistItem[] = [
     block: "week-before",
     title: "Arrange a ride home and help at home",
     detail:
-      "Surgery is usually outpatient, so you go home the same day, and you cannot drive while taking narcotic pain medication.",
+      "You will typically spend one night in the hospital, and you cannot drive while taking narcotic pain medication, so arrange a ride home.",
     source: ["preop-letter", "discharge"],
     derived: true,
   },
   {
     id: "time-off",
     block: "week-before",
-    title: "Plan time off work or school",
+    title: "Plan time off work",
     detail:
-      "Most people return to desk work or school 4 to 7 days after surgery, if pain allows. Heavy lifting usually takes 3 to 6 months.",
-    source: ["discharge", "preop-letter", "decisions"],
+      "For most office jobs, plan 1 to 2 weeks off. Recovery is generally complete, and heavy lifting possible, at 4 to 6 months.",
+    source: ["preop-letter", "decisions"],
+  },
+  {
+    id: "cold-therapy",
+    block: "week-before",
+    title: "Get an ice machine or ice packs",
+    detail:
+      "Icing starts right after surgery: 30 to 45 minutes every 2 hours until your first post-op visit. An ice machine is optional and may or may not be covered by your insurance, so check with your insurance company. Ice packs work if you do not get a machine.",
+    source: ["discharge", "decisions", "fixmyhips"],
+  },
+  {
+    id: "biologics",
+    block: "week-before",
+    title: "Optional: decide on a biologic add-on",
+    detail:
+      "PRP, stem cell or connective tissue matrix treatment can be added during surgery. It is not covered by insurance. Call the office for pricing before surgery day.",
+    source: ["fixmyhips", "decisions"],
+  },
+  {
+    id: "home-setup",
+    block: "week-before",
+    title: "Set up your home for crutches or a walker",
+    detail:
+      "You will walk with crutches or a walker, putting only 20 lb on the operated leg, for at least 4 weeks. Have a place ready to keep your leg raised to chest level.",
+    source: ["decisions", "discharge"],
+    derived: true,
+  },
+  {
+    id: "home-program",
+    block: "week-before",
+    title: "Optional: look at the myHealthTrack home program",
+    detail:
+      "myHealthTrack is an optional app with a guided home program, alongside your physical therapy. Your therapist's program takes precedence.",
+    link: { label: "See the Home Program page", href: "/after/home-program" },
+    source: ["decisions", "myhealthtrack"],
+    derived: true,
   },
   {
     id: "fasting",
@@ -74,7 +89,7 @@ export const CHECKLIST: ChecklistItem[] = [
     detail:
       "PreAdmit will tell you which medications to stop and when. Make sure they know if you take a GLP-1 medication (such as Ozempic, Wegovy, Mounjaro or Zepbound) or any blood thinner.",
     dueOffsetDays: -1,
-    source: ["decisions"],
+    source: ["fixmyhips", "decisions"],
   },
   {
     id: "arrival-call",
@@ -84,15 +99,16 @@ export const CHECKLIST: ChecklistItem[] = [
       "The office calls the day before surgery with your arrival time. If you have not heard from us by 3 p.m. that day, call (713) 794-3457.",
     dueOffsetDays: -1,
     link: { label: "Call the office", href: "tel:+17137943457" },
-    source: ["decisions"],
+    source: ["fixmyhips", "decisions"],
   },
   {
-    id: "home-setup",
+    id: "pack",
     block: "night-before",
-    title: "Get home ready for recovery",
+    title: "Pack for one night",
     detail:
-      "Have your ice machine or ice packs ready and a place to keep your leg raised to chest level. Crutches and a hip brace are usually given to you on the day of surgery. If insurance does not cover the brace, we will discuss alternatives with you.",
-    source: ["discharge", "decisions"],
+      "You will typically spend one night in the hospital, so pack for one night.",
+    dueOffsetDays: -1,
+    source: ["preop-letter"],
     derived: true,
   },
 ];
@@ -102,25 +118,25 @@ export const SURGERY_DAY: InfoSection[] = [
     id: "arrive",
     title: "Arrive in the morning",
     points: [
-      "Patients come to the hospital in the morning, have surgery, and go home the same day (outpatient surgery).",
+      "You come to Texas Orthopedic Hospital in the morning, have surgery, and typically spend one night in the hospital.",
       "Your arrival time comes by phone the day before. No call by 3 p.m.? Call (713) 794-3457.",
     ],
-    source: ["preop-letter", "decisions"],
+    source: ["preop-letter", "fixmyhips"],
   },
   {
     id: "consent",
     title: "Sign the consent",
     points: [
-      'A nurse will have you sign the operative permit. It will read "Hip Arthroscopy: Labral Repair, Osteoplasty." Additional procedures may be included depending on what is found in or around the hip.',
+      'A nurse will have you sign the operative permit. It will read "Hip Gluteus Repair." Additional procedures may be included depending on what is found in or around your hip.',
     ],
     source: ["preop-letter"],
   },
   {
     id: "anesthesia",
-    title: "Meet the anesthesia team",
+    title: "Anesthesia",
     points: [
-      "The surgery is performed under general anesthesia.",
-      "You will meet the anesthesia team at your pre-op appointment and again on the day of surgery.",
+      "The surgery is almost always performed under general anesthesia, sometimes with an additional regional anesthetic block.",
+      "You will meet the anesthesia team at PreAdmit and again on the day of surgery.",
     ],
     source: ["preop-letter"],
   },
@@ -128,22 +144,23 @@ export const SURGERY_DAY: InfoSection[] = [
     id: "surgery",
     title: "Surgery",
     points: [
-      "The ball and socket are gently separated by about 1 cm using traction on the foot, which makes room for a small camera (the arthroscope).",
-      "Two, three or sometimes four small incisions are made on the side of the hip, each about 5 to 10 mm long.",
-      "Surgery usually takes about 40 to 60 minutes.",
-      "At the end, medication may be injected into the hip to reduce pain. Incisions are closed with buried sutures, so no stitches need to be removed.",
+      "A small incision is made on the outer part of your hip.",
+      "The irritated bursa is removed if present, and a small window (fasciotomy) is made in the IT band so the gluteus tendon can be seen directly.",
+      "Small anchors are used to sew the tendon back down to the bone. This secures the repair and lets the tendon heal.",
+      "Surgery usually lasts 40 to 80 minutes, sometimes more.",
+      "At the end, medication may be injected to reduce pain. The incision is closed with buried sutures, so no stitches need to be removed.",
     ],
-    source: ["preop-letter", "decisions"],
+    source: ["preop-letter"],
   },
   {
-    id: "home",
-    title: "Home the same day",
+    id: "after",
+    title: "After surgery",
     points: [
       "Ice starts right away.",
-      "You will walk with crutches, 20 lb weight bearing, and wear the brace when walking and sitting.",
-      "An overnight stay is available in certain situations.",
+      "You will walk with crutches or a walker, putting only 20 lb on the operated leg, and wear the brace when walking.",
+      "Most patients spend one night in the hospital.",
     ],
-    source: ["discharge", "decisions"],
+    source: ["discharge", "decisions", "preop-letter"],
   },
 ];
 
@@ -152,68 +169,10 @@ export const BIOLOGICS: InfoSection = {
   title: "Biologic add-ons: PRP, stem cell and connective tissue matrix",
   points: [
     "Stem cells are used to repair diseased or damaged tissues.",
-    "Stem cell, connective tissue matrix or PRP injections may not heal your hip on their own, but there is emerging evidence they can augment and strengthen your surgical repair.",
+    "Stem cell, connective tissue matrix or PRP injections may not heal the tendon on their own, but there is emerging evidence they can augment and strengthen your surgical repair.",
     "These treatments can be done during your surgery.",
     "They are currently not covered by insurance.",
     "Call for pricing: (713) 794-3457, or email info@gomberamd.com.",
   ],
-  source: ["preop-letter", "decisions"],
-};
-
-// Optional prehab (Prehab Protocol, supplied 10/31/2026). Where the protocol
-// differs from the decisions table, the decision wins: first post-op therapy
-// visit 3 to 5 days after surgery (decision 10/31/2026), brace when walking
-// and sitting, crutch weeks by procedure.
-export const PREHAB_INTRO: InfoSection = {
-  id: "prehab-intro",
-  title: "What prehab is",
-  points: [
-    "Prehab is physical therapy for about 2 weeks before surgery. It is optional.",
-    "It builds core and glute strength and lets you practice crutches and your post-op limits before you need them.",
-    "Ask our office if you would like a prehab prescription.",
-  ],
-  source: ["prehab"],
-  derived: true,
-};
-
-export const PREHAB_GOALS: InfoSection = {
-  id: "prehab-goals",
-  title: "Goals",
-  points: [
-    "Physical therapy for 2 weeks before surgery",
-    "An evaluation and goals for after surgery",
-    "Learn the range of motion limits you will follow after surgery",
-    "Practice 20 lb weight bearing with a foot-flat pattern on crutches, including stairs",
-    "Find out if you need extra equipment, such as a raised toilet seat or a reacher, only as needed",
-    "An exercise program for core and glute strength",
-    "Schedule your first post-op therapy visit for 3 to 5 days after surgery",
-  ],
-  source: ["prehab", "decisions"],
-};
-
-export const PREHAB_EXERCISES: InfoSection = {
-  id: "prehab-exercises",
-  title: "Exercises",
-  points: [
-    "Core strengthening",
-    "Glute strengthening",
-    "Single-leg calf raises",
-    "Single-leg squats",
-    "Side-lying hip abduction and adduction",
-    "Four-point kneeling hip rocks",
-    "Kneeling hip flexor stretches",
-  ],
-  source: ["prehab"],
-};
-
-export const PREHAB_RESTRICTIONS: InfoSection = {
-  id: "prehab-restrictions",
-  title: "Limits to practice for after surgery",
-  points: [
-    "No sitting with the hip bent past 90 degrees, to avoid hip flexor irritation",
-    "Hip brace when walking and sitting, usually for 4 weeks (6 after a Labral Revision or Reconstruction or a Glute Tendon Repair)",
-    "20 lb weight bearing with a foot-flat pattern on crutches, usually for 3 weeks (4 after a Glute Tendon Repair, 6 after a Labral Revision or Reconstruction)",
-    "Range of motion: abduction to 45 degrees, no extension past 0, internal rotation to neutral, external rotation to 30 degrees",
-  ],
-  source: ["prehab", "pt-standard", "decisions"],
+  source: ["fixmyhips", "decisions"],
 };

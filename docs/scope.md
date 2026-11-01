@@ -24,7 +24,7 @@ The site serves patients already scheduled for an open gluteus tendon repair or 
 
 ## 2. Brand and visual system
 
-Option A, approved 10/31/2026: a warm light page with gomberamd.com navy and a deep teal accent. Most patients are 50 to 70, not athletes, so the site is light by default, calmer and larger than fixmyhips. Orange stays reserved for red flags and mandatory deadlines.
+Option A, approved 10/31/2026: a warm light page with gomberamd.com navy and a deep teal accent. Most patients are 50 to 70, not athletes, so the site is light by default, calmer and larger than fixmyhips. Orange stays reserved for the call-now list and mandatory deadlines.
 
 | Token | Light theme (default) | Dark theme (switch) | Use |
 | --- | --- | --- | --- |
@@ -41,7 +41,7 @@ Option A, approved 10/31/2026: a warm light page with gomberamd.com navy and a d
 
 Contrast is checked in the build (axe, both themes).
 
-**Type, sized for 50 to 70 year olds:** Inter throughout, self-hosted. Body 18px on phones (fixmyhips uses 17px), line height 1.6. Headings and big numbers in Inter 700, regular width; no condensed fonts. Labels in plain words ("This week's exercises").
+**Type, sized for 50 to 70 year olds:** Inter throughout, self-hosted. Body 18px on phones (fixmyhips uses 17px), line height 1.6. Headings and big numbers in Inter 700, regular width; no condensed fonts. Labels in plain words ("Weight bearing", "Coming up").
 
 **Logo and photos:** the gomberamd.com logo (copied at build). Reuse the fixmyhips headshot, operating room and Texas Orthopedic Hospital photos.
 
@@ -51,7 +51,9 @@ The approved screens are in `docs/design/` (see its README).
 
 ## 3. Site map
 
-Same route structure as fixmyhips, with /hip renamed /anatomy. The top bar always shows the gomberamd.com logo, the title "Gluteus Tendon Repair", a Call button and a Before / After switch. The Red flags link sits in the footer (changed 10/31/2026, as on fixmyhips).
+Same route structure as fixmyhips, with /hip renamed /anatomy. The top bar always shows the gomberamd.com logo, the title "Gluteus Tendon Repair", a Home button, a Call button and a Before / After switch. The site is educational: it does not run an exercise program (11/01/2026). When to call lives only under After surgery, as its last tab; there is no red-flag link in the header or footer (11/01/2026).
+
+After surgery tabs, in order: Dashboard, Home Care, Timeline, Home Program, When to Call.
 
 | Route | Page | What it holds |
 | --- | --- | --- |
@@ -61,14 +63,14 @@ Same route structure as fixmyhips, with /hip renamed /anatomy. The top bar alway
 | /before/surgery-day | Surgery Day | Arrival call, Operative Permit ("Hip Gluteus Repair"), general anesthesia with possible nerve block, surgery 40 to 80 minutes, one night in the hospital |
 | /before/diagnosis | Your Diagnosis | Gluteus medius and minimus tears ("rotator cuff of the hip"), why surgery, alternatives, 85 to 90% success, full risk list |
 | /before/add-ons | Add-ons | Biologic options, "Call for pricing" |
-| /after | Recovery Dashboard | Day count, phase and week, status tiles, this week's exercises, coming-up unlocks |
-| /after/timeline | Recovery Timeline | All phases for the selected protocol, criteria to move on |
+| /after | Recovery Dashboard | Day count, phase and week, status tiles, coming-up unlocks, one home program line |
+| /after/timeline | Recovery Timeline | All phases for the selected protocol, goals and criteria to move on, no exercise links |
 | /after/care | Home Care | Dressing, shower, ice, brace, activity, driving, return to work, standard medications |
-| /after/exercises | Exercise Library | Every exercise in the protocol, by phase and week |
+| /after/home-program | Home Program | Optional myHealthTrack app: pathway names, tiers, practice link and QR code |
+| /after/when-to-call | When to Call | Call now, call the office, usually normal; tap-to-call numbers |
 | /anatomy | Your Hip Tendons | 3D model: torn tendon before, double-row repair after |
-| /videos | Videos | Approved videos by topic |
+| /videos | Videos | Dr. Gombera's own videos only (none yet) |
 | /faq | FAQ | Searchable, grouped Before and After |
-| /red-flags | When to Call | Normal versus call-now symptoms, tap-to-call numbers |
 | /about | About Dr. Gombera | Headshot, credentials, link to gomberamd.com |
 | /contact | Contact | Office (713) 794-3457, after hours (713) 799-2300, PreAdmit (713) 395-6607, info@gomberamd.com, Athena portal, 7401 Main Street, Houston, TX 77030 |
 | /privacy | Privacy | What the site stores and where |
@@ -76,9 +78,11 @@ Same route structure as fixmyhips, with /hip renamed /anatomy. The top bar alway
 | /proof | Content proof | Internal: every instruction by source document (not linked) |
 | /walkthrough | Checkpoints | Internal until launch, then removed |
 
+Not on the site (11/01/2026): exercise library, weekly exercise ticks, phase exercise links, YouTube exercise videos. Old paths redirect: /after/exercises to /after/timeline, /red-flags to /after/when-to-call.
+
 ## 4. Personalization
 
-Two inputs drive the site: surgery date and procedure. Both stay in the browser (localStorage profile `{v, surgeryDate, procedure, checklist, exercises}`).
+Two inputs drive the site: surgery date and procedure. Both stay in the browser (localStorage profile `{v, surgeryDate, procedure, checklist}`).
 
 **Procedure picker**
 
@@ -126,8 +130,8 @@ All clinical content lives in typed files under `src/content/`, copied from fixm
 
 | File | Holds | Main source |
 | --- | --- | --- |
-| protocols.ts | Standard and max-transfer protocols: weight bearing, brace, phases, weekly exercises, criteria | PT protocol + decisions |
-| exercises.ts | One entry per exercise, cues from protocol text only | PT protocol |
+| protocols.ts | Standard and max-transfer protocols: weight bearing, brace, phases, the protocol's exercises (for the therapist and the protocol print sheet only), criteria | PT protocol + decisions |
+| exercises.ts | One entry per exercise named in the protocol, for the protocol print sheet and /proof; no videos, not shown as a library | PT protocol |
 | before.ts | Pre-op checklist with offsets from surgery date; surgery day steps | Pre-op letter + fixmyhips logistics |
 | after.ts | Dressing, shower, ice, brace, activity, driving, work, follow-up | Discharge sheet + decisions |
 | learn.ts | Diagnosis, surgery, risks, success, FAQ, anatomy part text | Pre-op letter |
@@ -149,15 +153,23 @@ Features 6.1 to 6.5 and 6.7 to 6.10 reuse the fixmyhips components; only content
 
 **6.2 Before dashboard.** Countdown, readiness bar, PreAdmit alert, checklist blocks:
 
-- Now: online pre-registration, PreAdmit at (713) 395-6607 (within 30 days, at least 7 days before), anesthesia history.
-- 1 week before: ice machine or ice packs, driver, 1 to 2 weeks off desk work, add-on decision, home set up for crutches.
+- Now: online pre-registration, PreAdmit at (713) 395-6607 (within 30 days, at least 7 days before). No anesthesia-history item; PreAdmit covers it (11/01/2026).
+- 1 week before, in this order: driver, 1 to 2 weeks off desk work, ice machine or ice packs, add-on decision, home set up for crutches, then the optional home program item.
 - Night before: same fasting rule, medication holds (GLP-1 and blood-thinner callout) and arrival-call rule as fixmyhips; pack for one night.
 
-**6.3 After dashboard.** Day count, phase and week, phase bar sized by real phase length. Tiles: weight bearing (days left on crutches or walker, then cane as needed), brace (days left), hip bending limit (90° when sitting), driving criteria, running and high impact (6 months). This week's exercises with weekly ticks. Coming up: off crutches, brace off, aqua therapy, elliptical, resisted bike, running; each labeled "estimate; your therapist decides." Snapshot tests at days 1, 18, 30, 45, 70, 100 and 130 for both variants.
+**6.3 After dashboard.** Day count, phase and week, phase bar sized by real phase length. Tiles: weight bearing (days left on crutches or walker, then cane as needed), brace (days left), hip bending limit (90° when sitting), driving criteria, running and high impact (6 months). One line linking the optional home program. No weekly exercises. Coming up: off crutches, brace off, aqua therapy, elliptical, resisted bike, running; each labeled "estimate; your therapist decides." Snapshot tests at days 1, 18, 30, 45, 70, 100 and 130 for both variants.
 
 **6.4 Timeline.** All phases, current one highlighted, goals and criteria. "Recovery is not a straight line. You move to the next phase when your therapist confirms you meet its criteria."
 
-**6.5 Exercise library.** Filter by phase and week; therapist-override notice at top; "Video coming soon" where none is approved.
+**6.5 Home program (myHealthTrack, optional; 11/01/2026).** Page /after/home-program:
+
+- Notice that it is optional and the therapist's program takes precedence.
+- Choose your pathway, using the app's names exactly: Open Gluteus Tendon Repair, "Hip Arthroscopy w/Gluteus Medius Repair"; Gluteus Maximus Transfer, "Ask our office which pathway to use". A note that the app's weeks may differ from his protocol, so follow the protocol and the therapist.
+- Tier cards from the flyer: free education, free resources, premium with "Ask our office about cost and whether it can replace any in-person therapy visits." The flyer's savings claim ($500 to $1,000) and "eliminate in-person PT" are left out unless he approves them.
+- Get started: "Open myHealthTrack" button to https://mht.link/fondren2, a navy QR code to the same link, and the office phone.
+- Light links: last item of the week-before checklist, one line on the After dashboard, one line on the Timeline.
+- Privacy page: signing up happens in the app under its own privacy terms; the site sends nothing.
+- Standing question for him: does the app's pathway match the protocol? Until confirmed, the page carries the note above.
 
 **6.6 Home care** (discharge sheet plus decisions):
 
@@ -181,28 +193,17 @@ Features 6.1 to 6.5 and 6.7 to 6.10 reuse the fixmyhips components; only content
 - No separate model for the gluteus maximus transfer; the anatomy page shows the standard repair only.
 - Controls: before/after toggle, camera views (side, back, front), "hide IT band" checkbox to see the tendons, a tappable parts list with explanations, text for each stage, 2D fallback without WebGL. Renders checked in Playwright and sent to Dr. Gombera.
 
-**6.8 Videos, FAQ, red flags, contact, privacy.** As fixmyhips. Red-flag "call now" list from the discharge sheet: painful swelling or numbness, unrelenting pain, fever over 101° or chills, continuous drainage or bleeding, difficulty breathing, excessive nausea or vomiting, calf pain.
+**6.8 Videos, FAQ, When to call, contact, privacy.** As fixmyhips. When to call is a calm After tab of plain cards (call now, call the office, usually normal). "Call now" list from the discharge sheet: painful swelling or numbness, unrelenting pain, fever over 101° or chills, continuous drainage or bleeding, difficulty breathing, excessive nausea or vomiting, calf pain.
 
 **6.9 Add-ons.** Same biologic add-ons page as fixmyhips, "Call for pricing" with tap-to-call.
 
 **6.10 Print center.** Four sheets per variant (before-surgery checklist, PT protocol, home care sheet, when-to-call card), light theme, US letter, 0.5 in margins, logo, address, phones, "Content reviewed by Dr. Gombera." His corrected PDFs replace them through the `pdf` slot.
 
-## 7. Exercise video map
+## 7. Videos and home program
 
-Every exercise in the open glute protocol already exists in fixmyhips (its arthroscopic glute variant uses the same exercise list), and Dr. Gombera approved those videos on 10/30/2026. He approved reusing the same picks here (10/31/2026).
+Changed 11/01/2026: the site is educational and does not run an exercise program. The YouTube exercise picks reused from fixmyhips are removed. The Videos page shows only Dr. Gombera's own videos; he has none for gluteus repair yet, so it says they are coming. Exercises belong to the patient's therapist and, when the patient chooses it, the myHealthTrack home program (section 6.5).
 
-| Phase | Exercises | Video status |
-| --- | --- | --- |
-| I, week 1 | Hamstring sets, seated hamstring stretch, ankle pumps, supine passive motion, log rolls, core isometrics, prone lying | fixmyhips picks; log rolls still need his own clip |
-| I, week 2 | Circumduction, upright bike, cat and camel, rockback, quadruped hip extension, soft tissue mobilization, scar massage | fixmyhips picks; scar massage wording changes to "incision" |
-| I, weeks 3 to 6 | Aquatic therapy, double leg bridge, stool rotations, physioball rollouts | fixmyhips picks; stool rotations need his own clip |
-| II, week 7 | Upright bike (crutch weaning is now at week 4, in Phase I) | fixmyhips picks |
-| II, week 8 | Sidelying clamshells, standing abduction isometric | fixmyhips picks |
-| II, week 9 | Low-weight leg press, quad and hamstring strengthening, side step-ups, Y balance, balance training, elliptical | fixmyhips picks |
-| III, weeks 10 to 16 | Single-leg leg press, pillar bridge, bodyweight squat, single leg quarter squat, lunges, glute and IT band stretching, elliptical, resisted bike | fixmyhips picks |
-| IV, months 4 to 6 | Return to running, agility and sport drills | fixmyhips Phase IV picks; running and high impact not before 6 months |
-
-Video notices: top of page, "These videos are only a suggestion and are not formal medical advice. The program from your therapist takes precedence, and all exercises should be done under your therapist's observation." Under each video, only the first sentence.
+Video notice, one sentence, shown once at the top and once under each video: "These videos are only a suggestion and are not formal medical advice."
 
 ## 8. Safety and legal
 
@@ -210,11 +211,11 @@ The site collects no patient information, and every clinical statement traces to
 
 | Notice (exact wording) | Where |
 | --- | --- |
-| "This is the standard protocol. If you were given a different protocol, follow that one instead." | Dashboard, timeline, exercise library, protocol print |
-| "Your physical therapist has the final say. These are general suggestions from the standard protocol. If your therapist gives you different exercises, limits or timing, follow your therapist's plan. Stop any exercise that causes sharp pain." | Every exercise page and session list |
+| "This is the standard protocol. If you were given a different protocol, follow that one instead." | Dashboard, timeline, protocol print |
+| "Your physical therapist has the final say. These are general suggestions from the standard protocol. If your therapist gives you different exercises, limits or timing, follow your therapist's plan. Stop any exercise that causes sharp pain." | Wherever protocol content appears: timeline, home program, protocol print |
 | "Your prescriptions may differ. Always take your medications as directed on your own prescription labels." | Above the standard medication regimen |
 | "Dates are estimates. You move on when your therapist confirms you meet the phase criteria." | Coming-up unlocks, timeline |
-| Video notices (section 7) | Videos page and each video |
+| Video notice (section 7), one sentence | Top of the videos page and under each video |
 | "Content reviewed by Dr. Gombera." (no date) | Footer only; no reviewed-by line on pages |
 
 **Privacy**
@@ -222,6 +223,7 @@ The site collects no patient information, and every clinical statement traces to
 - No forms, accounts, cookies or third-party trackers. Date, procedure and ticks live only in localStorage; never in a URL.
 - Cookieless page-view counts (Vercel Web Analytics): paths only, query strings stripped, no custom events, visible only in Dr. Gombera's Vercel dashboard.
 - YouTube loads only on tap, through youtube-nocookie.com.
+- Links out to myHealthTrack are allowed; patients sign up in that app under its own terms, never through the site.
 - A plain-language /privacy page states all of this.
 
 **Images:** Dr. Gombera has no glute images of his own, so the site uses the 3D model only. No third-party images.
@@ -245,11 +247,11 @@ A fresh repo (`mgombera/gluterepair`), seeded from a copy of fixmyhips at its cu
 Eight milestones, each its own branch and pull request with a preview link, then a stop for Dr. Gombera's review. Three gates: nothing passes them without his explicit approval.
 
 1. **Shell.** Strip fixmyhips hip content down to placeholders, option A tokens and Inter type, header and footer, routes (/hip becomes /anatomy), sitemap, robots, metadata for gluterepair.com.
-2. **Content.** Both protocols, exercises, checklist, home care, medications, FAQ, red flags as typed data with sources; /proof page exported to PDF for him. **Gate 1: clinical sign-off.**
+2. **Content.** Both protocols, checklist, home program, home care, medications, FAQ, red flags as typed data with sources; /proof page exported to PDF for him. **Gate 1: clinical sign-off.**
 3. **Personalization.** Setup flow, localStorage profile, date math, QR presets, clear-my-information; unit tests at every phase boundary for both variants.
 4. **Before mode.** Countdown, readiness bar, PreAdmit alert, checklist; Surgery Day, Your Diagnosis, Add-ons; labeled example at 12 days out.
-5. **After mode.** Dashboard, timeline, exercise library, home care; labeled example at day 18.
-6. **Supporting pages.** 3D glute model (**anatomy gate**: renders sent to him), videos, FAQ search, red flags, About, Contact with Athena portal, privacy.
+5. **After mode.** Dashboard, home care, timeline, home program, when to call; labeled example at day 18.
+6. **Supporting pages.** 3D glute model (**anatomy gate**: renders sent to him), videos (his own), FAQ search, About, Contact with Athena portal, privacy.
 7. **Print and polish.** Print center, light/dark theme switch, axe and keyboard pass, Lighthouse, page-view analytics, hidden /walkthrough with checkpoint states for both variants. **Gate 2: his walkthrough.**
 8. **Launch.** Squarespace DNS to Vercel, remove /walkthrough, QR codes per variant (PNG and print PDF), swap in his corrected PDFs, add the site address and QR code to his printed letters.
 
@@ -276,10 +278,28 @@ Eight milestones, each its own branch and pull request with a preview link, then
 | Pre-op logistics | Same as fixmyhips; PreAdmit (713) 395-6607 |
 | Add-ons | Call for pricing |
 | Images and 3D | None of his own; 3D model of the tear and the transosseous-equivalent double-row repair (2 proximal anchors, 1 to 2 distal); no model for the max transfer |
-| Videos | Reuse the fixmyhips picks |
+| Videos | Reuse the fixmyhips picks (replaced 11/01/2026, below) |
 | Out of scope | Reminders, Spanish, accounts, booking |
 
-**Still open:** none.
+**Decisions from Dr. Gombera (11/01/2026)**
+
+| Question | Decision |
+| --- | --- |
+| Phase IV split | Correct: strengthening from month 4; running, agility and jumping at 6 months |
+| Gluteus Maximus Transfer description | Approved as written |
+| Max transfer cane | Correct: after at least 6 weeks, weight bearing as tolerated with a cane during the transition |
+| Derived anatomy descriptions (4) | Approved as written |
+| Gluteus repair overview video | None yet |
+| Exercise program | None: the site is educational only. No exercise library, weekly ticks, exercise links or YouTube exercise videos |
+| Home program | myHealthTrack, optional, on an After tab; practice link https://mht.link/fondren2 |
+| myHealthTrack pathways | Open Gluteus Tendon Repair: "Hip Arthroscopy w/Gluteus Medius Repair"; Gluteus Maximus Transfer: "Ask our office which pathway to use" |
+| Pathway match | Not confirmed; the page notes the app's weeks may differ and to follow the protocol and therapist |
+| When to call | Only under After surgery, last tab; footer Red flags link removed; /red-flags redirects |
+| Prehab | No gluteus prehab protocol; no prehab page |
+| Checklist | Week before: driver, time off, cold therapy, biologics, then the optional home program; anesthesia-history item removed |
+| Header | Visible Home button |
+
+**Still open:** does the myHealthTrack pathway match the protocol (weight bearing and brace weeks)? Approve or drop the flyer's savings claim.
 
 **Change list for his printed documents** (so patients never see two answers)
 
@@ -312,5 +332,6 @@ Eight milestones, each its own branch and pull request with a preview link, then
 - `2026-10-31-preop-letter.docx`: What to Expect from your Surgery for Hip Gluteus Tendon Repair
 - `2026-10-31-discharge-instructions.docx`: Hip Gluteus Tendon Repair (Open), Post-Operative Instruction Checklist
 - `2026-10-31-pt-protocol-open-glute.docx`: Postoperative Rehabilitation Protocol, Hip Open Gluteus Tendon Repair with/without Bursectomy
-- Each has a `.txt` extraction beside it for searching.
+- `2026-11-01-myhealthtrack-flyer.pdf`: myHealthTrack flyer for Dr. Gombera (tiers, pathways, practice link), supplied 11/01/2026.
+- Each document has a `.txt` extraction beside it for searching.
 - fixmyhips scope and source documents (logistics, Phase IV, shared content) are in `docs/reference-fixmyhips/`.

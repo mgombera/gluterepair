@@ -35,28 +35,30 @@ export type Milestone = { id: string; label: string; date: Date; dayAfterSurgery
 export function milestones(surgery: Date, protocol: Protocol): Milestone[] {
   const at = (day: number) => addDays(surgery, day);
   const list: Omit<Milestone, "dayAfterSurgery">[] = [
-    { id: "shower", label: "You may shower (cover the incisions) and remove the outer dressing", date: at(2) },
+    { id: "shower", label: "You may shower and remove the outer bulky dressing", date: at(2) },
     { id: "pt-start", label: "Formal physical therapy usually begins (days 3 to 5)", date: at(3) },
-    { id: "desk-work", label: "Desk work or school, if pain allows (days 4 to 7)", date: at(4) },
+    { id: "desk-work", label: "Most office jobs can resume (1 to 2 weeks)", date: at(7) },
     { id: "first-visit", label: "First post-op visit (days 10 to 14)", date: at(10) },
     { id: "travel", label: "Two-week limit on long sitting and long-distance travel ends", date: at(14) },
-    { id: "aqua", label: "Aqua therapy can begin once incisions are healed", date: at(protocol.aquaTherapyAfterWeek * 7) },
+    { id: "aqua", label: "Aqua therapy can begin once the incision is healed", date: at(protocol.aquaTherapyAfterWeek * 7) },
     { id: "driving", label: "Driving may be possible: off narcotics, able to lift the leg, full control", date: at(21) },
     {
       id: "crutches",
-      label: "Begin weaning off crutches, toward weight bearing as tolerated",
+      label: protocol.weightBearing.minimum
+        ? "Earliest weight bearing as tolerated, with a cane during the transition"
+        : "Begin weaning off crutches or walker",
       date: at(protocol.weightBearing.weeks * 7),
     },
-    { id: "brace", label: "Brace no longer needed when walking", date: at(protocol.braceWeeks * 7) },
+    { id: "brace", label: protocol.braceWeeksUpTo ? "Brace may come off when walking (6 to 8 weeks)" : "Brace no longer needed when walking", date: at(protocol.braceWeeks * 7) },
     ...protocol.phases.slice(1).map((ph) => ({
       id: `phase-${ph.n}`,
       label: `Phase ${ph.n} begins: ${ph.name.toLowerCase()}`,
       date: at((ph.startWeek - 1) * 7),
     })),
-    { id: "running", label: "Running progression can begin", date: addMonths(surgery, protocol.runningAfterMonths) },
+    { id: "running", label: "Running and high impact can begin", date: addMonths(surgery, protocol.runningAfterMonths) },
     {
       id: "agility",
-      label: "Multidirectional agility can begin",
+      label: "Agility and jumping can begin",
       date: at((protocol.agilityNotBeforeWeek - 1) * 7),
     },
     { id: "year", label: "Home exercise program complete (1 year)", date: addMonths(surgery, 12) },
@@ -137,16 +139,4 @@ export function status(
     braceOn: daysSince < protocol.braceWeeks * 7,
     upcoming: milestones(surgery, protocol).filter((m) => m.dayAfterSurgery > daysSince).slice(0, 5),
   };
-}
-
-/** Exercise ids that apply this week: everything introduced so far in the current phase. */
-export function exercisesThisWeek(protocol: Protocol, week: number): { newThisWeek: string[]; continuing: string[] } {
-  const phase = phaseForWeek(protocol, week);
-  if (!phase) return { newThisWeek: [], continuing: [] };
-  const newThisWeek = phase.weeks.filter((w) => w.fromWeek === week).flatMap((w) => w.exerciseIds);
-  const continuing = phase.weeks
-    .filter((w) => w.fromWeek < week)
-    .flatMap((w) => w.exerciseIds)
-    .filter((id) => !newThisWeek.includes(id));
-  return { newThisWeek, continuing: [...new Set(continuing)] };
 }

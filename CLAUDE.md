@@ -5,12 +5,12 @@ Patient companion site for Dr. Mufaddal Gombera's open gluteus tendon repair and
 - Full spec, approved 10/31/2026: `docs/scope.md`. Section 11 holds every clinical decision.
 - Approved screens: `docs/design/` (option A palette, phone width).
 - Clinical source documents: `docs/source/` (docx plus .txt extractions).
-- fixmyhips reference (its scope, its source documents, its Phase IV): `docs/reference-fixmyhips/`. Milestone 1 replaced the fixmyhips pages with placeholders; `src/content/` and the dashboard components still hold fixmyhips hip content until milestones 2 to 5 rewrite them.
+- fixmyhips reference (its scope, its source documents, its Phase IV): `docs/reference-fixmyhips/`. Milestone 1 replaced the fixmyhips pages with placeholders; milestone 2 rewrote `src/content/` for the two gluteus procedures. The dashboard components still carry fixmyhips layout until milestones 3 to 5.
 - 3D mesh scripts from fixmyhips, the starting point for the glute model: `docs/3d/scripts/`.
 
 ## Where things stand
 
-Scope and design canvas approved 10/31/2026. Milestone 1 (shell) built 10/31/2026 on branch `milestone-1-shell`, waiting for Dr. Gombera's review. Next: milestone 2 (scope section 10). Patients are mostly 50 to 70 years old: light theme by default, 18px body text, 48px touch targets, no condensed fonts.
+Scope and design canvas approved 10/31/2026. Milestone 1 (shell) built 10/31/2026 on `milestone-1-shell`. Milestone 2 (content) built 10/31/2026 on `milestone-2-content`. On 11/01/2026 he answered the five proof questions and changed the scope: the site is educational only (no exercise program) and adds the optional myHealthTrack home program; that rework is on the same branch, with `docs/proof/2026-11-01-content-proof.pdf` waiting for his Gate 1 sign-off; then set `CONTENT_REVIEWED_ON`. The pre-rework version is saved on branch `v1-archive-2026-11-01` (preview: https://gluterepair-h378125gh-mgombera-gmailcoms-projects.vercel.app). Next after sign-off: milestone 3. Patients are mostly 50 to 70 years old: light theme by default, 18px body text, 48px touch targets, no condensed fonts.
 
 ## Rules
 
@@ -18,9 +18,13 @@ Scope and design canvas approved 10/31/2026. Milestone 1 (shell) built 10/31/202
 - Sign-off gates: milestone 2 (clinical content proof), the 3D anatomy model, and milestone 7 (final walkthrough). Never proceed past a gate without his explicit approval.
 - Clinical content comes only from `docs/source/`, the decisions table in scope section 11, and (for Phase IV, logistics and shared pages) `docs/reference-fixmyhips/`. Never invent sets, reps, doses, timelines or restrictions. Every clinical item records its source; plain-language inferences are `derived: true` and show highlighted on /proof.
 - Copy: no em dashes anywhere, including comments that render. Dates display as MM/DD/YYYY. Plain words, short sentences, large type. Procedure names in title case: "Open Gluteus Tendon Repair", "Gluteus Maximus Transfer".
-- Notices word for word (scope section 8): standard-protocol notice, therapist override on every exercise page, medications "take as directed" notice, and the two video notices.
-- No patient data leaves the browser: no forms, accounts, cookies or trackers. Date, procedure and ticks live in localStorage only; never a date or name in a URL. The one exception is cookieless Vercel Web Analytics page views: paths only, query strings stripped, no custom events, visible only in his Vercel dashboard.
-- Header: the gomberamd.com logo and the title "Gluteus Tendon Repair" (10/31/2026). Footer: the Red flags link, the audience statement linking to gomberamd.com, and "Content reviewed by Dr. Gombera." with no date. No reviewed-by line on pages.
+- Notices word for word (scope section 8): standard-protocol notice, therapist override wherever protocol content appears, medications "take as directed" notice, and the one-sentence video notice (top of the videos page and under each video).
+- Educational only (11/01/2026): no exercise library, weekly exercise ticks, phase exercise links or YouTube exercise videos. Videos are his own only. Exercises belong to the therapist and, optionally, the myHealthTrack home program (scope 6.5): use the app's pathway names exactly, leave out the flyer's savings claims unless he approves them, and ask each time whether the app's pathway matches his protocol.
+- When to call lives only under After surgery (last tab), in calm plain cards; no red-flag link in the header or footer. Orange is for the call-now list and mandatory deadlines only.
+- Procedure names come only from `procedureLabel()` in `src/lib/procedures.ts`. Practice details (7401 Main Street, phones, direct PreAdmit number) only from `src/lib/site.ts`.
+- When removing a page, add a redirect and a redirect test. Before a major rework, push a branch `vN-archive-YYYY-MM-DD` and record its preview URL.
+- No patient data leaves the browser: no forms, accounts, cookies or trackers. Date, procedure and checklist ticks live in localStorage only; linking out to myHealthTrack is allowed (patients sign up in the app); never a date or name in a URL. The one exception is cookieless Vercel Web Analytics page views: paths only, query strings stripped, no custom events, visible only in his Vercel dashboard.
+- Header: the gomberamd.com logo, the title "Gluteus Tendon Repair" (10/31/2026), a Home button, Call and the Before / After switch. Footer: the audience statement linking to gomberamd.com, and "Content reviewed by Dr. Gombera." with no date. No reviewed-by line on pages.
 - Images: only images Dr. Gombera confirms are his. No third-party images. The anatomy model uses HuBMAP Visible Human meshes (CC BY 4.0), credited under the model.
 - Accessibility: WCAG 2.2 AA, 48px touch targets (44px minimum), real buttons and links, axe clean in both themes.
 - Print sheets are generated until he supplies his edited PDFs; drop them in `public/print/` and set them in `src/content/print.ts`.

@@ -11,12 +11,11 @@ export type Profile = {
   surgeryDate: string | null; // ISO YYYY-MM-DD, null = not scheduled yet
   procedure: Procedure;
   checklist: Record<string, boolean>; // pre-op checklist ticks
-  exercises: Record<string, string[]>; // "YYYY-Www" -> exercise ids ticked that week
 };
 
 const KEY = "gluterepair:profile";
 const PRESET_KEY = "gluterepair:preset";
-const PROCEDURES: Procedure[] = ["standard", "revision", "glute", "different"];
+const PROCEDURES: Procedure[] = ["standard", "max-transfer", "different"];
 
 let memory: Profile | null = null; // used when storage is blocked (private browsing)
 let storageOk: boolean | null = null;
@@ -47,7 +46,6 @@ function validate(x: unknown): Profile | null {
     surgeryDate: p.surgeryDate ?? null,
     procedure: p.procedure as Procedure,
     checklist: typeof p.checklist === "object" && p.checklist ? p.checklist : {},
-    exercises: typeof p.exercises === "object" && p.exercises ? p.exercises : {},
   };
 }
 
@@ -124,7 +122,6 @@ export function saveSetup(surgeryDate: string | null, procedure: Procedure) {
     surgeryDate,
     procedure,
     checklist: prev?.checklist ?? {},
-    exercises: prev?.exercises ?? {},
   });
   clearPreset();
 }
@@ -135,23 +132,12 @@ export function toggleChecklist(id: string, value: boolean) {
   write({ ...p, checklist: { ...p.checklist, [id]: value } });
 }
 
-/** Exercise ticks reset each week: stored under the recovery week number. */
-export function toggleExercise(week: number, id: string, value: boolean) {
-  const p = read();
-  if (!p) return;
-  const key = `week-${week}`;
-  const current = new Set(p.exercises[key] ?? []);
-  if (value) current.add(id);
-  else current.delete(id);
-  write({ ...p, exercises: { [key]: [...current] } }); // keep only this week
-}
-
 export function clearProfile() {
   write(null);
   clearPreset();
 }
 
-// QR code preset: remembers the procedure from fixmyhips.com/start?p=... until setup is saved.
+// QR code preset: remembers the procedure from gluterepair.com/start?p=... until setup is saved.
 export function savePreset(procedure: Procedure) {
   try {
     window.sessionStorage.setItem(PRESET_KEY, procedure);

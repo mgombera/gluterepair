@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { isProcedure, savePreset } from "@/lib/profile";
 
-const ALIASES: Record<string, string> = { glute: "glute", gluteus: "glute", rev: "revision" };
+const ALIASES: Record<string, string> = { max: "max-transfer", transfer: "max-transfer", repair: "standard" };
 
 export function StartRedirect() {
   const params = useSearchParams();

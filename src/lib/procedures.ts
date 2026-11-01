@@ -3,18 +3,13 @@ import type { Procedure } from "./recovery";
 export const PROCEDURE_OPTIONS: { value: Procedure; label: string; detail: string }[] = [
   {
     value: "standard",
-    label: "Hip Arthroscopy, Osteoplasty and Labral Repair",
+    label: "Open Gluteus Tendon Repair",
     detail: "The standard procedure. Choose this if you are not sure.",
   },
   {
-    value: "revision",
-    label: "Labral Revision or Reconstruction",
-    detail: "A repeat Hip Arthroscopy, or a labrum rebuilt with a graft.",
-  },
-  {
-    value: "glute",
-    label: "Hip Arthroscopy with Glute Tendon Repair",
-    detail: "Hip Arthroscopy plus repair of the gluteus medius tendon on the side of the hip.",
+    value: "max-transfer",
+    label: "Gluteus Maximus Transfer",
+    detail: "Part of the gluteus maximus is moved over when the torn tendons cannot be repaired.",
   },
   {
     value: "different",
