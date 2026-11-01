@@ -4,8 +4,9 @@ export type SourceId =
   | "pt-protocol" // Postoperative Rehabilitation Protocol: Hip Open Gluteus Tendon Repair
   | "discharge" // Hip Gluteus Tendon Repair (Open): Post-Operative Instruction Checklist
   | "preop-letter" // What to Expect from your Surgery for Hip Gluteus Tendon Repair
-  | "decisions" // Dr. Gombera's decisions, 10/31/2026 (scope section 11)
-  | "fixmyhips"; // Approved fixmyhips content: logistics, Phase IV and shared pages
+  | "decisions" // Dr. Gombera's decisions, 10/31/2026 and 11/01/2026 (scope section 11)
+  | "fixmyhips" // Approved fixmyhips content: logistics, Phase IV and shared pages
+  | "myhealthtrack"; // myHealthTrack flyer for Dr. Gombera, supplied 11/01/2026
 
 export type Sourced = {
   /** The first source is the main one; the content proof groups items by it. */
@@ -16,6 +17,8 @@ export type Sourced = {
    * the content proof so Dr. Gombera can approve, edit or remove it.
    */
   derived?: boolean;
+  /** MM/DD/YYYY when Dr. Gombera approved a derived item as written. */
+  approvedOn?: string;
 };
 
 export type ProtocolId = "standard" | "max-transfer";
@@ -72,7 +75,6 @@ export type Exercise = Sourced & {
   therapistCues?: string[];
   caution?: string;
   therapistOnly?: boolean;
-  videoIds: string[];
 };
 
 export type Video = {
@@ -81,9 +83,9 @@ export type Video = {
   /** Filled automatically from YouTube oEmbed by scripts/fetch-video-titles.mjs. */
   title?: string;
   channel?: string;
-  source: "dr-gombera" | "external";
-  topics: ("overview" | "surgery" | "recovery" | "exercise" | "testimonial")[];
-  caution?: string;
+  /** His own videos only (decision 11/01/2026). */
+  source: "dr-gombera";
+  topics: ("overview" | "surgery" | "recovery" | "testimonial")[];
   /** MM/DD/YYYY. A video with no approval date never renders on the site. */
   approvedOn?: string;
 };
@@ -109,4 +111,19 @@ export type FaqItem = Sourced & {
   group: "before" | "after";
   q: string;
   a: string;
+};
+
+/** A myHealthTrack pathway for one procedure, named exactly as in the app. */
+export type HomeProgramPathway = Sourced & {
+  procedure: ProtocolId;
+  /** The app's pathway name, or null when the patient should ask the office. */
+  pathway: string | null;
+  note?: string;
+};
+
+export type HomeProgramTier = Sourced & {
+  id: string;
+  label: string;
+  free: boolean;
+  points: string[];
 };

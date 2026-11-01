@@ -1,5 +1,5 @@
 import { addDays, addMonths, differenceInCalendarDays } from "date-fns";
-import { exercisesThisWeek, formatUS, protocolFor, status } from "./recovery";
+import { formatUS, protocolFor, status } from "./recovery";
 import type { AfterStatus, Milestone, Procedure } from "./recovery";
 import type { Phase } from "@/content";
 
@@ -15,8 +15,6 @@ export type DashboardModel = {
   phases: { n: number; name: string; weeks: number; state: "done" | "current" | "next" }[];
   phaseProgressPct: number;
   tiles: Tile[];
-  newThisWeek: string[];
-  continuing: string[];
   upcoming: Milestone[];
 };
 
@@ -51,7 +49,6 @@ export function dashboardModel(surgery: Date, today: Date, procedure: Procedure)
   ];
 
   const current = a.phase?.n ?? 5;
-  const { newThisWeek, continuing } = exercisesThisWeek(p, a.week);
 
   return {
     daysSince: a.daysSince,
@@ -65,8 +62,6 @@ export function dashboardModel(surgery: Date, today: Date, procedure: Procedure)
     })),
     phaseProgressPct: a.phase ? Math.round(((a.phaseDay + 1) / a.phaseLength) * 100) : 100,
     tiles,
-    newThisWeek,
-    continuing,
     upcoming: a.upcoming,
   };
 }

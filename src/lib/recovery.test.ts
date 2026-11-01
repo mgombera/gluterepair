@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { addDays } from "date-fns";
 import { PROTOCOLS } from "@/content";
-import { exercisesThisWeek, formatUS, fromISO, milestones, parseUS, status, toISO } from "./recovery";
+import { formatUS, fromISO, milestones, parseUS, status, toISO } from "./recovery";
 import type { AfterStatus, BeforeStatus } from "./recovery";
 
 const surgery = new Date(2026, 9, 13); // 10/13/2026
@@ -119,24 +119,5 @@ describe("before surgery", () => {
   it("dates checklist deadlines from the surgery date", () => {
     expect(formatUS(before(12).dueDates.fasting)).toBe("10/12/2026");
     expect(formatUS(before(12).dueDates.preadmit)).toBe("10/06/2026");
-  });
-});
-
-describe("weekly exercises", () => {
-  it("separates new exercises from ones continuing in the phase", () => {
-    const w3 = exercisesThisWeek(PROTOCOLS.standard, 3);
-    expect(w3.newThisWeek).toContain("double-leg-bridge");
-    expect(w3.continuing).toContain("ankle-pumps");
-    expect(w3.continuing).toContain("circumduction");
-  });
-
-  it("starts fresh in a new phase", () => {
-    const w7 = exercisesThisWeek(PROTOCOLS.standard, 7);
-    expect(w7.newThisWeek).toEqual(["upright-bike"]);
-    expect(w7.continuing).toEqual([]);
-  });
-
-  it("returns nothing past Phase IV", () => {
-    expect(exercisesThisWeek(PROTOCOLS.standard, 30)).toEqual({ newThisWeek: [], continuing: [] });
   });
 });

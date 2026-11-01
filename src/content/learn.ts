@@ -2,8 +2,8 @@ import type { FaqItem, InfoSection } from "./types";
 
 // Diagnosis, anatomy and FAQ. Sources: pre-op letter, discharge sheet,
 // decisions of 10/31/2026, and fixmyhips logistics. The pre-op letter does
-// not describe the Gluteus Maximus Transfer, so its text is derived and
-// needs Dr. Gombera's wording.
+// not describe the Gluteus Maximus Transfer, so its text is derived; Dr.
+// Gombera approved it as written on 11/01/2026.
 
 export const DIAGNOSIS: InfoSection[] = [
   {
@@ -44,6 +44,7 @@ export const DIAGNOSIS: InfoSection[] = [
     ],
     source: ["decisions"],
     derived: true,
+    approvedOn: "11/01/2026",
   },
   {
     id: "why-surgery",
@@ -57,7 +58,7 @@ export const DIAGNOSIS: InfoSection[] = [
 ];
 
 // Anatomy model text (scope 6.7). Descriptions the pre-op letter does not
-// give are marked derived for Dr. Gombera's review.
+// give are marked derived; he approved them as written on 11/01/2026.
 export const ANATOMY: InfoSection[] = [
   {
     id: "greater-trochanter",
@@ -77,6 +78,7 @@ export const ANATOMY: InfoSection[] = [
     points: ["A smaller muscle under the gluteus medius. It works with the gluteus medius and can tear with it."],
     source: ["preop-letter"],
     derived: true,
+    approvedOn: "11/01/2026",
   },
   {
     id: "footprint",
@@ -84,6 +86,7 @@ export const ANATOMY: InfoSection[] = [
     points: ["The area of bone where the tendons attach. In a tear, the tendon pulls away and leaves the bone bare. The repair holds the tendon back down on it so it can heal."],
     source: ["preop-letter"],
     derived: true,
+    approvedOn: "11/01/2026",
   },
   {
     id: "bursa",
@@ -91,6 +94,7 @@ export const ANATOMY: InfoSection[] = [
     points: ["A small cushion over the greater trochanter. It can become irritated. If it is irritated, it is removed during surgery."],
     source: ["preop-letter"],
     derived: true,
+    approvedOn: "11/01/2026",
   },
   {
     id: "it-band",
@@ -98,6 +102,7 @@ export const ANATOMY: InfoSection[] = [
     points: ["A thick band of tissue on the outside of the thigh. A small window (fasciotomy) is made in it during surgery to reach the tendon."],
     source: ["preop-letter"],
     derived: true,
+    approvedOn: "11/01/2026",
   },
   {
     id: "anchors",

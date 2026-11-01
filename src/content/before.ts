@@ -4,6 +4,8 @@ import type { ChecklistItem, InfoSection } from "./types";
 // Sources: pre-op letter, discharge sheet, Dr. Gombera's decisions of
 // 10/31/2026, and the fixmyhips logistics he kept ("Same as fixmyhips").
 // The PreAdmit number is the decision's (713) 395-6607, not the letter's.
+// Week-before order and the removed anesthesia-history item (PreAdmit covers
+// it) follow the decisions of 11/01/2026.
 
 export const PREADMIT_WINDOW = { opensDaysBefore: 30, closesDaysBefore: 7 };
 
@@ -29,22 +31,6 @@ export const CHECKLIST: ChecklistItem[] = [
     source: ["preop-letter", "decisions"],
   },
   {
-    id: "anesthesia-history",
-    block: "now",
-    title: "Tell the anesthesia team your history",
-    detail:
-      "If you are prone to nausea or vomiting after anesthesia, or have had complications with anesthesia, let the anesthesia team know.",
-    source: ["fixmyhips"],
-  },
-  {
-    id: "cold-therapy",
-    block: "week-before",
-    title: "Get an ice machine or ice packs",
-    detail:
-      "Icing starts right after surgery: 30 to 45 minutes every 2 hours until your first post-op visit. An ice machine is optional and may or may not be covered by your insurance, so check with your insurance company. Ice packs work if you do not get a machine.",
-    source: ["discharge", "decisions", "fixmyhips"],
-  },
-  {
     id: "driver",
     block: "week-before",
     title: "Arrange a ride home and help at home",
@@ -62,6 +48,14 @@ export const CHECKLIST: ChecklistItem[] = [
     source: ["preop-letter", "decisions"],
   },
   {
+    id: "cold-therapy",
+    block: "week-before",
+    title: "Get an ice machine or ice packs",
+    detail:
+      "Icing starts right after surgery: 30 to 45 minutes every 2 hours until your first post-op visit. An ice machine is optional and may or may not be covered by your insurance, so check with your insurance company. Ice packs work if you do not get a machine.",
+    source: ["discharge", "decisions", "fixmyhips"],
+  },
+  {
     id: "biologics",
     block: "week-before",
     title: "Optional: decide on a biologic add-on",
@@ -76,6 +70,16 @@ export const CHECKLIST: ChecklistItem[] = [
     detail:
       "You will walk with crutches or a walker, putting only 20 lb on the operated leg, for at least 4 weeks. Have a place ready to keep your leg raised to chest level.",
     source: ["decisions", "discharge"],
+    derived: true,
+  },
+  {
+    id: "home-program",
+    block: "week-before",
+    title: "Optional: look at the myHealthTrack home program",
+    detail:
+      "myHealthTrack is an optional app with a guided home program, alongside your physical therapy. Your therapist's program takes precedence.",
+    link: { label: "See the Home Program page", href: "/after/home-program" },
+    source: ["decisions", "myhealthtrack"],
     derived: true,
   },
   {

@@ -138,6 +138,7 @@ function phases(v: Variant): Phase[] {
       // Splitting Phase IV at 6 months, so running, agility and jumping wait
       // for the 6-month decision, is an inference for his review.
       derived: true,
+      approvedOn: "11/01/2026",
       goals: [
         "No complaints of pain or weakness",
         "Functional strengthening",
@@ -236,4 +237,4 @@ export const PROTOCOLS: Record<ProtocolId, Protocol> = {
 export const PROTOCOL_NOTICE =
   "This is the standard protocol. If you were given a different protocol, follow that one instead.";
 
-export const HOME_PROGRAM = "Continue your home exercise program through 1 year.";
+export const HOME_EXERCISE_NOTE = "Continue your home exercise program through 1 year.";

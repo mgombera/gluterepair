@@ -9,23 +9,23 @@ const surgery = new Date(2026, 9, 13); // 10/13/2026
 const at = (day: number, p: "standard" | "max-transfer") => dashboardModel(surgery, addDays(surgery, day), p)!;
 const tile = (m: ReturnType<typeof at>, label: string) => m.tiles.find((t) => t.label === label)?.value;
 
-type Row = [day: number, phase: number | null, week: number, wb: string, brace: string, flexOrAqua: string, newEx?: string];
+type Row = [day: number, phase: number | null, week: number, wb: string, brace: string, flexOrAqua: string];
 
 const EXPECTED: Record<"standard" | "max-transfer", Row[]> = {
   standard: [
-    [1, 1, 1, "20 lb", "41 days", "90°", "prone-lying"],
-    [18, 1, 3, "20 lb", "24 days", "90°", "double-leg-bridge"],
+    [1, 1, 1, "20 lb", "41 days", "90°"],
+    [18, 1, 3, "20 lb", "24 days", "90°"],
     [30, 1, 5, "As tolerated", "12 days", "90°"],
-    [45, 2, 7, "As tolerated", "Done", "Allowed", "upright-bike"],
+    [45, 2, 7, "As tolerated", "Done", "Allowed"],
     [70, 3, 11, "As tolerated", "Done", "Allowed"],
     [100, 3, 15, "As tolerated", "Done", "Allowed"],
     [130, 4, 19, "As tolerated", "Done", "Allowed"],
   ],
   "max-transfer": [
-    [1, 1, 1, "20 lb", "41 days", "90°", "prone-lying"],
-    [18, 1, 3, "20 lb", "24 days", "90°", "double-leg-bridge"],
+    [1, 1, 1, "20 lb", "41 days", "90°"],
+    [18, 1, 3, "20 lb", "24 days", "90°"],
     [30, 1, 5, "20 lb", "12 days", "90°"],
-    [45, 2, 7, "As tolerated", "Done", "Allowed", "upright-bike"],
+    [45, 2, 7, "As tolerated", "Done", "Allowed"],
     [70, 3, 11, "As tolerated", "Done", "Allowed"],
     [100, 3, 15, "As tolerated", "Done", "Allowed"],
     [130, 4, 19, "As tolerated", "Done", "Allowed"],
@@ -34,7 +34,7 @@ const EXPECTED: Record<"standard" | "max-transfer", Row[]> = {
 
 for (const [proc, rows] of Object.entries(EXPECTED) as [keyof typeof EXPECTED, Row[]][]) {
   describe(`${proc} dashboard`, () => {
-    for (const [day, phase, week, wb, brace, flex, newEx] of rows) {
+    for (const [day, phase, week, wb, brace, flex] of rows) {
       it(`day ${day}: phase ${phase}, week ${week}`, () => {
         const m = at(day, proc);
         expect(m.phase?.n ?? null).toBe(phase);
@@ -42,7 +42,6 @@ for (const [proc, rows] of Object.entries(EXPECTED) as [keyof typeof EXPECTED, R
         expect(tile(m, "Weight bearing")).toBe(wb);
         expect(tile(m, "Brace")).toBe(brace);
         expect(tile(m, "Hip flexion limit") ?? tile(m, "Aqua therapy")).toBe(flex);
-        if (newEx) expect(m.newThisWeek).toContain(newEx);
       });
     }
   });
@@ -67,6 +66,5 @@ describe("dashboard details", () => {
     const m = at(200, "standard");
     expect(m.phase).toBeNull();
     expect(m.phases.every((p) => p.state === "done")).toBe(true);
-    expect(m.newThisWeek).toEqual([]);
   });
 });

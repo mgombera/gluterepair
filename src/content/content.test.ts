@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import * as C from "./index";
 
@@ -67,13 +69,15 @@ describe("exercises and videos", () => {
     expect(exerciseIds.size).toBe(C.EXERCISES.length);
   });
 
-  it("has unique video ids and YouTube ids", () => {
+  it("has unique video ids and YouTube ids, and only his own videos", () => {
+    for (const v of C.VIDEOS) expect(v.source).toBe("dr-gombera");
     expect(videoIds.size).toBe(C.VIDEOS.length);
     expect(new Set(C.VIDEOS.map((v) => v.youtubeId)).size).toBe(C.VIDEOS.length);
   });
 
-  it("only references videos that exist", () => {
-    for (const e of C.EXERCISES) for (const v of e.videoIds) expect(videoIds.has(v), `${e.id}: ${v}`).toBe(true);
+  it("links no exercise to a video (educational only, 11/01/2026)", () => {
+    for (const e of C.EXERCISES) expect(Object.keys(e), e.id).not.toContain("videoIds");
+    expect(C.VIDEOS).toHaveLength(0); // he has no gluteus repair video yet
   });
 
   it("uses every exercise in at least one protocol", () => {
@@ -94,12 +98,13 @@ describe("exercises and videos", () => {
 
   it("has an MM/DD/YYYY approval date on every approved video", () => {
     for (const v of C.approvedVideos()) expect(v.approvedOn).toMatch(/^\d{2}\/\d{2}\/\d{4}$/);
-    expect(C.approvedVideos().length).toBe(C.VIDEOS.length); // reuse approved 10/31/2026
   });
 });
 
 describe("all content", () => {
-  const everything = JSON.stringify(C);
+  // The myHealthTrack pathway names are the app's own words (decision 11/01/2026).
+  const pathways = C.HOME_PROGRAM_PATHWAYS.flatMap((p) => (p.pathway ? [p.pathway] : []));
+  const everything = pathways.reduce((s, p) => s.split(p).join(""), JSON.stringify(C));
 
   it("contains no em dashes", () => {
     expect(everything).not.toMatch(/—/);
@@ -136,7 +141,9 @@ describe("all content", () => {
 });
 
 describe("gluteus content", () => {
-  const everything = JSON.stringify(C);
+  // The myHealthTrack pathway names are the app's own words (decision 11/01/2026).
+  const pathways = C.HOME_PROGRAM_PATHWAYS.flatMap((p) => (p.pathway ? [p.pathway] : []));
+  const everything = pathways.reduce((s, p) => s.split(p).join(""), JSON.stringify(C));
 
   it("carries no hip arthroscopy content over from fixmyhips", () => {
     expect(everything).not.toMatch(/arthroscop|labral|labrum|impingement|osteoplasty|steri-strip|outpatient|portal incision/i);
@@ -153,10 +160,6 @@ describe("gluteus content", () => {
     for (const e of C.EXERCISES) expect(e.cues.join(" "), e.id).not.toMatch(/\d+\s*degrees/);
   });
 
-  it("only leaves a video out where scope section 7 has none", () => {
-    const none = ["log-rolls", "stool-rotations", "soft-tissue-mobilization", "aquatic-therapy", "quad-hamstring-strengthening", "resisted-bike", "sport-specific"];
-    for (const e of C.EXERCISES) expect(e.videoIds.length > 0 || none.includes(e.id), e.id).toBe(true);
-  });
 
   it("uses the scope section 8 notices word for word", () => {
     expect(C.PROTOCOL_NOTICE).toBe("This is the standard protocol. If you were given a different protocol, follow that one instead.");
@@ -165,9 +168,7 @@ describe("gluteus content", () => {
     );
     expect(C.MEDICATION_NOTICE).toBe("Your prescriptions may differ. Always take your medications as directed on your own prescription labels.");
     expect(C.DATES_ARE_ESTIMATES).toBe("Dates are estimates. You move on when your therapist confirms you meet the phase criteria.");
-    expect(C.VIDEO_NOTICE).toBe(
-      "These videos are only a suggestion and are not formal medical advice. The program from your therapist takes precedence, and all exercises should be done under your therapist's observation.",
-    );
+    expect(C.VIDEO_NOTICE).toBe("These videos are only a suggestion and are not formal medical advice.");
   });
 
   it("lists the scope 6.8 red flags from the discharge sheet", () => {
@@ -175,7 +176,51 @@ describe("gluteus content", () => {
     expect(C.CALL_NOW.points).toContain("Calf pain");
   });
 
+  it("orders the week-before checklist as decided on 11/01/2026, with no anesthesia item", () => {
+    const week = C.CHECKLIST.filter((c) => c.block === "week-before").map((c) => c.id);
+    expect(week).toEqual(["driver", "time-off", "cold-therapy", "biologics", "home-setup", "home-program"]);
+    expect(C.CHECKLIST.map((c) => c.id)).not.toContain("anesthesia-history");
+  });
+
+  it("marks the five items he answered on 11/01/2026 as approved", () => {
+    const approved = [...C.DIAGNOSIS, ...C.ANATOMY, ...C.PROTOCOLS.standard.phases].filter((x) => x.approvedOn);
+    expect(approved).toHaveLength(6); // max transfer text, 4 anatomy parts, Phase IV split
+    for (const x of approved) expect(x.approvedOn).toBe("11/01/2026");
+  });
+
   it("waits for Dr. Gombera's sign-off", () => {
     expect(C.CONTENT_REVIEWED_ON).toBeNull();
+  });
+});
+
+describe("home program (myHealthTrack, scope 6.5)", () => {
+  it("uses the app's pathway names exactly", () => {
+    const by = Object.fromEntries(C.HOME_PROGRAM_PATHWAYS.map((p) => [p.procedure, p]));
+    expect(by.standard.pathway).toBe("Hip Arthroscopy w/Gluteus Medius Repair");
+    expect(by["max-transfer"].pathway).toBeNull();
+    expect(by["max-transfer"].note).toBe("Ask our office which pathway to use.");
+  });
+
+  it("says the app's weeks may differ until he confirms the pathway matches", () => {
+    expect(C.HOME_PROGRAM_CHOOSE.points.join(" ")).toMatch(/weeks may differ/);
+  });
+
+  it("links to his practice link and a navy QR code", () => {
+    expect(C.HOME_PROGRAM_URL).toBe("https://mht.link/fondren2");
+    const svg = readFileSync(join(process.cwd(), "public", C.HOME_PROGRAM_QR), "utf8");
+    expect(svg).toMatch(/#313E6B/);
+  });
+
+  it("is optional and puts the therapist first", () => {
+    expect(C.HOME_PROGRAM_NOTICE).toMatch(/optional/);
+    expect(C.HOME_PROGRAM_NOTICE).toMatch(/therapist's program takes precedence/);
+  });
+
+  it("leaves the flyer's savings claims off the site", () => {
+    const shown = JSON.stringify([C.HOME_PROGRAM_TIERS, C.HOME_PROGRAM_INTRO, C.HOME_PROGRAM_START, C.HOME_PROGRAM_CHOOSE]);
+    expect(shown).not.toMatch(/\$|save|eliminate/i);
+    expect(C.HOME_PROGRAM_TIERS.find((t) => !t.free)?.points).toContain(
+      "Ask our office about cost and whether it can replace any in-person therapy visits.",
+    );
   });
 });

@@ -140,15 +140,3 @@ export function status(
     upcoming: milestones(surgery, protocol).filter((m) => m.dayAfterSurgery > daysSince).slice(0, 5),
   };
 }
-
-/** Exercise ids that apply this week: everything introduced so far in the current phase. */
-export function exercisesThisWeek(protocol: Protocol, week: number): { newThisWeek: string[]; continuing: string[] } {
-  const phase = phaseForWeek(protocol, week);
-  if (!phase) return { newThisWeek: [], continuing: [] };
-  const newThisWeek = phase.weeks.filter((w) => w.fromWeek === week).flatMap((w) => w.exerciseIds);
-  const continuing = phase.weeks
-    .filter((w) => w.fromWeek < week)
-    .flatMap((w) => w.exerciseIds)
-    .filter((id) => !newThisWeek.includes(id));
-  return { newThisWeek, continuing: [...new Set(continuing)] };
-}
