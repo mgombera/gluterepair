@@ -10,7 +10,7 @@ Patient companion site for Dr. Mufaddal Gombera's open gluteus tendon repair and
 
 ## Where things stand
 
-Scope and design canvas approved 10/31/2026. Milestone 1 (shell) built 10/31/2026 on `milestone-1-shell`. Milestone 2 (content) built 10/31/2026 on `milestone-2-content`. On 11/01/2026 he answered the five proof questions and changed the scope: the site is educational only (no exercise program) and adds the optional myHealthTrack home program; that rework is on the same branch, with `docs/proof/2026-11-01-content-proof.pdf` waiting for his Gate 1 sign-off; then set `CONTENT_REVIEWED_ON`. The pre-rework version is saved on branch `v1-archive-2026-11-01`. Next after sign-off: milestone 3. Patients are mostly 50 to 70 years old: light theme by default, 18px body text, 48px touch targets, no condensed fonts.
+Scope and design canvas approved 10/31/2026. Milestone 1 (shell) built 10/31/2026 on `milestone-1-shell`. Milestone 2 (content) built 10/31/2026 on `milestone-2-content`. On 11/01/2026 he answered the five proof questions and changed the scope: the site is educational only (no exercise program) and adds the optional myHealthTrack home program; that rework is on the same branch, with `docs/proof/2026-11-01-content-proof.pdf` waiting for his Gate 1 sign-off; then set `CONTENT_REVIEWED_ON`. The pre-rework version is saved on branch `v1-archive-2026-11-01` (preview: https://gluterepair-h378125gh-mgombera-gmailcoms-projects.vercel.app). Next after sign-off: milestone 3. Patients are mostly 50 to 70 years old: light theme by default, 18px body text, 48px touch targets, no condensed fonts.
 
 ## Rules
 
