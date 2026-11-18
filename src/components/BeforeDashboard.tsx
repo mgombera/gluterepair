@@ -1,116 +1,64 @@
 "use client";
 
 import Link from "next/link";
-import { CHECKLIST, PREADMIT_WINDOW } from "@/content";
-import type { ChecklistItem } from "@/content";
-import { toggleChecklist, useHydrated, useProfile } from "@/lib/profile";
 import { addDays } from "date-fns";
-import { formatUS, fromISO, status } from "@/lib/recovery";
-import type { BeforeStatus } from "@/lib/recovery";
+import { beforeModel, preAdmitText } from "@/lib/before";
+import type { ChecklistBlock } from "@/lib/before";
+import { toggleChecklist, useHydrated, useProfile } from "@/lib/profile";
+import { procedureLabel } from "@/lib/procedures";
+import { formatUS, fromISO } from "@/lib/recovery";
 import { PRACTICE } from "@/lib/site";
 import { AlertIcon, PhoneIcon } from "./icons";
 
+// Before Surgery dashboard (scope 6.2, approved Before screen): countdown,
+// readiness bar, PreAdmit card and the checklist in three blocks. With no
+// date set, a labeled example 12 days out.
+
 const EXAMPLE_DAYS_OUT = 12;
 
-const BLOCKS: { id: ChecklistItem["block"]; title: string }[] = [
-  { id: "now", title: "Now" },
-  { id: "week-before", title: "1 week before" },
-  { id: "night-before", title: "Night before" },
-];
-
-function PreAdmitAlert({ s, done }: { s: BeforeStatus; done: boolean }) {
-  const deadline = formatUS(s.preAdmitDeadline);
-  if (done) {
-    return (
-      <div role="status" className="rounded-xl border border-accent bg-surface p-4">
-        <strong>PreAdmit marked done.</strong>{" "}
-        <span className="text-muted">If PreAdmit asked for more tests or follow-up, finish those before surgery.</span>
-      </div>
-    );
-  }
-  if (s.preAdmit === "not-open") {
-    return (
-      <div className="rounded-xl border border-border bg-surface p-4">
-        <strong>PreAdmit testing is mandatory.</strong>{" "}
-        <span className="text-muted">
-          Your window opens {formatUS(s.preAdmitOpens)} ({PREADMIT_WINDOW.opensDaysBefore} days before surgery) and closes{" "}
-          {deadline}.
-        </span>
-      </div>
-    );
-  }
-  const strong = s.preAdmit === "urgent" || s.preAdmit === "overdue";
+function Block({ b, canTick }: { b: ChecklistBlock; canTick: boolean }) {
   return (
-    <div
-      role={strong ? "alert" : undefined}
-      className={`flex flex-col gap-3 rounded-xl border-2 p-4 sm:flex-row sm:items-center sm:justify-between ${
-        strong ? "border-alert bg-alert-surface" : "border-accent bg-surface"
-      }`}
-    >
-      <div className="flex gap-3">
-        <AlertIcon className={`mt-0.5 shrink-0 ${strong ? "text-alert" : "text-accent"}`} />
-        <p className="m-0">
-          <strong className={strong ? "text-alert" : ""}>
-            {s.preAdmit === "overdue" ? `The PreAdmit deadline was ${deadline}.` : `Complete PreAdmit by ${deadline}.`}
-          </strong>{" "}
-          It is mandatory: it is how you are cleared to receive anesthesia.
-          {s.preAdmit === "overdue" ? " Call PreAdmit today." : ""}
-        </p>
-      </div>
-      <a
-        href={`tel:${PRACTICE.preAdmit.tel}`}
-        className={`inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-md px-4 font-bold no-underline ${
-          strong ? "bg-alert text-bg" : "bg-accent text-accent-ink"
-        }`}
-      >
-        <PhoneIcon /> {PRACTICE.preAdmit.label}
-      </a>
-    </div>
-  );
-}
-
-function Item({
-  item,
-  checked,
-  canTick,
-  due,
-}: {
-  item: ChecklistItem;
-  checked: boolean;
-  canTick: boolean;
-  due?: Date;
-}) {
-  const id = `chk-${item.id}`;
-  return (
-    <li className={`flex gap-3 rounded-lg bg-bg p-4 ${checked ? "opacity-70" : ""}`}>
-      <input
-        id={id}
-        type="checkbox"
-        checked={checked}
-        disabled={!canTick}
-        onChange={(e) => toggleChecklist(item.id, e.target.checked)}
-        className="mt-1 h-6 w-6 shrink-0 accent-[var(--accent)]"
-        aria-describedby={`${id}-d`}
-      />
-      <div className="flex min-w-0 flex-col gap-1">
-        <label htmlFor={id} className={`text-lg font-semibold ${checked ? "line-through" : ""}`}>
-          {item.title}
-        </label>
-        {due && !checked && (
-          <span className="text-sm font-semibold text-accent">
-            {item.block === "night-before" ? "Night of" : "By"} {formatUS(due)}
-          </span>
-        )}
-        <p id={`${id}-d`} className="m-0 text-muted">
-          {item.detail}
-        </p>
-        {item.link && (
-          <a href={item.link.href} className="inline-flex min-h-11 items-center font-semibold underline underline-offset-2">
-            {item.link.label}
-          </a>
-        )}
-      </div>
-    </li>
+    <section aria-labelledby={`blk-${b.id}`} className="flex flex-col gap-2.5">
+      <h2 id={`blk-${b.id}`} className="m-0 text-[22px] font-bold text-brand-ink">
+        {b.title} {b.when && <span className="text-base font-medium text-muted">{b.when}</span>}
+      </h2>
+      <ul className="m-0 flex list-none flex-col gap-2.5 p-0">
+        {b.items.map((c) => {
+          const id = `chk-${c.id}`;
+          return (
+            <li key={c.id} className="flex items-start gap-3 rounded-xl border border-border bg-surface p-3.5">
+              <input
+                id={id}
+                type="checkbox"
+                checked={c.done}
+                disabled={!canTick}
+                onChange={(e) => toggleChecklist(c.id, e.target.checked)}
+                aria-describedby={c.done ? undefined : `${id}-d`}
+                className="mt-0.5 h-[26px] w-[26px] shrink-0 accent-[var(--accent)]"
+              />
+              <div className="flex min-w-0 flex-col gap-1">
+                <label htmlFor={id} className={`font-semibold ${c.done ? "text-muted line-through" : ""}`}>
+                  {c.title}
+                </label>
+                {c.due && !c.done && (
+                  <span className={`text-base font-semibold ${c.mandatory ? "text-alert-text" : "text-muted"}`}>Due {c.due}</span>
+                )}
+                {!c.done && (
+                  <p id={`${id}-d`} className="m-0 text-base text-muted">
+                    {c.detail}
+                  </p>
+                )}
+                {!c.done && c.link && (
+                  <a href={c.link.href} className="inline-flex min-h-12 items-center self-start font-semibold underline underline-offset-2">
+                    {c.link.label}
+                  </a>
+                )}
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
   );
 }
 
@@ -119,90 +67,80 @@ export function BeforeDashboard() {
   const profile = useProfile();
   if (!hydrated) return <div className="min-h-96" aria-busy="true" />;
 
+  const today = new Date();
   const realDate = profile?.surgeryDate ? fromISO(profile.surgeryDate) : null;
-  // No date yet: show a labeled example with surgery 12 days away.
+  const procedure = profile?.procedure ?? "standard";
+
+  if (realDate && !beforeModel(realDate, today, procedure, {})) {
+    return (
+      <div className="flex flex-col gap-3 rounded-[14px] border-2 border-accent bg-surface p-5">
+        <h1 className="m-0 text-2xl font-bold text-brand-ink">Your surgery was on {formatUS(realDate)}.</h1>
+        <Link
+          href="/after"
+          className="inline-flex min-h-12 items-center self-start rounded-xl bg-accent px-5 font-semibold text-accent-ink no-underline"
+        >
+          Go to your recovery dashboard
+        </Link>
+      </div>
+    );
+  }
+
   const example = !realDate;
-  const d = realDate ?? addDays(new Date(), EXAMPLE_DAYS_OUT);
-  const checked = profile?.checklist ?? {};
-  const s = status(d, new Date(), profile?.procedure ?? "standard", checked);
-  const before = s.mode === "before" ? s : null;
-  const doneCount = CHECKLIST.filter((c) => checked[c.id]).length;
-  const pct = Math.round((doneCount / CHECKLIST.length) * 100);
+  const surgery = realDate ?? addDays(today, EXAMPLE_DAYS_OUT);
+  const m = beforeModel(surgery, today, procedure, profile?.checklist ?? {})!;
+  const s = m.status;
+  const pa = preAdmitText(s);
+  const preAdmitDone = Boolean(profile?.checklist.preadmit);
 
   return (
-    <div className="flex flex-col gap-8">
-      {/* Countdown */}
-      <div className="flex flex-wrap items-end justify-between gap-6">
-        <div className="flex flex-col gap-1">
-          <p className="m-0 text-sm font-semibold uppercase tracking-widest text-muted">
-            Before surgery · Texas Orthopedic Hospital
-          </p>
-          {before ? (
-            <h1 className="m-0 font-display text-7xl font-extrabold uppercase leading-[0.9] sm:text-9xl">
-              <span className="text-accent">{before.daysUntil}</span> {before.daysUntil === 1 ? "day" : "days"} out
-            </h1>
-          ) : (
-            <h1 className="m-0 font-display text-6xl font-extrabold uppercase leading-[0.9] sm:text-8xl">Get ready</h1>
-          )}
-        </div>
-        {d && before && (
-          <p className="m-0 font-display text-3xl font-bold uppercase">Surgery · {formatUS(d)}</p>
-        )}
-      </div>
-
+    <div className="flex flex-col gap-5">
       {example && (
-        <div role="note" className="flex flex-col gap-2 rounded-xl border-2 border-accent bg-surface p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div role="note" className="flex flex-col gap-3 rounded-[14px] border-2 border-accent bg-surface p-4">
           <p className="m-0">
             <strong>Example: this is what your checklist looks like {EXAMPLE_DAYS_OUT} days before surgery.</strong>{" "}
             {profile
-              ? "You can start ticking items now. Add your date when surgery is scheduled to see your own deadlines."
+              ? "You can tick items now. Add your date when surgery is scheduled to see your own deadlines."
               : "Add your surgery date to see your own deadlines and tick items off."}
           </p>
           <Link
             href={profile ? "/?setup=1" : "/"}
-            className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-md bg-accent px-5 font-bold text-accent-ink no-underline"
+            className="inline-flex min-h-12 items-center self-start rounded-xl bg-accent px-5 font-semibold text-accent-ink no-underline"
           >
             {profile ? "Add your date" : "Set up your plan"}
           </Link>
         </div>
       )}
-      {s.mode === "after" && (
-        <div className="rounded-xl border border-accent bg-surface p-4">
-          <strong>Your surgery was on {formatUS(d)}.</strong>{" "}
-          <Link href="/after" className="font-semibold underline underline-offset-2">
-            Go to your recovery dashboard
-          </Link>
-        </div>
-      )}
 
-      {/* Readiness */}
-      <div className="flex flex-col gap-2">
-        <div className="flex justify-between text-sm font-semibold text-muted">
+      <section aria-labelledby="countdown" className="flex flex-col gap-1">
+        <p className="m-0 text-base text-muted">
+          {procedureLabel(procedure)} on {formatUS(surgery)}
+        </p>
+        <h1 id="countdown" className="m-0 text-5xl leading-[1.1] font-bold text-brand-ink">
+          {s.daysUntil} {s.daysUntil === 1 ? "day" : "days"} to go
+        </h1>
+        <div className="mt-2.5 flex justify-between text-base text-muted">
+          <span id="ready-label">Getting ready</span>
           <span>
-            READINESS · {doneCount} OF {CHECKLIST.length} DONE
+            {m.done} of {m.total} done
           </span>
         </div>
         <div
-          className="h-3.5 rounded bg-border"
           role="progressbar"
-          aria-label="Pre-surgery checklist"
+          aria-labelledby="ready-label"
           aria-valuemin={0}
-          aria-valuemax={CHECKLIST.length}
-          aria-valuenow={doneCount}
+          aria-valuemax={m.total}
+          aria-valuenow={m.done}
+          aria-valuetext={`${m.done} of ${m.total} tasks done`}
+          className="h-3.5 overflow-hidden rounded-[7px] bg-accent/15"
         >
-          <div
-            className={`h-3.5 rounded ${before?.preAdmit === "urgent" || before?.preAdmit === "overdue" ? "bg-alert" : "bg-accent"}`}
-            style={{ width: `${pct}%` }}
-          />
+          <div className="h-full bg-accent" style={{ width: `${Math.round((m.done / m.total) * 100)}%` }} />
         </div>
-      </div>
+      </section>
 
-      {before && <PreAdmitAlert s={before} done={Boolean(checked.preadmit)} />}
-
-      {before?.nightBefore && (
-        <div role="status" className="rounded-xl border-2 border-accent bg-surface p-4">
-          <strong>Surgery is tomorrow.</strong> Nothing to eat or drink after midnight. Expect a call with your arrival time;
-          no call by 3 p.m.? Call{" "}
+      {s.nightBefore && (
+        <div role="status" className="rounded-[14px] border-2 border-accent bg-surface p-4">
+          <strong>Surgery is tomorrow.</strong> Nothing to eat or drink after midnight. Expect a call with your arrival time. No call by 3 p.m.?
+          Call{" "}
           <a href={`tel:${PRACTICE.office.tel}`} className="font-semibold underline">
             {PRACTICE.office.label}
           </a>
@@ -210,27 +148,41 @@ export function BeforeDashboard() {
         </div>
       )}
 
-      {/* Checklist */}
-      <div className="grid gap-4 lg:grid-cols-3">
-        {BLOCKS.map((b) => (
-          <section key={b.id} aria-labelledby={`blk-${b.id}`} className="flex flex-col gap-3 rounded-xl border border-border bg-surface p-4">
-            <h2 id={`blk-${b.id}`} className="m-0 font-display text-2xl font-bold uppercase tracking-wide">
-              {b.title}
-            </h2>
-            <ul className="m-0 flex list-none flex-col gap-3 p-0">
-              {CHECKLIST.filter((c) => c.block === b.id).map((c) => (
-                <Item
-                  key={c.id}
-                  item={c}
-                  checked={Boolean(checked[c.id])}
-                  canTick={Boolean(profile)}
-                  due={before?.dueDates[c.id]}
-                />
-              ))}
-            </ul>
-          </section>
-        ))}
-      </div>
+      {preAdmitDone ? (
+        <div role="status" className="rounded-[14px] border border-accent bg-surface p-4">
+          <strong>PreAdmit is done.</strong> If PreAdmit asked for more tests or follow-up, finish those before surgery.
+        </div>
+      ) : (
+        <section
+          aria-labelledby="preadmit"
+          className={`flex flex-col gap-2 rounded-[14px] p-4 ${pa.strong ? "border-2 border-alert bg-alert-surface" : "border border-border bg-surface"}`}
+        >
+          <h2 id="preadmit" className={`m-0 flex items-center gap-2.5 text-[19px] font-bold ${pa.strong ? "text-alert-text" : "text-brand-ink"}`}>
+            <AlertIcon className="shrink-0" />
+            {pa.heading}
+          </h2>
+          <p className="m-0">{pa.body}</p>
+          <a
+            href={`tel:${PRACTICE.preAdmit.tel}`}
+            className={`flex min-h-[52px] items-center justify-center gap-2 rounded-[10px] font-semibold no-underline ${
+              pa.strong ? "bg-[#B54708] text-white" : "border-2 border-accent text-accent"
+            }`}
+          >
+            <PhoneIcon /> Call PreAdmit {PRACTICE.preAdmit.label}
+          </a>
+        </section>
+      )}
+
+      {m.blocks.map((b) => (
+        <Block key={b.id} b={b} canTick={Boolean(profile)} />
+      ))}
+
+      <Link
+        href="/before/surgery-day"
+        className="flex min-h-[52px] items-center justify-center rounded-xl border-2 border-accent font-semibold text-accent no-underline"
+      >
+        What happens on surgery day
+      </Link>
     </div>
   );
 }

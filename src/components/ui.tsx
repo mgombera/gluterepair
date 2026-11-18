@@ -35,3 +35,20 @@ export function Bullets({ items }: { items: string[] }) {
 export function Container({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return <div className={`mx-auto max-w-6xl px-4 ${className}`}>{children}</div>;
 }
+
+/** One card per content section: a heading and its points. */
+export function InfoCards({ sections, headingLevel = 2 }: { sections: { id: string; title: string; points: string[] }[]; headingLevel?: 2 | 3 }) {
+  const H = headingLevel === 2 ? "h2" : "h3";
+  return (
+    <div className="flex flex-col gap-4">
+      {sections.map((s) => (
+        <section key={s.id} aria-labelledby={`sec-${s.id}`} className="flex flex-col gap-2 rounded-[14px] border border-border bg-surface px-4 py-5 sm:px-6">
+          <H id={`sec-${s.id}`} className="m-0 text-[21px] font-bold text-brand-ink">
+            {s.title}
+          </H>
+          <Bullets items={s.points} />
+        </section>
+      ))}
+    </div>
+  );
+}
