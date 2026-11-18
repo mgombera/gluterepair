@@ -165,6 +165,8 @@ Features 6.1 to 6.5 and 6.7 to 6.10 reuse the fixmyhips components; only content
 - 1 week before, in this order: driver, 1 to 2 weeks off desk work, ice machine or ice packs, add-on decision, home set up for crutches, then the optional home program item.
 - Night before: same fasting rule, medication holds (GLP-1 and blood-thinner callout) and arrival-call rule as fixmyhips; pack for one night.
 
+Built 11/18/2026 (milestone 4): the countdown reads "12 days to go" under the procedure and date; the PreAdmit card shows the days left and turns orange only inside 10 days of surgery (or overdue), as section 4 says, though the design sketch showed orange at 12 days; only PreAdmit's due date is orange in the checklist.
+
 **6.3 After dashboard.** Day count, phase and week, phase bar sized by real phase length. Tiles: weight bearing (days left on crutches or walker, then cane as needed), brace (days left), hip bending limit (90° when sitting), driving criteria, running and high impact (6 months). One line linking the optional home program. No weekly exercises. Coming up: off crutches, brace off, aqua therapy, elliptical, resisted bike, running; each labeled "estimate; your therapist decides." Snapshot tests at days 1, 18, 30, 45, 70, 100 and 130 for both variants.
 
 **6.4 Timeline.** All phases, current one highlighted, goals and criteria. "Recovery is not a straight line. You move to the next phase when your therapist confirms you meet its criteria."
