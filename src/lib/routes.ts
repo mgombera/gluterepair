@@ -1,5 +1,6 @@
-// Every route in the site map (scope section 3). Used by navigation,
-// placeholder pages and the route test.
+// Every public route in the site map (scope section 3). Used by navigation,
+// placeholder pages, the sitemap and the route test. /start, /proof and
+// /walkthrough are internal and stay out of this list.
 
 export type Mode = "before" | "after" | "general";
 
@@ -8,32 +9,31 @@ export type RouteInfo = {
   title: string;
   summary: string;
   mode: Mode;
-  milestone: number; // milestone that delivers the real page
+  milestone: number; // milestone that delivers the real page (scope section 10)
 };
 
 export const ROUTES: RouteInfo[] = [
   { path: "/", title: "Home", summary: "Enter your surgery date and procedure to see what applies to you today.", mode: "general", milestone: 3 },
-  { path: "/before", title: "Before Surgery", summary: "Your countdown, readiness checklist and PreAdmit deadline.", mode: "before", milestone: 4 },
-  { path: "/before/surgery-day", title: "Surgery Day", summary: "What happens on the day, step by step, from the arrival call to going home.", mode: "before", milestone: 4 },
-  { path: "/before/diagnosis", title: "Your Diagnosis", summary: "Impingement, labral tears and dysplasia, why surgery is recommended, and the numbers to know.", mode: "before", milestone: 4 },
-  { path: "/before/prehab", title: "Prehab", summary: "Optional physical therapy for 2 weeks before surgery: core and glute strength, crutch practice and your post-op limits.", mode: "before", milestone: 8 },
-  { path: "/before/add-ons", title: "Biologic Add-ons", summary: "PRP, stem cell and connective tissue matrix options. Not covered by insurance. Call for pricing.", mode: "before", milestone: 4 },
-  { path: "/after", title: "Recovery Dashboard", summary: "Your day, phase and week, today's session and what unlocks next.", mode: "after", milestone: 5 },
-  { path: "/after/timeline", title: "Recovery Timeline", summary: "All four phases of your protocol and what it takes to move on.", mode: "after", milestone: 5 },
+  { path: "/before", title: "Before Surgery", summary: "Your countdown, getting-ready checklist and PreAdmit deadline.", mode: "before", milestone: 4 },
+  { path: "/before/surgery-day", title: "Surgery Day", summary: "What happens on the day, from the arrival call to your night in the hospital.", mode: "before", milestone: 4 },
+  { path: "/before/diagnosis", title: "Your Diagnosis", summary: "Gluteus medius and minimus tears, why surgery is recommended, your other options and the risks.", mode: "before", milestone: 4 },
+  { path: "/before/add-ons", title: "Add-ons", summary: "Biologic options you can add to your surgery. Call for pricing.", mode: "before", milestone: 4 },
+  { path: "/after", title: "Recovery Dashboard", summary: "Your day, phase and week, this week's exercises and what comes next.", mode: "after", milestone: 5 },
+  { path: "/after/timeline", title: "Recovery Timeline", summary: "Every phase of your protocol and what it takes to move on.", mode: "after", milestone: 5 },
   { path: "/after/care", title: "Home Care", summary: "Dressing, showering, ice, brace, activity, driving, work and medications.", mode: "after", milestone: 5 },
-  { path: "/after/exercises", title: "Exercise Library", summary: "Every exercise in your protocol, with cues and videos.", mode: "after", milestone: 5 },
-  { path: "/after/when-to-call", title: "When to Call", summary: "Signs after surgery that need a call, what is usually normal, and the numbers to use.", mode: "after", milestone: 6 },
-  { path: "/hip", title: "Your Hip", summary: "Explore the hip in 3D and see what was repaired.", mode: "general", milestone: 6 },
-  { path: "/videos", title: "Videos", summary: "Videos about Hip Arthroscopy and recovery.", mode: "general", milestone: 6 },
+  { path: "/after/exercises", title: "Exercise Library", summary: "Every exercise in your protocol, by phase and week.", mode: "after", milestone: 5 },
+  { path: "/anatomy", title: "Your Hip Tendons", summary: "See the torn tendons and the repair in 3D.", mode: "general", milestone: 6 },
+  { path: "/videos", title: "Videos", summary: "Videos about your surgery and your exercises.", mode: "general", milestone: 6 },
   { path: "/faq", title: "FAQ", summary: "Answers to common questions before and after surgery.", mode: "general", milestone: 6 },
-  { path: "/about", title: "About Dr. Gombera", summary: "Your surgeon and the Hip Preservation Center.", mode: "general", milestone: 6 },
-  { path: "/contact", title: "Contact", summary: "Office, after-hours, PreAdmit, email and the patient portal.", mode: "general", milestone: 6 },
-  { path: "/print", title: "Print Center", summary: "Printable checklists, protocol and home care sheets for your procedure.", mode: "general", milestone: 7 },
+  { path: "/red-flags", title: "When to Call", summary: "What is normal after surgery, what needs a call right away, and the numbers to use.", mode: "general", milestone: 6 },
+  { path: "/about", title: "About Dr. Gombera", summary: "Your surgeon, his training and his practice.", mode: "general", milestone: 6 },
+  { path: "/contact", title: "Contact", summary: "Office, after hours, PreAdmit, email, the patient portal and the address.", mode: "general", milestone: 6 },
   { path: "/privacy", title: "Privacy", summary: "What this site stores and what it never collects.", mode: "general", milestone: 6 },
+  { path: "/print", title: "Print Center", summary: "Printable checklist, protocol, home care and when-to-call sheets for your procedure.", mode: "general", milestone: 7 },
 ];
 
 export const PRIMARY_NAV = [
-  { href: "/hip", label: "Your Hip" },
+  { href: "/anatomy", label: "Your Hip Tendons" },
   { href: "/videos", label: "Videos" },
   { href: "/faq", label: "FAQ" },
   { href: "/contact", label: "Contact" },
@@ -44,13 +44,3 @@ export function routeInfo(path: string): RouteInfo {
   if (!r) throw new Error(`Unknown route ${path}`);
   return r;
 }
-
-// Old v0 site paths, redirected permanently (scope section 3).
-export const LEGACY_REDIRECTS: { source: string; destination: string }[] = [
-  { source: "/introduction", destination: "/before/diagnosis" },
-  { source: "/pre-op", destination: "/before" },
-  { source: "/day-of-surgery", destination: "/before/surgery-day" },
-  { source: "/post-op", destination: "/after" },
-  { source: "/additional-info", destination: "/after/care" },
-  { source: "/red-flags", destination: "/after/when-to-call" },
-];

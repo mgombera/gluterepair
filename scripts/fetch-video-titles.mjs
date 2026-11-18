@@ -26,7 +26,9 @@ await Promise.all(
       );
       if (!res.ok) return;
       const j = await res.json();
-      out[id] = { title: j.title, channel: j.author_name };
+      // Site rule: no em dashes anywhere, including fetched titles.
+      const plain = (t) => t.replace(/\s*\u2014\s*/g, ", ");
+      out[id] = { title: plain(j.title), channel: plain(j.author_name) };
       fetched++;
     } catch {}
   }),

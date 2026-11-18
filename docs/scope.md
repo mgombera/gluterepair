@@ -51,7 +51,7 @@ The approved screens are in `docs/design/` (see its README).
 
 ## 3. Site map
 
-Same route structure as fixmyhips, with /hip renamed /anatomy. The top bar always shows a Before / After switch, a Call button and a Red flags link.
+Same route structure as fixmyhips, with /hip renamed /anatomy. The top bar always shows the gomberamd.com logo, the title "Gluteus Tendon Repair", a Call button and a Before / After switch. The Red flags link sits in the footer (changed 10/31/2026, as on fixmyhips).
 
 | Route | Page | What it holds |
 | --- | --- | --- |

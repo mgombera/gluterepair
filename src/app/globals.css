@@ -1,70 +1,65 @@
 @import "tailwindcss";
 
 /*
-  Design tokens (scope section 2).
-  Dark navy is the default; a light theme follows the user's system setting
-  and is always used for printing.
+  Design tokens (scope section 2, option A).
+  Light is the default for every visitor. Dark only comes on when the patient
+  picks it with the theme switch (stored in this browser as data-theme on <html>).
+  Printing is always light.
 */
-:root {
+:root,
+.theme-light {
+  --bg: #f7f5f0;
+  --surface: #ffffff;
+  --border: #e2ded5;
+  --brand: #313e6b;
+  --accent: #0f766e;
+  --accent-ink: #ffffff;
+  --alert: #b54708;
+  --alert-surface: #fcefe6;
+  --alert-text: #8a3a06;
+  --text: #1f2937;
+  --muted: #4b5563;
+  --footer: #efece4;
+  --brand-ink: #313e6b;
+  --control-border: #c9c4b8;
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
   --bg: #10152a;
   --surface: #19213d;
   --border: #2a3458;
   --brand: #313e6b;
-  --accent: #4db8ff;
+  --accent: #3dd6c4;
   --accent-ink: #0b1020;
   --alert: #ff9b57;
   --alert-surface: #2a1a10;
+  --alert-text: #ffc59e;
   --text: #e8ecf1;
   --muted: #a3adc2;
+  --footer: #141a33;
+  --brand-ink: #e8ecf1;
+  --control-border: #3a4570;
   color-scheme: dark;
 }
 
-/* Light theme: follows the system setting unless the patient picks one
-   with the theme switch (stored in this browser as data-theme on <html>). */
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) {
-    --bg: #f4f6fa;
-    --surface: #ffffff;
-    --border: #d5dbe7;
-    --brand: #313e6b;
-    --accent: #1b64a8;
-    --accent-ink: #ffffff;
-    --alert: #b54708;
-    --alert-surface: #fdf1e8;
-    --text: #10152a;
-    --muted: #4a5470;
-    color-scheme: light;
-  }
-}
-
-:root[data-theme="light"],
-.theme-light {
-    --bg: #f4f6fa;
-    --surface: #ffffff;
-    --border: #d5dbe7;
-    --brand: #313e6b;
-    --accent: #1b64a8;
-    --accent-ink: #ffffff;
-    --alert: #b54708;
-    --alert-surface: #fdf1e8;
-    --text: #10152a;
-    --muted: #4a5470;
-    color-scheme: light;
-}
-
 @media print {
-  /* Beats every theme selector above, so printouts are always light. */
-  :root:is(*, [data-theme], :not([data-theme="dark"])),
+  /* Beats the theme selectors above, so printouts are always light. */
+  :root:is(*, [data-theme]),
   .theme-light {
     --bg: #ffffff;
     --surface: #ffffff;
-    --border: #c9d0dd;
-    --accent: #1b64a8;
+    --border: #c9c4b8;
+    --accent: #0f766e;
     --accent-ink: #ffffff;
     --alert: #b54708;
     --alert-surface: #ffffff;
+    --alert-text: #8a3a06;
     --text: #000000;
-    --muted: #333a4d;
+    --muted: #374151;
+    --footer: #ffffff;
+    --brand-ink: #313e6b;
+    --control-border: #c9c4b8;
   }
 }
 
@@ -77,10 +72,15 @@
   --color-accent-ink: var(--accent-ink);
   --color-alert: var(--alert);
   --color-alert-surface: var(--alert-surface);
+  --color-alert-text: var(--alert-text);
+  --color-footer: var(--footer);
+  --color-brand-ink: var(--brand-ink);
+  --color-control-border: var(--control-border);
   --color-text: var(--text);
   --color-muted: var(--muted);
   --font-sans: "Inter Variable", system-ui, sans-serif;
-  --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  /* Headings use regular-width Inter too (scope section 2). */
+  --font-display: "Inter Variable", system-ui, sans-serif;
 }
 
 /* Base rules sit in the base layer so Tailwind utilities can override them. */
@@ -94,14 +94,8 @@
   body {
     margin: 0;
     font-family: var(--font-sans);
-    font-size: 17px;
-    line-height: 1.55;
-  }
-
-  @media (min-width: 768px) {
-    body {
-      font-size: 16px;
-    }
+    font-size: 18px;
+    line-height: 1.6;
   }
 
   a {

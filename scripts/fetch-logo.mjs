@@ -1,5 +1,5 @@
 // Copy the gomberamd.com logo into public/brand/ so the site (and every
-// printout) serves it from fixmyhips.com. Runs before every build. If the file
+// printout) serves it from gluterepair.com. Runs before every build. If the file
 // is already in the repo, nothing is downloaded. If the download fails, the
 // site keeps using the gomberamd.com address (src/lib/logo.json).
 

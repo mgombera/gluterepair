@@ -5,131 +5,114 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { PRIMARY_NAV } from "@/lib/routes";
-import { PRACTICE } from "@/lib/site";
-import { PhoneIcon, MenuIcon, CloseIcon, HomeIcon } from "./icons";
+import { PRACTICE, SITE_TITLE } from "@/lib/site";
+import { PhoneIcon, MenuIcon, CloseIcon } from "./icons";
 import { ThemeToggle } from "./ThemeToggle";
+
+// Navy band with the gomberamd.com logo, the site title and the Call button,
+// then the Before / After switch. Red flags live in the footer.
 
 function ModeSwitch({ pathname }: { pathname: string }) {
   const isBefore = pathname.startsWith("/before");
   const isAfter = pathname.startsWith("/after");
   const base =
-    "inline-flex min-h-11 items-center rounded-md px-3 text-sm font-semibold uppercase tracking-wide";
+    "flex min-h-12 items-center justify-center rounded-[10px] px-3 font-semibold no-underline";
+  const on = "bg-brand text-white";
+  const off = "border border-control-border text-brand-ink";
   return (
-    <div
-      role="group"
-      aria-label="Surgery stage"
-      className="inline-flex rounded-lg border border-border p-0.5"
-    >
-      <Link
-        href="/before"
-        aria-current={isBefore ? "page" : undefined}
-        className={`${base} ${isBefore ? "bg-accent text-accent-ink" : "text-muted hover:text-text"}`}
-      >
+    <nav aria-label="Surgery stage" className="grid grid-cols-2 gap-2">
+      <Link href="/before" aria-current={isBefore ? "page" : undefined} className={`${base} ${isBefore ? on : off}`}>
         Before surgery
       </Link>
-      <Link
-        href="/after"
-        aria-current={isAfter ? "page" : undefined}
-        className={`${base} ${isAfter ? "bg-accent text-accent-ink" : "text-muted hover:text-text"}`}
-      >
+      <Link href="/after" aria-current={isAfter ? "page" : undefined} className={`${base} ${isAfter ? on : off}`}>
         After surgery
       </Link>
-    </div>
+    </nav>
   );
 }
 
 export function SiteHeader() {
   const pathname = usePathname() ?? "/";
   const [open, setOpen] = useState(false);
+  const navLink = (active: boolean) =>
+    `flex min-h-12 items-center rounded-[10px] px-3 font-semibold no-underline ${active ? "bg-white/15 text-white" : "text-white hover:bg-white/10"}`;
 
   return (
-    <header className="border-b border-border bg-bg print:hidden">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3">
-        <Link href="/" className="flex items-center gap-3 no-underline" aria-label="Fix My Hips home">
-          <span className="flex h-11 items-center rounded-md bg-white px-2">
-            <Image
-              src={PRACTICE.logoUrl}
-              alt="Mufaddal Gombera, MD"
-              width={120}
-              height={40}
-              className="h-8 w-auto"
-              priority
-            />
-          </span>
-          <span className="font-display text-2xl font-extrabold uppercase tracking-wide text-text">
-            Fix<span className="text-accent">/</span>My Hips
-          </span>
-        </Link>
-
-        <div className="flex items-center gap-2">
-          <Link
-            href="/"
-            aria-current={pathname === "/" ? "page" : undefined}
-            className="inline-flex min-h-11 items-center gap-2 rounded-md border border-border px-3 font-semibold text-text no-underline hover:border-accent"
-          >
-            <HomeIcon />
-            <span className="sr-only sm:not-sr-only">Home</span>
+    <header className="print:hidden">
+      <div className="bg-brand text-white">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3.5">
+          <Link href="/" className="flex min-w-0 flex-col items-start gap-1.5 text-white no-underline" aria-current={pathname === "/" ? "page" : undefined}>
+            <span className="flex rounded-md bg-white px-2 py-1">
+              <Image src={PRACTICE.logoUrl} alt="Mufaddal Gombera, MD, Orthopedic Surgery and Sports Medicine" width={367} height={61} className="h-6 w-auto sm:h-7" priority />
+            </span>
+            <span className="text-[19px] leading-tight font-bold sm:text-[22px]">{SITE_TITLE}</span>
           </Link>
-          <a
-            href={`tel:${PRACTICE.office.tel}`}
-            className="inline-flex min-h-11 items-center gap-2 rounded-md bg-accent px-3 font-semibold text-accent-ink no-underline"
-          >
-            <PhoneIcon />
-            <span className="sr-only sm:not-sr-only">Call</span>
-          </a>
-          <ThemeToggle />
-          <button
-            type="button"
-            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md border border-border text-text md:hidden"
-            aria-expanded={open}
-            aria-controls="mobile-nav"
-            aria-label={open ? "Close menu" : "Open menu"}
-            onClick={() => setOpen((v) => !v)}
-          >
-            {open ? <CloseIcon /> : <MenuIcon />}
-          </button>
-        </div>
-      </div>
 
-      <div className="mx-auto max-w-6xl px-4 pb-3">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <nav aria-label="Main" className="hidden md:block">
-            <ul className="-ml-3 flex gap-1">
-              {PRIMARY_NAV.map((item) => {
-                const active = pathname === item.href;
-                return (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      aria-current={active ? "page" : undefined}
-                      className={`inline-flex min-h-11 items-center px-3 text-sm font-semibold uppercase tracking-wide no-underline ${active ? "text-text" : "text-muted hover:text-text"}`}
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
-          <ModeSwitch pathname={pathname} />
-        </div>
-        {open && (
-          <nav id="mobile-nav" aria-label="Main" className="mt-3 md:hidden">
-            <ul className="flex flex-col border-t border-border">
+          <nav aria-label="Main" className="hidden lg:block">
+            <ul className="flex gap-1">
               {PRIMARY_NAV.map((item) => (
-                <li key={item.href} className="border-b border-border">
-                  <Link
-                    href={item.href}
-                    onClick={() => setOpen(false)}
-                    className="flex min-h-12 items-center font-semibold text-text no-underline"
-                  >
+                <li key={item.href}>
+                  <Link href={item.href} aria-current={pathname === item.href ? "page" : undefined} className={navLink(pathname === item.href)}>
                     {item.label}
                   </Link>
                 </li>
               ))}
             </ul>
           </nav>
+
+          <div className="flex items-center gap-2">
+            <ThemeToggle className="hidden min-h-12 min-w-12 items-center justify-center rounded-[10px] border border-white/40 text-white hover:bg-white/10 lg:inline-flex" />
+            <a
+              href={`tel:${PRACTICE.office.tel}`}
+              className="inline-flex min-h-12 min-w-12 items-center justify-center gap-2 rounded-[10px] bg-[#B54708] px-3 sm:px-[18px] text-[17px] font-semibold text-white no-underline"
+              aria-label={`Call the office, ${PRACTICE.office.label}`}
+            >
+              <PhoneIcon />
+              <span className="hidden sm:inline">Call</span>
+            </a>
+            <button
+              type="button"
+              className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-[10px] border border-white/40 text-white lg:hidden"
+              aria-expanded={open}
+              aria-controls="mobile-nav"
+              aria-label={open ? "Close menu" : "Open menu"}
+              onClick={() => setOpen((v) => !v)}
+            >
+              {open ? <CloseIcon /> : <MenuIcon />}
+            </button>
+          </div>
+        </div>
+
+        {open && (
+          <nav id="mobile-nav" aria-label="Main" className="mx-auto max-w-6xl px-4 pb-3 lg:hidden">
+            <ul className="flex flex-col gap-1 border-t border-white/25 pt-2">
+              <li>
+                <Link href="/" onClick={() => setOpen(false)} className={navLink(pathname === "/")}>
+                  Home
+                </Link>
+              </li>
+              {PRIMARY_NAV.map((item) => (
+                <li key={item.href}>
+                  <Link href={item.href} onClick={() => setOpen(false)} className={navLink(pathname === item.href)}>
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+              <li className="flex min-h-12 items-center justify-between gap-3 px-3">
+                <span className="font-semibold">Light or dark screen</span>
+                <ThemeToggle className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-[10px] border border-white/40 text-white hover:bg-white/10" />
+              </li>
+            </ul>
+          </nav>
         )}
+      </div>
+
+      <div className="border-b border-border bg-surface">
+        <div className="mx-auto max-w-6xl px-4 py-3">
+          <div className="sm:w-[28rem]">
+            <ModeSwitch pathname={pathname} />
+          </div>
+        </div>
       </div>
     </header>
   );

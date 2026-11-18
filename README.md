@@ -8,7 +8,7 @@ A personal companion for patients scheduled for open gluteus tendon repair or gl
 - Sibling site and code origin: fixmyhips.com ([docs/reference-fixmyhips](docs/reference-fixmyhips))
 - Stack: Next.js (App Router), TypeScript, Tailwind CSS, Vitest; hosted on Vercel
 
-The code under `src/` is still the fixmyhips hip arthroscopy site. Milestones 1 and 2 replace it.
+Milestone 1 (the shell) is built: option A design, header, footer, every route as a placeholder, and search metadata for gluterepair.com. The data in `src/content/` is still fixmyhips content until milestone 2 replaces it.
 
 ## Develop
 
