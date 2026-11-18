@@ -299,7 +299,9 @@ Eight milestones, each its own branch and pull request with a preview link, then
 | Checklist | Week before: driver, time off, cold therapy, biologics, then the optional home program; anesthesia-history item removed |
 | Header | Visible Home button |
 
-**Still open:** does the myHealthTrack pathway match the protocol (weight bearing and brace weeks)? Approve or drop the flyer's savings claim.
+**Gate 1 sign-off (11/18/2026):** Dr. Gombera approved the 11/01/2026 content proof as shown, including every derived item. The flyer's claims stay off the site, and the Home Program page keeps its note that the app's weeks may differ.
+
+**Still open:** does the myHealthTrack pathway match the protocol (weight bearing and brace weeks)? Ask again at each review.
 
 **Change list for his printed documents** (so patients never see two answers)
 

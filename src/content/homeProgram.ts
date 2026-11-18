@@ -24,6 +24,7 @@ export const HOME_PROGRAM_INTRO: InfoSection = {
   ],
   source: ["myhealthtrack", "decisions"],
   derived: true,
+  approvedOn: "11/18/2026",
 };
 
 export const HOME_PROGRAM_PATHWAYS: HomeProgramPathway[] = [
@@ -49,6 +50,7 @@ export const HOME_PROGRAM_CHOOSE: InfoSection = {
   ],
   source: ["myhealthtrack", "decisions"],
   derived: true,
+  approvedOn: "11/18/2026",
 };
 
 export const HOME_PROGRAM_TIERS: HomeProgramTier[] = [

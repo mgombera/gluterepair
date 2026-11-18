@@ -16,7 +16,7 @@ export * from "./homeProgram";
  * he does (Gate 1, scope section 10). Update it whenever clinical content
  * changes and is re-approved.
  */
-export const CONTENT_REVIEWED_ON: string | null = null;
+export const CONTENT_REVIEWED_ON: string | null = "11/18/2026";
 
 export const SOURCES: Record<SourceId, string> = {
   "pt-protocol": "PT protocol: Hip Open Gluteus Tendon Repair with/without Bursectomy",

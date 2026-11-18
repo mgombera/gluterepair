@@ -188,8 +188,10 @@ describe("gluteus content", () => {
     for (const x of approved) expect(x.approvedOn).toBe("11/01/2026");
   });
 
-  it("waits for Dr. Gombera's sign-off", () => {
-    expect(C.CONTENT_REVIEWED_ON).toBeNull();
+  it("records Dr. Gombera's Gate 1 sign-off of 11/18/2026 with nothing left waiting", () => {
+    expect(C.CONTENT_REVIEWED_ON).toBe("11/18/2026");
+    const all = [...C.CHECKLIST, ...C.SURGERY_DAY, ...C.HOME_CARE, ...C.DIAGNOSIS, ...C.ANATOMY, ...C.FAQ, ...C.EXERCISES, ...C.PROTOCOLS.standard.phases, C.HOME_PROGRAM_INTRO, C.HOME_PROGRAM_CHOOSE];
+    for (const x of all) if (x.derived) expect(x.approvedOn, JSON.stringify(x).slice(0, 60)).toMatch(/^\d{2}\/\d{2}\/\d{4}$/);
   });
 });
 

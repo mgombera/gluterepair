@@ -38,6 +38,7 @@ export const CHECKLIST: ChecklistItem[] = [
       "You will typically spend one night in the hospital, and you cannot drive while taking narcotic pain medication, so arrange a ride home.",
     source: ["preop-letter", "discharge"],
     derived: true,
+    approvedOn: "11/18/2026",
   },
   {
     id: "time-off",
@@ -71,6 +72,7 @@ export const CHECKLIST: ChecklistItem[] = [
       "You will walk with crutches or a walker, putting only 20 lb on the operated leg, for at least 4 weeks. Have a place ready to keep your leg raised to chest level.",
     source: ["decisions", "discharge"],
     derived: true,
+    approvedOn: "11/18/2026",
   },
   {
     id: "home-program",
@@ -81,6 +83,7 @@ export const CHECKLIST: ChecklistItem[] = [
     link: { label: "See the Home Program page", href: "/after/home-program" },
     source: ["decisions", "myhealthtrack"],
     derived: true,
+    approvedOn: "11/18/2026",
   },
   {
     id: "fasting",
@@ -110,6 +113,7 @@ export const CHECKLIST: ChecklistItem[] = [
     dueOffsetDays: -1,
     source: ["preop-letter"],
     derived: true,
+    approvedOn: "11/18/2026",
   },
 ];
 

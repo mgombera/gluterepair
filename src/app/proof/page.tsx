@@ -34,7 +34,7 @@ const ITEMS: Item[] = [
   ...C.DIAGNOSIS.map((s) => info("Your diagnosis", s)),
   ...C.ANATOMY.map((s) => info("3D anatomy model", s)),
   ...C.FAQ.map((f) => ({ kind: `FAQ, ${f.group} surgery`, title: f.q, points: [f.a], source: f.source, derived: f.derived, approvedOn: f.approvedOn })),
-  { kind: "Home program", title: "Notice at the top of the page", points: [C.HOME_PROGRAM_NOTICE, `Dashboard and timeline line: ${C.HOME_PROGRAM_LINE}`, `Privacy page: ${C.HOME_PROGRAM_PRIVACY}`], source: ["decisions"], derived: true },
+  { kind: "Home program", title: "Notice at the top of the page", points: [C.HOME_PROGRAM_NOTICE, `Dashboard and timeline line: ${C.HOME_PROGRAM_LINE}`, `Privacy page: ${C.HOME_PROGRAM_PRIVACY}`], source: ["decisions"], derived: true, approvedOn: "11/18/2026" },
   info("Home program", C.HOME_PROGRAM_INTRO),
   info("Home program", C.HOME_PROGRAM_CHOOSE),
   ...C.HOME_PROGRAM_PATHWAYS.map((x) => ({ kind: "Home program pathway", title: label(x.procedure), points: [x.pathway ? `"${x.pathway}"` : (x.note ?? "")], source: x.source, derived: x.derived })),
@@ -60,11 +60,10 @@ const CHANGES: [doc: string, printed: string, site: string][] = [
   ["PT protocol", "Range-of-motion angles", "Kept for the therapist; patients see only the 90 degree sitting rule"],
 ];
 
+// Approved 11/18/2026 as shown. These stay open (scope section 11).
 const QUESTIONS = [
-  'myHealthTrack: does the "Hip Arthroscopy w/Gluteus Medius Repair" pathway match your protocol (20 lb for 4 weeks, brace for 6 weeks)? Until you confirm, the Home Program page says the app\'s weeks may differ and to follow the protocol and the therapist.',
-  "myHealthTrack: Gluteus Maximus Transfer patients are told to ask the office which pathway to use. Does the office know what to tell them?",
-  "myHealthTrack: the flyer claims below are left off the site. Approve any you want shown.",
-  "Please review the highlighted items: the home program text and the three checklist items still waiting from 10/31/2026.",
+  'myHealthTrack: does the "Hip Arthroscopy w/Gluteus Medius Repair" pathway match your protocol (20 lb for 4 weeks, brace for 6 weeks)? Until you confirm, the Home Program page keeps its note that the app\'s weeks may differ.',
+  "myHealthTrack: the flyer claims below stay off the site unless you approve one.",
 ];
 
 // The five questions from the 10/31/2026 proof and his answers.
@@ -233,7 +232,7 @@ export default function ProofPage() {
       />
 
       <section aria-labelledby="questions" className="flex flex-col gap-3">
-        <SectionTitle id="questions">Questions for you</SectionTitle>
+        <SectionTitle id="questions">Still open</SectionTitle>
         <ol className="m-0 flex list-decimal flex-col gap-2 pl-6">
           {QUESTIONS.map((q) => (
             <li key={q}>{q}</li>
