@@ -24,9 +24,20 @@ export function formatUS(d: Date): string {
   return format(d, "MM/dd/yyyy");
 }
 
-export function parseUS(s: string): Date | null {
+/** Reads a typed MM/DD/YYYY date. Also accepts 1-digit months and days and dashes or dots, e.g. 1/5/2027. */
+export function parseUS(input: string): Date | null {
+  const m = input.trim().match(/^(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})$/);
+  if (!m) return null;
+  const s = `${m[1].padStart(2, "0")}/${m[2].padStart(2, "0")}/${m[3]}`;
   const d = parse(s, "MM/dd/yyyy", new Date());
-  return isValid(d) && /^\d{2}\/\d{2}\/\d{4}$/.test(s) ? d : null;
+  return isValid(d) && formatUS(d) === s ? d : null;
+}
+
+/** A surgery date must be within this many days of today, either way (catches typos in the year). */
+export const SURGERY_DATE_RANGE_DAYS = 730;
+
+export function surgeryDateInRange(d: Date, today: Date): boolean {
+  return Math.abs(differenceInCalendarDays(d, today)) <= SURGERY_DATE_RANGE_DAYS;
 }
 
 export type Milestone = { id: string; label: string; date: Date; dayAfterSurgery: number };

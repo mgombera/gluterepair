@@ -4,6 +4,7 @@ import "./globals.css";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { PageViews } from "@/components/PageViews";
+import { StatusBar } from "@/components/StatusBar";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import { PRACTICE, SITE_TITLE, SITE_URL } from "@/lib/site";
 
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
     template: `%s | ${SITE_TITLE}`,
   },
   description:
-    "Your personal guide before and after Open Gluteus Tendon Repair or Gluteus Maximus Transfer with Dr. Mufaddal Gombera: what to do today, your recovery timeline, exercises and when to call.",
+    "Your personal guide before and after Open Gluteus Tendon Repair or Gluteus Maximus Transfer with Dr. Mufaddal Gombera: what to do today, your recovery timeline, home care and when to call.",
   alternates: { canonical: "/" },
 };
 
@@ -67,6 +68,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         <SiteHeader />
+        <StatusBar />
         <main id="main" className="flex-1">
           {children}
         </main>
