@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { addDays } from "date-fns";
 import { PROTOCOLS } from "@/content";
-import { exercisesThisWeek, formatUS, fromISO, milestones, parseUS, status, toISO } from "./recovery";
+import { formatUS, fromISO, milestones, parseUS, status, toISO } from "./recovery";
 import type { AfterStatus, BeforeStatus } from "./recovery";
 
 const surgery = new Date(2026, 9, 13); // 10/13/2026
 const day = (n: number) => addDays(surgery, n);
-const after = (n: number, p: "standard" | "revision" | "glute" | "different" = "standard") =>
+const after = (n: number, p: "standard" | "max-transfer" | "different" = "standard") =>
   status(surgery, day(n), p) as AfterStatus;
 const before = (n: number, checked = {}) => status(surgery, day(-n), "standard", checked) as BeforeStatus;
 
@@ -66,22 +66,22 @@ describe("after surgery", () => {
     });
   }
 
-  it("uses each protocol's own phase dates", () => {
-    expect(after(30, "standard").phase?.n).toBe(2);
-    expect(after(30, "revision").phase?.n).toBe(1);
-    expect(after(30, "glute").phase?.n).toBe(1);
-    expect(after(108, "revision").phase?.n).toBe(4); // week 16
-    expect(after(108, "glute").phase?.n).toBe(3); // week 16
+  it("keeps weight bearing protected longer after a Gluteus Maximus Transfer", () => {
+    expect(after(30, "standard").partialWeightBearing).toBe(false); // 4 weeks
+    expect(after(30, "max-transfer").partialWeightBearing).toBe(true); // at least 6 weeks
+    expect(after(41, "max-transfer").partialWeightBearing).toBe(true);
+    expect(after(42, "max-transfer").partialWeightBearing).toBe(false);
+    expect(after(30, "max-transfer").phase?.n).toBe(after(30, "standard").phase?.n);
   });
 
   it("falls back to the standard protocol for a different protocol", () => {
     expect(after(30, "different").phase?.n).toBe(after(30, "standard").phase?.n);
   });
 
-  it("lists running at 3 months standard and 4 months revision", () => {
-    const run = (id: "standard" | "revision") => milestones(surgery, PROTOCOLS[id]).find((m) => m.id === "running")!;
-    expect(formatUS(run("standard").date)).toBe("01/13/2027");
-    expect(formatUS(run("revision").date)).toBe("02/13/2027");
+  it("lists running and high impact at 6 months for both procedures", () => {
+    for (const p of Object.values(PROTOCOLS)) {
+      expect(formatUS(milestones(surgery, p).find((m) => m.id === "running")!.date)).toBe("04/13/2027");
+    }
   });
 
   it("shows only upcoming milestones, soonest first", () => {
@@ -119,24 +119,5 @@ describe("before surgery", () => {
   it("dates checklist deadlines from the surgery date", () => {
     expect(formatUS(before(12).dueDates.fasting)).toBe("10/12/2026");
     expect(formatUS(before(12).dueDates.preadmit)).toBe("10/06/2026");
-  });
-});
-
-describe("weekly exercises", () => {
-  it("separates new exercises from ones continuing in the phase", () => {
-    const w3 = exercisesThisWeek(PROTOCOLS.standard, 3);
-    expect(w3.newThisWeek).toContain("double-leg-bridge");
-    expect(w3.continuing).toContain("ankle-pumps");
-    expect(w3.continuing).toContain("circumduction");
-  });
-
-  it("starts fresh in a new phase", () => {
-    const w4 = exercisesThisWeek(PROTOCOLS.standard, 4);
-    expect(w4.newThisWeek).toContain("hip-hikes");
-    expect(w4.continuing).toEqual([]);
-  });
-
-  it("returns nothing past Phase IV", () => {
-    expect(exercisesThisWeek(PROTOCOLS.standard, 30)).toEqual({ newThisWeek: [], continuing: [] });
   });
 });

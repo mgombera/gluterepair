@@ -1,6 +1,10 @@
 import type { InfoSection } from "./types";
 
-// Home care after surgery. Sources: discharge sheet, pre-op letter, decisions.
+// Home care after surgery (scope 6.6). Sources: discharge sheet, pre-op
+// letter, decisions of 10/31/2026. Where the discharge sheet and a decision
+// differ, the decision wins: 20 lb for 4 weeks with crutches or a walker (not
+// 6 weeks), brace when walking for 6 weeks (not "walking and sitting" for 4),
+// desk work after 1 to 2 weeks (not 4 to 7 days), and the driving criteria.
 
 export const HOME_CARE: InfoSection[] = [
   {
@@ -8,10 +12,10 @@ export const HOME_CARE: InfoSection[] = [
     title: "Dressing",
     points: [
       "Keep your surgical dressing on. You may remove the outer bulky dressing 48 hours after surgery.",
-      "It is normal for the hip to bleed, swell or bruise after surgery. If blood soaks the bandage, do not be alarmed: reinforce it with more dressing.",
-      "Keep the steri-strips (butterfly bandages) in place until they fall off on their own.",
-      "If dressing supplies were sent to you, remove the steri-strips and apply the new dressings on day 4 after surgery.",
-      "Do not put ointments or creams on the incisions.",
+      "It is normal for the hip to bleed, swell or bruise after surgery.",
+      "Keep the waterproof bandage on until your first post-op visit.",
+      "If dressing supplies were sent to you, remove the waterproof dressing and apply the new dressings starting on day 4 after surgery.",
+      "Do not put ointments or creams on the incision.",
     ],
     source: ["discharge"],
   },
@@ -19,10 +23,10 @@ export const HOME_CARE: InfoSection[] = [
     id: "bathing",
     title: "Showering",
     points: [
-      "Keep the incisions clean and dry.",
-      "You may shower 48 hours after surgery. Cover the incisions with waterproof bandaids or plastic, and change the bandaids daily.",
+      "Keep the incision clean and dry. The waterproof dressing can stay on when you shower.",
+      "You may shower 48 hours after surgery.",
       "Do not soak the operated leg, for example in a bath.",
-      "The brace may come off to shower.",
+      "Take the brace off to shower.",
     ],
     source: ["discharge"],
   },
@@ -41,24 +45,24 @@ export const HOME_CARE: InfoSection[] = [
     id: "brace",
     title: "Brace",
     points: [
-      "Wear the brace when walking and sitting. The number of weeks depends on your procedure (4 weeks standard).",
+      "Wear the brace when walking for 6 weeks (6 to 8 weeks after a Gluteus Maximus Transfer).",
       "It can come off to shower, during exercises and at night.",
     ],
-    source: ["discharge", "decisions"],
+    source: ["decisions", "discharge"],
   },
   {
     id: "activity",
     title: "Activity",
     points: [
       "Raise your leg to chest level whenever possible to decrease swelling.",
-      "Walk with crutches, 20 lb weight bearing. The number of weeks depends on your procedure.",
-      "It is safe to bend the hip within the brace limits. Do not bend the hip past 90 degrees (75 degrees after a Labral Revision or Reconstruction).",
+      "Walk with crutches or a walker, putting only 20 lb on the operated leg, foot flat, for 4 weeks (at least 6 weeks after a Gluteus Maximus Transfer). Then wean off them as your therapist directs. Some patients need a cane after that.",
+      "It is safe to bend the hip within the brace limits. Do not bend the hip past 90 degrees.",
       "Do ankle pumps continuously throughout the day.",
       "Avoid activities that increase hip pain, such as long periods of standing or walking.",
       "Avoid long periods of sitting or long-distance travel for 2 weeks after surgery.",
       "Formal physical therapy usually begins 3 to 5 days after surgery. Your prescription and protocol come with your discharge paperwork.",
     ],
-    source: ["discharge"],
+    source: ["discharge", "decisions"],
   },
   {
     id: "avoid-8-weeks",
@@ -68,8 +72,6 @@ export const HOME_CARE: InfoSection[] = [
       "Prolonged walking, such as around shopping centers",
       "Heavy lifting",
       "Squatting or crouching",
-      "Sleeping on your side. Try to sleep on your back. If you must sleep on your side, lie on the side without surgery with a pillow under your operated leg to hold it level with your body.",
-      "Using a clutch in a manual car (left hips): it may flare symptoms in the first couple of weeks. Switch cars if possible.",
     ],
     source: ["preop-letter"],
   },
@@ -78,27 +80,27 @@ export const HOME_CARE: InfoSection[] = [
     title: "Driving",
     points: [
       "Do not drive while taking narcotic pain medication.",
-      "It is best to wait until you have been seen in the office after surgery.",
-      "You need to be able to actively lift your leg (around 3 weeks) and have full control of it for all driving tasks.",
+      "You can start driving once you are off narcotic pain medication, can actively lift your leg (around 3 weeks), and have full control of the leg for all driving tasks.",
     ],
-    source: ["discharge", "pt-standard"],
+    source: ["decisions", "pt-protocol", "discharge"],
   },
   {
     id: "work",
-    title: "Returning to work or school",
+    title: "Returning to work",
     points: [
-      "Most people return to desk work or school 4 to 7 days after surgery, if pain allows. Your hip will be sore: avoid lifting, pushing, pulling or carrying.",
-      "Full recovery and return to heavy lifting generally take 3 to 6 months.",
+      "For most office jobs, plan 1 to 2 weeks off. Your hip will be sore: do no lifting, pushing, pulling or carrying.",
+      "Recovery is generally complete, and heavy lifting possible, at 4 to 6 months.",
       "There are no fixed rules for return to work; these are guidelines for you and your employer.",
     ],
-    source: ["discharge", "preop-letter", "decisions"],
+    source: ["preop-letter", "decisions"],
   },
   {
     id: "follow-up",
     title: "First post-op visit",
     points: [
       "Usually 10 to 14 days after surgery, with our Physician Assistant.",
-      "She will check your incisions, go over the surgery and your recovery, and answer your questions.",
+      "She will check your incision, go over the surgery and your recovery, and answer your questions.",
+      "The incision is closed with buried sutures, so no stitches need to be removed.",
       "To reschedule, call (713) 794-3457.",
     ],
     source: ["discharge", "preop-letter"],
@@ -109,10 +111,12 @@ export const HOME_CARE: InfoSection[] = [
     points: [
       "Discomfort and stiffness are normal for a few days. Pain may be felt in the hip, lower back, buttock, knee and ankle.",
       "Pain is often worse on day 1 or 2, when swelling peaks.",
-      "Swelling and bruising in the groin, buttock and thigh are common, caused by the fluid used during surgery. They improve over the following days.",
-      "Most people walk relatively pain-free 6 to 8 weeks after surgery. Full recovery, and return to elite sport, can take 6 to 9 months or more.",
+      "Swelling in the groin, buttock and thigh, and bruising on the outer leg, are common. They improve over the following days.",
+      "Most people walk relatively pain-free 8 to 10 weeks after surgery.",
+      "Running and high impact activity wait until 6 months. Returning to an elite level of fitness can take 6 months or more.",
+      "Any unexpected increase in pain can be treated with ice packs and anti-inflammatory medication.",
     ],
-    source: ["discharge", "preop-letter"],
+    source: ["preop-letter", "discharge", "decisions"],
   },
 ];
 
@@ -135,11 +139,12 @@ export const MEDICATION_TIPS: InfoSection = {
   id: "medication-tips",
   title: "Taking pain medication",
   points: [
-    "Take pain medication with food to reduce nausea.",
+    "Your pain medication prescription is given to you on the day of surgery. Texas law requires a written copy, so strong pain medication cannot be called in.",
+    "Take pain medication with food to reduce nausea. You do not have to take it if rest, repositioning or ice controls the pain.",
     "Common side effects are nausea, drowsiness and constipation. For constipation, an over-the-counter laxative and plenty of water can help.",
     "If you have problems with nausea and vomiting, contact the office.",
     "Do not drive or operate machinery, and avoid alcohol, while taking narcotic pain medication.",
-    "Prescriptions are sent to your local pharmacy. For refills, call our office or your pharmacy. We cannot refill after 5 p.m. or refill narcotic medication on weekends.",
+    "For refills, contact your pharmacy and they will call the office. We cannot refill after 5 p.m. or refill narcotic medication on weekends.",
   ],
   source: ["discharge", "preop-letter"],
 };

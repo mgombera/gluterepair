@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { LEGACY_REDIRECTS } from "./src/lib/routes";
 
 const nextConfig: NextConfig = {
   images: {
@@ -16,6 +17,7 @@ const nextConfig: NextConfig = {
         destination: "https://gluterepair.com/:path*",
         permanent: true,
       },
+      ...LEGACY_REDIRECTS.map((r) => ({ ...r, permanent: true })),
     ];
   },
 };

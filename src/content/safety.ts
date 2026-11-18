@@ -1,14 +1,15 @@
 import type { InfoSection } from "./types";
 
-// Red flags and outcomes. Sources: discharge sheet, pre-op letter.
+// Red flags and outcomes (scope 6.8). Sources: discharge sheet, pre-op letter.
 
 export const USUALLY_NORMAL: InfoSection = {
   id: "normal",
   title: "Usually normal",
   points: [
     "Some swelling and numbness",
-    "Bleeding, swelling or bruising around the hip, groin, buttock or thigh",
-    "A small amount of drainage from the incisions",
+    "Bleeding, swelling or bruising around the hip",
+    "Swelling in the groin, buttock and thigh, and bruising on the outer leg",
+    "A small amount of drainage from the incision",
     "A low-grade temperature",
     "More pain on day 1 or 2 after surgery",
     "Stiffness and discomfort for a few days",
@@ -23,7 +24,7 @@ export const CALL_NOW: InfoSection = {
     "Painful swelling or numbness",
     "Pain that will not let up",
     "Fever over 101°F, or chills",
-    "Continuous drainage or bleeding from an incision",
+    "Continuous drainage or bleeding from the incision",
     "Difficulty breathing",
     "Excessive nausea or vomiting",
     "Calf pain",
@@ -43,10 +44,9 @@ export const OUTCOMES: InfoSection = {
   title: "Results and risks",
   points: [
     "This surgery is successful about 85 to 90 percent of the time. It is most successful at relieving pain.",
-    "About 80 percent of Dr. Gombera's patients say their pain is resolved, 15 percent say it is the same, and 5 percent say it is worse.",
     "Returning to vigorous work or sport depends on the damage to your hip, how well it heals, how well you rehabilitate and how demanding your activity is.",
-    "The complication rate is low. The risk of a major complication is substantially less than 1 in 1,000. Most complications are temporary.",
-    "Possible complications include infection, fracture, increased pain, bleeding, nerve injury, abandoned procedure, blood clot in the leg or lung, impotence, instrument breakage, avascular necrosis of the femoral head, leakage of irrigation fluid, delayed wound healing, worsening symptoms, popping, labral re-tear, excess bone formation, arthritis, stiffness, need for further surgery, and the risks of anesthesia itself.",
+    "Complications are rare (less than 1 percent), and most are temporary. For example, the infection rate after hip surgery is less than 1 in 1,000.",
+    "Possible complications include re-tear of the repair, infection, fracture, increased pain, impotence, bleeding, nerve injury, abandoned procedure, blood clot in the leg, instrument breakage, avascular necrosis of the femoral head, delayed wound healing, worsening symptoms, arthritis, stiffness, need for further surgery, and the risks of anesthesia itself.",
   ],
   source: ["preop-letter"],
 };

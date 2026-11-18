@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { DATES_ARE_ESTIMATES, HOME_PROGRAM, PT_OVERRIDE_NOTICE, exerciseById } from "@/content";
+import { DATES_ARE_ESTIMATES, HOME_EXERCISE_NOTE, HOME_PROGRAM_LINE, PT_OVERRIDE_NOTICE } from "@/content";
 import { dashboardModel } from "@/lib/dashboard";
-import { toggleExercise, useHydrated, useProfile } from "@/lib/profile";
+import { useHydrated, useProfile } from "@/lib/profile";
 import { addDays } from "date-fns";
 import { formatUS, fromISO } from "@/lib/recovery";
 
@@ -32,14 +32,11 @@ export function AfterDashboard() {
   const d = example ? addDays(today, -EXAMPLE_DAY) : realDate!;
   const m = realModel ?? dashboardModel(d, today, "standard")!;
   const exampleReason = !profile
-    ? { text: "Add your surgery date to see your own day, phase and exercises.", href: "/", cta: "Set up your plan" }
+    ? { text: "Add your surgery date to see your own day, phase and limits.", href: "/", cta: "Set up your plan" }
     : !realDate
-      ? { text: "Add your surgery date to see your own day, phase and exercises.", href: "/?setup=1", cta: "Add your date" }
+      ? { text: "Add your surgery date to see your own day, phase and limits.", href: "/?setup=1", cta: "Add your date" }
       : { text: `Your surgery is on ${formatUS(realDate)}. Until then, use your pre-surgery checklist.`, href: "/before", cta: "Go to your checklist" };
 
-  const ticked = new Set(example ? [] : (profile?.exercises[`week-${m.week}`] ?? []));
-  const session = [...m.newThisWeek.map((id) => ({ id, isNew: true })), ...m.continuing.map((id) => ({ id, isNew: false }))];
-  const done = session.filter((s) => ticked.has(s.id)).length;
   const totalWeeks = m.phases.reduce((n, p) => n + p.weeks, 0);
 
   return (
@@ -78,7 +75,7 @@ export function AfterDashboard() {
           <p className="m-0 font-display text-3xl font-bold uppercase">
             {m.phase ? `Phase ${m.phase.n} · Week ${m.week}` : "Home program"}
           </p>
-          <p className="m-0 text-muted">{m.phase ? m.phase.name : HOME_PROGRAM}</p>
+          <p className="m-0 text-muted">{m.phase ? m.phase.name : HOME_EXERCISE_NOTE}</p>
         </div>
       </div>
 
@@ -122,62 +119,26 @@ export function AfterDashboard() {
       </dl>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_22rem]">
-        {/* Today's session */}
-        <section aria-labelledby="session" className="flex flex-col gap-4 rounded-xl border border-border bg-surface p-5">
-          <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h2 id="session" className="m-0 font-display text-3xl font-bold uppercase">
-              This week&apos;s exercises
-            </h2>
-            {session.length > 0 && (
-              <span className="text-sm text-muted">
-                {done} of {session.length} done
-              </span>
-            )}
-          </div>
+        {/* Phase and the optional home program; no exercise list (decision 11/01/2026) */}
+        <section aria-labelledby="this-phase" className="flex flex-col gap-4 rounded-xl border border-border bg-surface p-5">
+          <h2 id="this-phase" className="m-0 font-display text-3xl font-bold uppercase">
+            {m.phase ? `Phase ${m.phase.n}: ${m.phase.name}` : "After the formal phases"}
+          </h2>
           <Notice>{PT_OVERRIDE_NOTICE}</Notice>
-          {session.length === 0 ? (
-            <p className="m-0">
-              {m.phase
-                ? "No new exercises this week. Continue what your therapist has you doing."
-                : "You have finished the formal phases. Keep up your home exercise program through 1 year."}
-            </p>
-          ) : (
-            <ul className="m-0 flex list-none flex-col gap-2 p-0">
-              {session.map(({ id, isNew }) => {
-                const e = exerciseById(id);
-                const cid = `ex-${id}`;
-                return (
-                  <li key={id} className="flex items-center gap-3 rounded-lg bg-bg p-3">
-                    <input
-                      id={cid}
-                      type="checkbox"
-                      checked={ticked.has(id)}
-                      disabled={example}
-                      onChange={(ev) => toggleExercise(m.week, id, ev.target.checked)}
-                      className="h-6 w-6 shrink-0 accent-[var(--accent)]"
-                    />
-                    <label htmlFor={cid} className="flex min-w-0 flex-1 flex-col">
-                      <span className="font-semibold">{e.name}</span>
-                      <span className="text-sm text-muted">
-                        {isNew ? "New this week" : "Continue"}
-                        {e.therapistOnly ? " · with your therapist" : ""}
-                        {(() => {
-                          const cue = e.cues.find((c) => !e.name.toLowerCase().includes(c.toLowerCase()));
-                          return cue ? ` · ${cue}` : "";
-                        })()}
-                      </span>
-                    </label>
-                    <Link
-                      href={`/after/exercises#${id}`}
-                      className="inline-flex min-h-11 shrink-0 items-center px-2 text-sm font-semibold underline underline-offset-2"
-                    >
-                      How to
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+          <p className="m-0">
+            {m.phase ? (
+              <Link href="/after/timeline" className="font-semibold underline underline-offset-2">
+                See this phase&apos;s goals on your timeline
+              </Link>
+            ) : (
+              HOME_EXERCISE_NOTE
+            )}
+          </p>
+          <p className="m-0">
+            <Link href="/after/home-program" className="inline-flex min-h-12 items-center font-semibold underline underline-offset-2">
+              {HOME_PROGRAM_LINE}
+            </Link>
+          </p>
         </section>
 
         {/* Next unlocks */}

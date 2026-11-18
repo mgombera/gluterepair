@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { addDays } from "date-fns";
-import { DATES_ARE_ESTIMATES, HOME_PROGRAM, PROTOCOL_NOTICE } from "@/content";
+import { DATES_ARE_ESTIMATES, HOME_EXERCISE_NOTE, HOME_PROGRAM_LINE, PROTOCOL_NOTICE, PT_OVERRIDE_NOTICE } from "@/content";
 import { useHydrated } from "@/lib/profile";
 import { formatUS, status } from "@/lib/recovery";
 import { useProtocol } from "@/lib/useProtocol";
@@ -33,6 +33,7 @@ export function Timeline() {
           )}
         </p>
         <p className="m-0 text-sm text-muted">{PROTOCOL_NOTICE}</p>
+        <p className="m-0 text-sm text-muted">{PT_OVERRIDE_NOTICE}</p>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
@@ -84,15 +85,9 @@ export function Timeline() {
                     <Bullets items={ph.criteriaToProgress} />
                   ) : (
                     <p className="m-0">
-                      {ph.n === 4 ? HOME_PROGRAM : "Your therapist decides when you are ready for the next phase."}
+                      {ph.n === 4 ? HOME_EXERCISE_NOTE : "Your therapist decides when you are ready for the next phase."}
                     </p>
                   )}
-                  <Link
-                    href={`/after/exercises#phase-${ph.n}`}
-                    className="mt-3 inline-flex min-h-11 items-center font-semibold underline underline-offset-2"
-                  >
-                    Phase {ph.n} exercises
-                  </Link>
                 </div>
               </div>
             </li>
@@ -100,7 +95,12 @@ export function Timeline() {
         })}
       </ol>
       <p className="m-0 text-sm text-muted">
-        {DATES_ARE_ESTIMATES} {HOME_PROGRAM}
+        {DATES_ARE_ESTIMATES} {HOME_EXERCISE_NOTE}
+      </p>
+      <p className="m-0">
+        <Link href="/after/home-program" className="inline-flex min-h-12 items-center font-semibold underline underline-offset-2">
+          {HOME_PROGRAM_LINE}
+        </Link>
       </p>
     </div>
   );

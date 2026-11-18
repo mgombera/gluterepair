@@ -45,10 +45,12 @@ describe("site map", () => {
   it("matches the gluterepair site map (scope section 3)", () => {
     const paths = ROUTES.map((r) => r.path);
     expect(paths).toContain("/anatomy");
-    expect(paths).toContain("/red-flags");
+    expect(paths).toContain("/after/home-program");
+    expect(paths).toContain("/after/when-to-call");
     expect(paths).not.toContain("/hip");
-    expect(paths).not.toContain("/before/prehab");
-    expect(paths).not.toContain("/after/when-to-call");
+    expect(paths).not.toContain("/before/prehab"); // no gluteus prehab protocol (11/01/2026)
+    expect(paths).not.toContain("/after/exercises"); // educational only (11/01/2026)
+    expect(paths).not.toContain("/red-flags");
   });
 
   it("has unique paths", () => {
@@ -81,9 +83,9 @@ describe("search", () => {
 
 describe("shell copy", () => {
   // The fixmyhips name must not survive anywhere a patient can see it. The
-  // content files and their tests are rewritten in milestone 2.
+  // internal /proof page names it as a source for Dr. Gombera's review.
   const shell = [
-    ...sourceFiles(appDir),
+    ...sourceFiles(appDir).filter((f) => !f.includes(join("app", "proof"))),
     join(srcDir, "components", "SiteHeader.tsx"),
     join(srcDir, "components", "SiteFooter.tsx"),
     join(srcDir, "components", "Placeholder.tsx"),
@@ -107,9 +109,24 @@ describe("shell copy", () => {
     expect(header).toMatch(/PRACTICE\.logoUrl/);
   });
 
-  it("links Red flags from the footer, not the header", () => {
-    expect(readFileSync(join(srcDir, "components", "SiteFooter.tsx"), "utf8")).toMatch(/href="\/red-flags"/);
-    expect(readFileSync(join(srcDir, "components", "SiteHeader.tsx"), "utf8")).not.toMatch(/red-flags/);
+  it("keeps When to call under After surgery only, with no header or footer link", () => {
+    for (const f of ["SiteFooter.tsx", "SiteHeader.tsx"]) {
+      expect(readFileSync(join(srcDir, "components", f), "utf8"), f).not.toMatch(/red-flags|when-to-call/);
+    }
+    const tabs = readFileSync(join(srcDir, "app", "after", "layout.tsx"), "utf8");
+    const order = ["/after\"", "/after/care", "/after/timeline", "/after/home-program", "/after/when-to-call"].map((h) => tabs.indexOf(h));
+    expect(order.every((n, i) => n > 0 && (i === 0 || n > order[i - 1]))).toBe(true);
+  });
+
+  it("has a Home button in the header", () => {
+    expect(readFileSync(join(srcDir, "components", "SiteHeader.tsx"), "utf8")).toMatch(/aria-label="Home"/);
+  });
+
+  it("redirects removed pages permanently", async () => {
+    const redirects = await (await import("../../next.config")).default.redirects!();
+    for (const [from, to] of [["/after/exercises", "/after/timeline"], ["/red-flags", "/after/when-to-call"]]) {
+      expect(redirects).toContainEqual({ source: from, destination: to, permanent: true });
+    }
   });
 
   it("uses no condensed font", () => {

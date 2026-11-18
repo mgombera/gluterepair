@@ -12,8 +12,7 @@ import { procedureLabel } from "@/lib/procedures";
 
 const PROCS: { id: ProtocolId; label: string }[] = [
   { id: "standard", label: procedureLabel("standard") },
-  { id: "revision", label: procedureLabel("revision") },
-  { id: "glute", label: procedureLabel("glute") },
+  { id: "max-transfer", label: procedureLabel("max-transfer") },
 ];
 
 const BEFORE = [

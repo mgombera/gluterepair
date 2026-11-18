@@ -10,7 +10,7 @@ import {
   CHECKLIST,
   DATES_ARE_ESTIMATES,
   HOME_CARE,
-  HOME_PROGRAM,
+  HOME_EXERCISE_NOTE,
   MEDICATION_NOTICE,
   MEDICATION_TIPS,
   PROTOCOLS,
@@ -33,8 +33,7 @@ import { PRACTICE } from "@/lib/site";
 
 const PROC_LABEL: Record<ProtocolId, string> = {
   standard: procedureLabel("standard"),
-  revision: procedureLabel("revision"),
-  glute: procedureLabel("glute"),
+  "max-transfer": procedureLabel("max-transfer"),
 };
 
 function List({ items }: { items: string[] }) {
@@ -133,7 +132,7 @@ function ProtocolSheet({ id, surgery }: { id: ProtocolId; surgery: Date | null }
                 {ph.criteriaToProgress.length ? (
                   <List items={ph.criteriaToProgress} />
                 ) : (
-                  <p className="m-0">{ph.n === 4 ? HOME_PROGRAM : "Your therapist decides when you are ready for the next phase."}</p>
+                  <p className="m-0">{ph.n === 4 ? HOME_EXERCISE_NOTE : "Your therapist decides when you are ready for the next phase."}</p>
                 )}
               </div>
             </div>
@@ -146,7 +145,7 @@ function ProtocolSheet({ id, surgery }: { id: ProtocolId; surgery: Date | null }
         );
       })}
       <p className="m-0 text-sm">
-        {DATES_ARE_ESTIMATES} {HOME_PROGRAM}
+        {DATES_ARE_ESTIMATES} {HOME_EXERCISE_NOTE}
       </p>
     </div>
   );

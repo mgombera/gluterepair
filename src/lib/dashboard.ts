@@ -1,5 +1,5 @@
 import { addDays, addMonths, differenceInCalendarDays } from "date-fns";
-import { exercisesThisWeek, formatUS, protocolFor, status } from "./recovery";
+import { formatUS, protocolFor, status } from "./recovery";
 import type { AfterStatus, Milestone, Procedure } from "./recovery";
 import type { Phase } from "@/content";
 
@@ -15,8 +15,6 @@ export type DashboardModel = {
   phases: { n: number; name: string; weeks: number; state: "done" | "current" | "next" }[];
   phaseProgressPct: number;
   tiles: Tile[];
-  newThisWeek: string[];
-  continuing: string[];
   upcoming: Milestone[];
 };
 
@@ -33,25 +31,24 @@ export function dashboardModel(surgery: Date, today: Date, procedure: Procedure)
 
   const tiles: Tile[] = [
     a.partialWeightBearing
-      ? { label: "Weight bearing", value: `${p.weightBearing.partialLbs} lb`, note: `Foot flat with crutches until about ${formatUS(wbEnd)}` }
-      : { label: "Weight bearing", value: "As tolerated", note: "Wean off crutches as your therapist directs" },
+      ? { label: "Weight bearing", value: `${p.weightBearing.partialLbs} lb`, note: `Foot flat with crutches or a walker until ${p.weightBearing.minimum ? "at least" : "about"} ${formatUS(wbEnd)}` }
+      : { label: "Weight bearing", value: "As tolerated", note: p.afterWeightBearing },
     a.braceOn
       ? {
           label: "Brace",
           value: `${braceDaysLeft} ${braceDaysLeft === 1 ? "day" : "days"}`,
-          note: "Left wearing it when walking and sitting",
+          note: "Left wearing it when walking",
         }
       : { label: "Brace", value: "Done", note: "No longer needed when walking" },
     a.phase?.n === 1
       ? { label: "Hip flexion limit", value: `${p.flexionLimitDeg}°`, note: "No sitting with the hip bent past this" }
-      : { label: "Aqua therapy", value: "Allowed", note: "Once incisions are fully healed" },
+      : { label: "Aqua therapy", value: "Allowed", note: "Once the incision is fully healed" },
     a.daysSince < differenceInCalendarDays(running, surgery)
-      ? { label: "Running", value: formatUS(running), note: "Earliest start of the running progression" }
+      ? { label: "Running", value: formatUS(running), note: "Earliest start of running and high impact" }
       : { label: "Running", value: "Allowed", note: "Follow your therapist's running progression" },
   ];
 
   const current = a.phase?.n ?? 5;
-  const { newThisWeek, continuing } = exercisesThisWeek(p, a.week);
 
   return {
     daysSince: a.daysSince,
@@ -65,8 +62,6 @@ export function dashboardModel(surgery: Date, today: Date, procedure: Procedure)
     })),
     phaseProgressPct: a.phase ? Math.round(((a.phaseDay + 1) / a.phaseLength) * 100) : 100,
     tiles,
-    newThisWeek,
-    continuing,
     upcoming: a.upcoming,
   };
 }

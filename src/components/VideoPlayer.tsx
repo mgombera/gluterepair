@@ -1,15 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { VIDEO_CAPTION } from "@/content";
+import { VIDEO_NOTICE } from "@/content";
 import type { Video } from "@/content";
 
 // Click-to-load YouTube embed. Nothing is requested from YouTube (not even a
 // thumbnail) until the patient taps play; then youtube-nocookie.com is used.
 export function VideoPlayer({ video }: { video: Video }) {
   const [playing, setPlaying] = useState(false);
-  const title = video.title ?? "Exercise video";
-  const caption = <p className="m-0 mt-1.5 text-xs text-muted">{VIDEO_CAPTION}</p>;
+  const title = video.title ?? "Video";
+  const caption = <p className="m-0 mt-1.5 text-xs text-muted">{VIDEO_NOTICE}</p>;
   if (playing) {
     return (
       <div>
