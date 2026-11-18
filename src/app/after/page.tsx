@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
-import { Placeholder } from "@/components/Placeholder";
+import { AfterDashboard } from "@/components/AfterDashboard";
+import { Container } from "@/components/ui";
 import { routeInfo } from "@/lib/routes";
 
 const r = routeInfo("/after");
 export const metadata: Metadata = { title: r.title, description: r.summary, alternates: { canonical: "/after" } };
 
 export default function AfterPage() {
-  return <Placeholder path="/after" />;
+  return (
+    <Container className="max-w-2xl py-6 sm:py-10">
+      <AfterDashboard />
+    </Container>
+  );
 }

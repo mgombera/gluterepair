@@ -22,3 +22,8 @@ export const PROCEDURE_OPTIONS: { value: Procedure; label: string; detail?: stri
 export function procedureLabel(p: Procedure): string {
   return PROCEDURE_OPTIONS.find((o) => o.value === p)!.label;
 }
+
+/** The name to show above a dashboard: "different" shows the standard protocol as a guide. */
+export function protocolHeading(p: Procedure): string {
+  return p === "different" ? "Standard protocol, as a guide" : procedureLabel(p);
+}

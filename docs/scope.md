@@ -169,6 +169,8 @@ Built 11/18/2026 (milestone 4): the countdown reads "12 days to go" under the pr
 
 **6.3 After dashboard.** Day count, phase and week, phase bar sized by real phase length. Tiles: weight bearing (days left on crutches or walker, then cane as needed), brace (days left), hip bending limit (90° when sitting), driving criteria, running and high impact (6 months). One line linking the optional home program. No weekly exercises. Coming up: off crutches, brace off, aqua therapy, elliptical, resisted bike, running; each labeled "estimate; your therapist decides." Snapshot tests at days 1, 18, 30, 45, 70, 100 and 130 for both variants.
 
+Built 11/18/2026 (milestone 5), following the approved After screen: tiles are crutches or walker (days left), brace (days left; "6 to 8 weeks" in the transfer's last two weeks), sitting 90° in Phase I (then pool therapy), and driving ("Not yet" before about 3 weeks, then the criteria). Running and high impact is in Coming up. "My protocol is different" shows "Standard protocol, as a guide."
+
 **6.4 Timeline.** All phases, current one highlighted, goals and criteria. "Recovery is not a straight line. You move to the next phase when your therapist confirms you meet its criteria."
 
 **6.5 Home program (myHealthTrack, optional; 11/01/2026).** Page /after/home-program:

@@ -1,23 +1,19 @@
 "use client";
 
 import Link from "next/link";
+import { addDays } from "date-fns";
 import { DATES_ARE_ESTIMATES, HOME_EXERCISE_NOTE, HOME_PROGRAM_LINE, PT_OVERRIDE_NOTICE } from "@/content";
 import { dashboardModel } from "@/lib/dashboard";
 import { useHydrated, useProfile } from "@/lib/profile";
-import { addDays } from "date-fns";
+import { protocolHeading } from "@/lib/procedures";
 import { formatUS, fromISO } from "@/lib/recovery";
 
-const EXAMPLE_DAY = 18;
-import { AlertIcon } from "./icons";
+// Recovery dashboard (scope 6.3, approved After screen): day count, phase and
+// week, a phase bar sized by each phase's length, four tiles and the next
+// dates. No exercise list (decision 11/01/2026). With no date, or a date still
+// ahead, a labeled example at day 18.
 
-function Notice({ children }: { children: React.ReactNode }) {
-  return (
-    <div role="note" className="flex gap-3 rounded-lg border border-accent bg-bg p-4">
-      <AlertIcon className="mt-0.5 shrink-0 text-accent" />
-      <p className="m-0 text-sm">{children}</p>
-    </div>
-  );
-}
+const EXAMPLE_DAY = 18;
 
 export function AfterDashboard() {
   const hydrated = useHydrated();
@@ -27,139 +23,120 @@ export function AfterDashboard() {
   const today = new Date();
   const realDate = profile?.surgeryDate ? fromISO(profile.surgeryDate) : null;
   const realModel = realDate && profile ? dashboardModel(realDate, today, profile.procedure) : null;
-  // No date yet, or surgery still ahead: show a labeled example (day 18, standard protocol).
   const example = !realModel;
-  const d = example ? addDays(today, -EXAMPLE_DAY) : realDate!;
-  const m = realModel ?? dashboardModel(d, today, "standard")!;
-  const exampleReason = !profile
+  const procedure = realModel ? profile!.procedure : "standard";
+  const surgery = realModel ? realDate! : addDays(today, -EXAMPLE_DAY);
+  const m = realModel ?? dashboardModel(surgery, today, "standard")!;
+  const why = !profile
     ? { text: "Add your surgery date to see your own day, phase and limits.", href: "/", cta: "Set up your plan" }
     : !realDate
       ? { text: "Add your surgery date to see your own day, phase and limits.", href: "/?setup=1", cta: "Add your date" }
-      : { text: `Your surgery is on ${formatUS(realDate)}. Until then, use your pre-surgery checklist.`, href: "/before", cta: "Go to your checklist" };
-
-  const totalWeeks = m.phases.reduce((n, p) => n + p.weeks, 0);
+      : { text: `Your surgery is on ${formatUS(realDate)}. Until then, use your checklist.`, href: "/before", cta: "Go to your checklist" };
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-5">
       {example && (
-        <div role="note" className="flex flex-col gap-2 rounded-xl border-2 border-accent bg-surface p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div role="note" className="flex flex-col gap-3 rounded-[14px] border-2 border-accent bg-surface p-4">
           <p className="m-0">
-            <strong>Example: this is what your dashboard looks like on day {EXAMPLE_DAY}</strong> (standard protocol).{" "}
-            {exampleReason.text}
+            <strong>Example: this is what your dashboard looks like on day {EXAMPLE_DAY}</strong> (Open Gluteus Tendon Repair). {why.text}
           </p>
-          <Link
-            href={exampleReason.href}
-            className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-md bg-accent px-5 font-bold text-accent-ink no-underline"
-          >
-            {exampleReason.cta}
+          <Link href={why.href} className="inline-flex min-h-12 items-center self-start rounded-xl bg-accent px-5 font-semibold text-accent-ink no-underline">
+            {why.cta}
           </Link>
         </div>
       )}
-      {/* Day and phase */}
-      <div className="flex flex-wrap items-end justify-between gap-6">
-        <div className="flex flex-col gap-1">
-          <p className="m-0 text-sm font-semibold uppercase tracking-widest text-muted">After surgery · {formatUS(d)}</p>
-          <h1 className="m-0 font-display text-7xl font-extrabold uppercase leading-[0.9] sm:text-9xl">
-            {m.daysSince === 0 ? (
-              <>
-                Surgery <span className="text-accent">day</span>
-              </>
-            ) : (
-              <>
-                Day <span className="text-accent">{m.daysSince}</span>
-              </>
-            )}
-          </h1>
-        </div>
-        <div className="flex flex-col gap-1 sm:text-right">
-          <p className="m-0 font-display text-3xl font-bold uppercase">
-            {m.phase ? `Phase ${m.phase.n} · Week ${m.week}` : "Home program"}
-          </p>
-          <p className="m-0 text-muted">{m.phase ? m.phase.name : HOME_EXERCISE_NOTE}</p>
-        </div>
-      </div>
 
-      {/* Phase bar, widths proportional to each phase's length */}
-      <div
-        className="grid gap-1.5"
-        style={{ gridTemplateColumns: m.phases.map((p) => `${p.weeks}fr`).join(" ") }}
-        role="img"
-        aria-label={
-          m.phase
-            ? `Phase ${m.phase.n} of 4, ${m.phaseProgressPct} percent through this phase`
-            : "All four phases complete"
-        }
-      >
-        {m.phases.map((p) => (
-          <div key={p.n} className="flex min-w-0 flex-col gap-2">
-            <div className="h-3.5 overflow-hidden rounded bg-border">
+      <section aria-labelledby="day" className="flex flex-col gap-0.5">
+        <p className="m-0 text-base text-muted">
+          {protocolHeading(procedure)} on {formatUS(surgery)}
+        </p>
+        <h1 id="day" className="m-0 text-[52px] leading-[1.1] font-bold text-brand-ink">
+          {m.daysSince === 0 ? "Surgery day" : `Day ${m.daysSince}`}
+        </h1>
+        <p className="m-0 text-[19px] font-semibold">
+          {m.phase ? `Phase ${m.phase.n}, week ${m.week}: ${m.phase.name.toLowerCase()}` : "You have finished the four phases"}
+        </p>
+      </section>
+
+      <section aria-label="Recovery phases" className="flex flex-col gap-1.5">
+        <div className="flex h-4 gap-1" aria-hidden="true">
+          {m.phases.map((p, i) => (
+            <div
+              key={p.n}
+              style={{ flex: p.weeks }}
+              className={`overflow-hidden ${i === 0 ? "rounded-l-lg" : ""} ${i === m.phases.length - 1 ? "rounded-r-lg" : ""} ${
+                p.state === "next" ? "bg-border" : "bg-accent/20"
+              }`}
+            >
               <div
-                className="h-full rounded bg-accent"
+                className="h-full bg-accent"
                 style={{ width: p.state === "done" ? "100%" : p.state === "current" ? `${m.phaseProgressPct}%` : "0%" }}
               />
             </div>
-            <span className={`truncate text-xs font-semibold ${p.state === "current" ? "text-accent" : "text-muted"}`}>
-              P{p.n}
-              <span className="hidden sm:inline"> · {p.weeks} WK</span>
-            </span>
-          </div>
-        ))}
-      </div>
-      <p className="sr-only">Phases cover the first {totalWeeks} weeks.</p>
+          ))}
+        </div>
+        <ol className="m-0 flex list-none gap-1 p-0 text-sm text-muted">
+          {m.phases.map((p) => (
+            <li key={p.n} style={{ flex: p.weeks }} className={`min-w-0 ${p.state === "current" ? "font-bold text-accent" : ""}`}>
+              <span className="sr-only">
+                {p.state === "done" ? "Done: " : p.state === "current" ? `Now, ${m.phaseProgressPct} percent through: ` : "Next: "}
+              </span>
+              {p.n === 1 ? "Phase 1" : p.n === 4 ? "4, to month 6" : p.n}
+            </li>
+          ))}
+        </ol>
+      </section>
 
-      {/* Tiles */}
-      <dl className="m-0 grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <dl className="m-0 grid grid-cols-2 gap-2.5">
         {m.tiles.map((t) => (
-          <div key={t.label} className="flex flex-col gap-1 rounded-xl border border-border bg-surface p-4">
-            <dt className="text-xs font-semibold uppercase tracking-widest text-muted">{t.label}</dt>
-            <dd className="m-0 font-display text-3xl font-bold uppercase sm:text-4xl">{t.value}</dd>
-            <dd className="m-0 text-sm text-muted">{t.note}</dd>
+          <div key={t.label} className="flex flex-col gap-0.5 rounded-xl border border-border bg-surface p-3.5">
+            <dt className="text-[15px] text-muted">{t.label}</dt>
+            <dd className={`m-0 font-bold leading-tight text-brand-ink ${t.value.length > 8 ? "text-[22px]" : "text-3xl"}`}>{t.value}</dd>
+            <dd className="m-0 text-[15px]">{t.note}</dd>
           </div>
         ))}
       </dl>
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_22rem]">
-        {/* Phase and the optional home program; no exercise list (decision 11/01/2026) */}
-        <section aria-labelledby="this-phase" className="flex flex-col gap-4 rounded-xl border border-border bg-surface p-5">
-          <h2 id="this-phase" className="m-0 font-display text-3xl font-bold uppercase">
-            {m.phase ? `Phase ${m.phase.n}: ${m.phase.name}` : "After the formal phases"}
-          </h2>
-          <Notice>{PT_OVERRIDE_NOTICE}</Notice>
-          <p className="m-0">
-            {m.phase ? (
-              <Link href="/after/timeline" className="font-semibold underline underline-offset-2">
-                See this phase&apos;s goals on your timeline
-              </Link>
-            ) : (
-              HOME_EXERCISE_NOTE
-            )}
-          </p>
-          <p className="m-0">
-            <Link href="/after/home-program" className="inline-flex min-h-12 items-center font-semibold underline underline-offset-2">
-              {HOME_PROGRAM_LINE}
-            </Link>
-          </p>
-        </section>
+      <section aria-labelledby="this-phase" className="flex flex-col gap-2.5 rounded-[14px] border border-border bg-surface p-4">
+        <h2 id="this-phase" className="m-0 text-[22px] font-bold text-brand-ink">
+          {m.phase ? `This phase: ${m.phase.name}` : "After the formal phases"}
+        </h2>
+        <p className="m-0 rounded-lg bg-bg px-3 py-2.5 text-base text-muted">{PT_OVERRIDE_NOTICE}</p>
+        {m.phase ? (
+          <Link href="/after/timeline" className="inline-flex min-h-12 items-center font-semibold underline underline-offset-2">
+            See this phase&apos;s goals on your timeline
+          </Link>
+        ) : (
+          <p className="m-0">{HOME_EXERCISE_NOTE}</p>
+        )}
+        <Link href="/after/home-program" className="inline-flex min-h-12 items-center font-semibold underline underline-offset-2">
+          {HOME_PROGRAM_LINE}
+        </Link>
+      </section>
 
-        {/* Next unlocks */}
-        <section aria-labelledby="next" className="flex flex-col gap-3">
-          <h2 id="next" className="m-0 font-display text-2xl font-bold uppercase text-muted">
+      {m.upcoming.length > 0 && (
+        <section aria-labelledby="next" className="flex flex-col gap-2">
+          <h2 id="next" className="m-0 text-[22px] font-bold text-brand-ink">
             Coming up
           </h2>
-          <ol className="m-0 flex list-none flex-col gap-2 p-0">
-            {m.upcoming.map((u, i) => (
-              <li
-                key={u.id}
-                className={`flex justify-between gap-3 rounded-xl border p-4 ${i === 0 ? "border-accent" : "border-border"}`}
-              >
-                <span className="font-semibold">{u.label}</span>
-                <span className={`shrink-0 font-semibold ${i === 0 ? "text-accent" : "text-muted"}`}>{formatUS(u.date)}</span>
+          <ul className="m-0 flex list-none flex-col gap-2 p-0">
+            {m.upcoming.map((u) => (
+              <li key={u.id} className="flex justify-between gap-3 rounded-xl border border-border bg-surface px-3.5 py-3">
+                <span>{u.label}</span>
+                <span className="font-semibold whitespace-nowrap">{formatUS(u.date)}</span>
               </li>
             ))}
-          </ol>
-          <p className="m-0 text-sm text-muted">{DATES_ARE_ESTIMATES}</p>
+          </ul>
+          <p className="m-0 text-[15px] text-muted">{DATES_ARE_ESTIMATES}</p>
         </section>
-      </div>
+      )}
+
+      <Link
+        href="/after/when-to-call"
+        className="flex min-h-14 items-center justify-center rounded-xl border-2 border-accent font-semibold text-accent no-underline"
+      >
+        When to call us
+      </Link>
     </div>
   );
 }

@@ -116,3 +116,11 @@ describe("QR presets and analytics", () => {
     expect(procedureLabel("max-transfer")).toBe("Gluteus Maximus Transfer");
   });
 });
+
+describe("dashboard heading", () => {
+  it("shows the standard protocol as a guide for a different protocol", async () => {
+    const { protocolHeading } = await import("./procedures");
+    expect(protocolHeading("different")).toBe("Standard protocol, as a guide");
+    expect(protocolHeading("max-transfer")).toBe("Gluteus Maximus Transfer");
+  });
+});

@@ -5,7 +5,7 @@ import { addDays } from "date-fns";
 import { beforeModel, preAdmitText } from "@/lib/before";
 import type { ChecklistBlock } from "@/lib/before";
 import { toggleChecklist, useHydrated, useProfile } from "@/lib/profile";
-import { procedureLabel } from "@/lib/procedures";
+import { protocolHeading } from "@/lib/procedures";
 import { formatUS, fromISO } from "@/lib/recovery";
 import { PRACTICE } from "@/lib/site";
 import { AlertIcon, PhoneIcon } from "./icons";
@@ -113,7 +113,7 @@ export function BeforeDashboard() {
 
       <section aria-labelledby="countdown" className="flex flex-col gap-1">
         <p className="m-0 text-base text-muted">
-          {procedureLabel(procedure)} on {formatUS(surgery)}
+          {protocolHeading(procedure)} on {formatUS(surgery)}
         </p>
         <h1 id="countdown" className="m-0 text-5xl leading-[1.1] font-bold text-brand-ink">
           {s.daysUntil} {s.daysUntil === 1 ? "day" : "days"} to go
