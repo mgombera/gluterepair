@@ -15,6 +15,7 @@ export type Profile = {
 
 const KEY = "gluterepair:profile";
 const PRESET_KEY = "gluterepair:preset";
+const LANDED_KEY = "gluterepair:landed";
 const PROCEDURES: Procedure[] = ["standard", "max-transfer", "different"];
 
 let memory: Profile | null = null; // used when storage is blocked (private browsing)
@@ -26,7 +27,7 @@ let cached: Profile | null = null;
 function canStore(): boolean {
   if (storageOk !== null) return storageOk;
   try {
-    const t = "__fmh_test__";
+    const t = "__gr_test__";
     window.localStorage.setItem(t, t);
     window.localStorage.removeItem(t);
     storageOk = true;
@@ -36,7 +37,8 @@ function canStore(): boolean {
   return storageOk;
 }
 
-function validate(x: unknown): Profile | null {
+/** Checks a stored profile. Older profiles with extra fields (such as the removed exercise ticks) still load. */
+export function validate(x: unknown): Profile | null {
   if (!x || typeof x !== "object") return null;
   const p = x as Partial<Profile>;
   if (p.v !== 1 || !PROCEDURES.includes(p.procedure as Procedure)) return null;
@@ -161,4 +163,19 @@ function clearPreset() {
 
 export function isProcedure(v: string | null | undefined): v is Procedure {
   return PROCEDURES.includes(v as Procedure);
+}
+
+/**
+ * True the first time the home page is opened in a browser session. A
+ * returning patient then goes straight to their dashboard; tapping Home later
+ * in the same visit shows the welcome card instead of bouncing away.
+ */
+export function firstLandingThisSession(): boolean {
+  try {
+    if (window.sessionStorage.getItem(LANDED_KEY)) return false;
+    window.sessionStorage.setItem(LANDED_KEY, "1");
+    return true;
+  } catch {
+    return false;
+  }
 }

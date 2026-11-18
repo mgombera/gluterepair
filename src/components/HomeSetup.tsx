@@ -1,54 +1,72 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useHydrated, useProfile } from "@/lib/profile";
-import { procedureLabel } from "@/lib/procedures";
-import { formatUS, fromISO, status } from "@/lib/recovery";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { firstLandingThisSession, useHydrated, useProfile } from "@/lib/profile";
+import { landingPath, procedureLine, statusLine } from "@/lib/personal";
+import { ClearMyInformation } from "./ClearMyInformation";
 import { SetupForm } from "./SetupForm";
 
-// Returning visitors see a short summary with a link to their dashboard
-// (no automatic redirect, so the information on the home page stays reachable).
-// /?setup=1 opens the form to change settings.
+// The home page. New visitors set up their plan. A returning patient who opens
+// the site goes straight to their dashboard (once per visit); tapping Home
+// later shows a welcome card. /?setup=1 opens the form to change settings.
 export function HomeSetup() {
   const hydrated = useHydrated();
   const profile = useProfile();
   const params = useSearchParams();
+  const router = useRouter();
   const editing = params.get("setup") === "1";
+  const [cleared, setCleared] = useState(false);
+  const [landing, setLanding] = useState(true);
 
-  if (!hydrated) return <div className="min-h-64 rounded-xl border border-border bg-surface" aria-busy="true" />;
-  if (!profile || editing) return <SetupForm existing={profile} />;
+  useEffect(() => {
+    if (!hydrated) return;
+    if (profile && !editing && firstLandingThisSession()) router.replace(landingPath(profile, new Date()));
+    else setLanding(false);
+    // Only on arrival: later profile changes must not redirect.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hydrated]);
 
-  const d = profile.surgeryDate ? fromISO(profile.surgeryDate) : null;
-  const s = d ? status(d, new Date(), profile.procedure, profile.checklist) : null;
-  const after = s?.mode === "after";
-  const line = !s
-    ? "Surgery date not set yet"
-    : s.mode === "before"
-      ? `${s.daysUntil} ${s.daysUntil === 1 ? "day" : "days"} until surgery on ${formatUS(d!)}`
-      : s.daysSince === 0
-        ? "Today is surgery day"
-        : `Day ${s.daysSince}${s.phase ? ` · Phase ${s.phase.n} · Week ${s.week}` : " · Home exercise program"}`;
+  if (!hydrated || (landing && profile && !editing)) {
+    return <div className="min-h-64 rounded-[14px] border border-border bg-surface" aria-busy="true" />;
+  }
+
+  const notice = cleared && (
+    <p role="status" className="m-0 rounded-[10px] border border-border bg-surface p-3 font-semibold">
+      Your information was removed from this device.
+    </p>
+  );
+
+  if (!profile || editing) {
+    return (
+      <div className="flex flex-col gap-5">
+        {notice}
+        <SetupForm key={profile ? "edit" : "new"} existing={profile} onCleared={() => setCleared(true)} />
+      </div>
+    );
+  }
 
   return (
-    <div className="flex flex-col gap-4 rounded-xl border border-accent bg-surface p-5 sm:p-6">
-      <p className="m-0 text-sm font-semibold uppercase tracking-widest text-muted">Welcome back</p>
-      <p className="m-0 font-display text-4xl font-bold uppercase leading-none">{line}</p>
-      <p className="m-0 text-muted">{procedureLabel(profile.procedure)}</p>
+    <div className="flex flex-col gap-4 rounded-[14px] border-2 border-accent bg-surface px-4 py-5 sm:px-6">
+      <p className="m-0 text-base font-semibold text-muted">Welcome back</p>
+      <p className="m-0 text-3xl font-bold leading-tight text-brand-ink">{statusLine(profile, new Date())}</p>
+      <p className="m-0 text-muted">{procedureLine(profile)}</p>
       <div className="flex flex-wrap gap-3">
         <Link
-          href={after ? "/after" : "/before"}
-          className="inline-flex min-h-12 items-center rounded-md bg-accent px-5 font-bold text-accent-ink no-underline"
+          href={landingPath(profile, new Date())}
+          className="inline-flex min-h-12 items-center rounded-xl bg-accent px-5 text-lg font-semibold text-accent-ink no-underline"
         >
-          Go to my {after ? "recovery dashboard" : "checklist"}
+          Go to my {landingPath(profile, new Date()) === "/after" ? "recovery dashboard" : "checklist"}
         </Link>
         <Link
           href="/?setup=1"
-          className="inline-flex min-h-12 items-center rounded-md border border-border px-5 font-semibold text-text no-underline"
+          className="inline-flex min-h-12 items-center rounded-xl border border-control-border px-5 font-semibold text-text no-underline"
         >
           Change date or procedure
         </Link>
       </div>
+      <ClearMyInformation onCleared={() => setCleared(true)} />
     </div>
   );
 }

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
-import { InternalPlaceholder } from "@/components/InternalPlaceholder";
+import { Suspense } from "react";
+import { StartRedirect } from "@/components/StartRedirect";
+import { Container } from "@/components/ui";
 
-// Clinic QR codes will link here: gluterepair.com/start?p=standard | max-transfer.
+// Clinic QR codes link here: gluterepair.com/start?p=standard | max-transfer.
 // The code preselects the procedure only. No date or name ever goes in a URL.
 export const metadata: Metadata = {
   title: "Get started",
@@ -10,10 +12,13 @@ export const metadata: Metadata = {
 
 export default function StartPage() {
   return (
-    <InternalPlaceholder
-      title="Get started"
-      milestone={3}
-      summary="Clinic QR codes open this page to preselect your procedure."
-    />
+    <Container className="py-10">
+      <p className="m-0" aria-live="polite">
+        Opening your surgery guide…
+      </p>
+      <Suspense>
+        <StartRedirect />
+      </Suspense>
+    </Container>
   );
 }

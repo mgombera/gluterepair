@@ -2,48 +2,62 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { clearProfile, readPreset, saveSetup, storageAvailable } from "@/lib/profile";
+import { readPreset, saveSetup, storageAvailable } from "@/lib/profile";
 import type { Profile } from "@/lib/profile";
+import { landingPath } from "@/lib/personal";
 import { PROCEDURE_OPTIONS } from "@/lib/procedures";
-import { formatUS, fromISO, toISO } from "@/lib/recovery";
+import { formatUS, fromISO, parseUS, surgeryDateInRange, toISO } from "@/lib/recovery";
 import type { Procedure } from "@/lib/recovery";
-import { differenceInCalendarDays } from "date-fns";
+import { ClearMyInformation } from "./ClearMyInformation";
 
-export function SetupForm({ existing }: { existing: Profile | null }) {
+// Home page setup (scope 6.1, approved Main screen): the surgery date typed as
+// MM/DD/YYYY or "not scheduled yet", then the procedure. Saved on this device only.
+
+const card = "flex flex-col gap-4 rounded-[14px] border border-border bg-surface px-4 py-5 sm:px-6";
+
+export function SetupForm({ existing, onCleared }: { existing: Profile | null; onCleared?: () => void }) {
   const router = useRouter();
-  const [date, setDate] = useState(existing?.surgeryDate ?? "");
+  const saved = existing?.surgeryDate ? fromISO(existing.surgeryDate) : null;
+  const [date, setDate] = useState(saved ? formatUS(saved) : "");
   const [notScheduled, setNotScheduled] = useState(existing ? existing.surgeryDate === null : false);
   const [procedure, setProcedure] = useState<Procedure>(() => existing?.procedure ?? readPreset() ?? "standard");
   const [error, setError] = useState<string | null>(null);
-  const [cleared, setCleared] = useState(false);
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
+    let iso: string | null = null;
     if (!notScheduled) {
-      const d = fromISO(date);
+      const d = parseUS(date);
       if (!d) {
-        setError("Enter your surgery date, or choose \"Not scheduled yet.\"");
+        setError('Enter your surgery date as MM/DD/YYYY, for example 01/05/2027, or choose "My surgery is not scheduled yet."');
         return;
       }
-      saveSetup(toISO(d), procedure);
-      router.push(differenceInCalendarDays(d, new Date()) > 0 ? "/before" : "/after");
-      return;
+      if (!surgeryDateInRange(d, new Date())) {
+        setError("Please check the year. The date should be within two years of today.");
+        return;
+      }
+      iso = toISO(d);
     }
-    saveSetup(null, procedure);
-    router.push("/before");
+    saveSetup(iso, procedure);
+    router.push(landingPath({ surgeryDate: iso, procedure }, new Date()));
   }
 
-  const parsed = fromISO(date);
+  const parsed = notScheduled ? null : parseUS(date);
 
   return (
-    <form onSubmit={submit} className="flex flex-col gap-6 rounded-xl border border-border bg-surface p-5 sm:p-6" noValidate>
-      <div className="flex flex-col gap-2">
-        <label htmlFor="surgery-date" className="font-display text-2xl font-bold uppercase tracking-wide">
+    <form onSubmit={submit} className="flex flex-col gap-5" noValidate>
+      <section aria-labelledby="date-heading" className={card}>
+        <h2 id="date-heading" className="m-0 text-[21px] font-bold text-brand-ink">
           1. Your surgery date
+        </h2>
+        <label htmlFor="surgery-date" className="text-[17px] font-semibold">
+          Date of surgery (MM/DD/YYYY)
         </label>
         <input
           id="surgery-date"
-          type="date"
+          type="text"
+          inputMode="numeric"
+          autoComplete="off"
           value={date}
           disabled={notScheduled}
           onChange={(e) => {
@@ -51,13 +65,13 @@ export function SetupForm({ existing }: { existing: Profile | null }) {
             setError(null);
           }}
           aria-describedby="date-help"
-          aria-invalid={error ? true : undefined}
-          className="min-h-12 w-full max-w-xs rounded-md border border-border bg-bg px-3 text-lg text-text disabled:opacity-50"
+          aria-invalid={error && !notScheduled ? true : undefined}
+          className="min-h-14 w-full max-w-sm rounded-[10px] border-2 border-control-border bg-surface px-3.5 text-xl text-text disabled:opacity-50"
         />
-        <p id="date-help" className="m-0 text-sm text-muted">
-          {parsed && !notScheduled ? `Surgery on ${formatUS(parsed)}.` : "Use the date on your surgery confirmation."}
+        <p id="date-help" className="m-0 text-base text-muted">
+          {parsed ? `Surgery on ${formatUS(parsed)}.` : "Use the date on your surgery confirmation."}
         </p>
-        <label className="flex min-h-11 items-center gap-3">
+        <label className="flex min-h-12 items-center gap-3">
           <input
             type="checkbox"
             checked={notScheduled}
@@ -65,19 +79,19 @@ export function SetupForm({ existing }: { existing: Profile | null }) {
               setNotScheduled(e.target.checked);
               setError(null);
             }}
-            className="h-5 w-5 accent-[var(--accent)]"
+            className="h-6 w-6 shrink-0 accent-[var(--accent)]"
           />
-          <span>Not scheduled yet</span>
+          <span>My surgery is not scheduled yet</span>
         </label>
-      </div>
+      </section>
 
-      <fieldset className="m-0 flex flex-col gap-2 border-0 p-0">
-        <legend className="mb-2 p-0 font-display text-2xl font-bold uppercase tracking-wide">2. Your procedure</legend>
+      <fieldset className={`${card} m-0 gap-3`}>
+        <legend className="float-left mb-1 w-full p-0 text-[21px] font-bold text-brand-ink">2. Your surgery</legend>
         {PROCEDURE_OPTIONS.map((o) => (
           <label
             key={o.value}
-            className={`flex cursor-pointer gap-3 rounded-lg border p-3 ${
-              procedure === o.value ? "border-accent bg-bg" : "border-border"
+            className={`flex cursor-pointer items-start gap-3 rounded-[10px] p-3.5 ${
+              procedure === o.value ? "border-2 border-accent bg-accent/10" : "border border-control-border"
             }`}
           >
             <input
@@ -86,55 +100,31 @@ export function SetupForm({ existing }: { existing: Profile | null }) {
               value={o.value}
               checked={procedure === o.value}
               onChange={() => setProcedure(o.value)}
-              className="mt-1 h-5 w-5 shrink-0 accent-[var(--accent)]"
+              className="mt-0.5 h-6 w-6 shrink-0 accent-[var(--accent)]"
             />
             <span className="flex flex-col">
               <span className="font-semibold">{o.label}</span>
-              <span className="text-sm text-muted">{o.detail}</span>
+              {o.detail && <span className="text-base text-muted">{o.detail}</span>}
             </span>
           </label>
         ))}
       </fieldset>
 
       {error && (
-        <p role="alert" className="m-0 rounded-md border border-alert bg-alert-surface p-3 font-semibold text-alert">
+        <p role="alert" className="m-0 rounded-[10px] border border-alert bg-alert-surface p-3 font-semibold text-alert-text">
           {error}
         </p>
       )}
 
-      <div className="flex flex-col gap-3">
-        <button
-          type="submit"
-          className="min-h-12 rounded-md bg-accent px-6 text-lg font-bold text-accent-ink"
-        >
-          {existing ? "Save changes" : "Show my plan"}
-        </button>
-        <p className="m-0 text-sm text-muted">
-          {storageAvailable()
-            ? "Saved only on this device. Nothing is sent to us or anyone else."
-            : "Your browser is blocking storage (private browsing?), so this will be forgotten when you close the page."}
-        </p>
-        {existing && (
-          <button
-            type="button"
-            onClick={() => {
-              clearProfile();
-              setDate("");
-              setNotScheduled(false);
-              setProcedure("standard");
-              setCleared(true);
-            }}
-            className="min-h-11 self-start rounded-md border border-border px-4 text-sm font-semibold text-muted hover:text-text"
-          >
-            Clear my information from this device
-          </button>
-        )}
-        {cleared && (
-          <p role="status" className="m-0 text-sm font-semibold">
-            Your information was removed from this device.
-          </p>
-        )}
-      </div>
+      <button type="submit" className="min-h-14 rounded-xl bg-accent px-6 text-xl font-semibold text-accent-ink">
+        {existing ? "Save changes" : "Show my plan"}
+      </button>
+      <p className="m-0 text-base text-muted">
+        {storageAvailable()
+          ? "Your date stays on this device only. Nothing is sent to us or anyone else."
+          : "Your browser is blocking storage (private browsing?), so this will be forgotten when you close the page."}
+      </p>
+      {existing && <ClearMyInformation onCleared={onCleared} />}
     </form>
   );
 }

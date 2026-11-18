@@ -120,6 +120,14 @@ Phase weeks stay as written. Phase I carries the note "At week 4, wean from crut
 - Dates display as MM/DD/YYYY, local time.
 - No date set: labeled example dashboards (Before at 12 days out, After at day 18).
 
+**Setup and returning visits (milestone 3, 11/18/2026)**
+
+- The date is typed as MM/DD/YYYY (1-digit months and days, dashes and dots also accepted), or "My surgery is not scheduled yet." A date more than two years from today asks the patient to check the year.
+- A returning patient who opens the site goes straight to Before (until surgery day) or After (from surgery day). Tapping Home later in the same visit shows a welcome card instead.
+- A status line under the header on every page: "12 days until surgery on 12/01/2026", "Today is surgery day", "Day 18 · Phase 1 · Week 3" or "Day 200 · After the formal phases", the procedure name, and "Change or clear".
+- "Clear my information" asks once to confirm, then removes the date, procedure and ticks from the device.
+- QR presets `/start?p=standard` and `/start?p=max-transfer` (also `repair`, `max`, `transfer`) choose the procedure only. Analytics record `/start` without the query.
+
 **QR presets:** gluterepair.com/start?p=standard and ?p=max-transfer. Procedure only; no date or name ever goes in a URL.
 
 **Clear my information** wipes everything. Blocked storage still works for the session, with a note that the date will not be remembered.
