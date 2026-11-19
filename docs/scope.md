@@ -205,6 +205,8 @@ Built 11/18/2026 (milestone 5), following the approved After screen: tiles are c
 - No separate model for the gluteus maximus transfer; the anatomy page shows the standard repair only.
 - Controls: before/after toggle, camera views (side, back, front), "hide IT band" checkbox to see the tendons, a tappable parts list with explanations, text for each stage, 2D fallback without WebGL. Renders checked in Playwright and sent to Dr. Gombera.
 
+Built 11/18/2026 (milestone 6): the bones are the fixmyhips CT mesh (same Visible Human source), so no new download was needed. Trochanter facets are measured from it by `docs/3d/scripts/glute-landmarks.mjs`. Views are side, back and front; the checkbox hides the IT band. Two inner-row and two outer-row anchors are shown (the decision allows one or two in the outer row). Renders: `docs/3d/renders/`.
+
 **6.8 Videos, FAQ, When to call, contact, privacy.** As fixmyhips. When to call is a calm After tab of plain cards (call now, call the office, usually normal). "Call now" list from the discharge sheet: painful swelling or numbness, unrelenting pain, fever over 101° or chills, continuous drainage or bleeding, difficulty breathing, excessive nausea or vomiting, calf pain.
 
 **6.9 Add-ons.** Same biologic add-ons page as fixmyhips, "Call for pricing" with tap-to-call.

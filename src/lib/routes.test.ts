@@ -135,8 +135,8 @@ describe("shell copy", () => {
 });
 
 describe("built pages", () => {
-  it("replaces every placeholder from milestones 3 to 5 with the real page", () => {
-    for (const r of ROUTES.filter((x) => x.milestone <= 5)) {
+  it("replaces every placeholder from milestones 3 to 6 with the real page", () => {
+    for (const r of ROUTES.filter((x) => x.milestone <= 6)) {
       const file = join(srcDir, "app", ...r.path.split("/").filter(Boolean), "page.tsx");
       expect(readFileSync(file, "utf8"), r.path).not.toMatch(/Placeholder/);
     }
