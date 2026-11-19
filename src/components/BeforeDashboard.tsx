@@ -183,6 +183,9 @@ export function BeforeDashboard() {
       >
         What happens on surgery day
       </Link>
+      <Link href="/print/checklist" className="inline-flex min-h-12 items-center self-start font-semibold underline underline-offset-2">
+        Print this checklist
+      </Link>
     </div>
   );
 }

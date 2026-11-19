@@ -28,6 +28,8 @@ function sourceFiles(dir: string): string[] {
 }
 
 const INTERNAL = ["/start", "/proof", "/walkthrough"];
+// Pages under a site-map route: the four print sheets belong to the Print Center.
+const SUBPAGES = ["/print/[id]"];
 
 describe("site map", () => {
   it("has a page file for every route", () => {
@@ -38,7 +40,7 @@ describe("site map", () => {
   });
 
   it("has no pages outside the site map", () => {
-    const known = new Set([...ROUTES.map((r) => r.path), ...INTERNAL]);
+    const known = new Set([...ROUTES.map((r) => r.path), ...INTERNAL, ...SUBPAGES]);
     for (const p of pagePaths()) expect(known.has(p), p).toBe(true);
   });
 

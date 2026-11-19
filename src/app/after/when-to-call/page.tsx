@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { CALL_NOW, CALL_NUMBERS, USUALLY_NORMAL } from "@/content";
 import { PhoneIcon } from "@/components/icons";
 import { Bullets, Container, PageHeader } from "@/components/ui";
@@ -53,6 +54,9 @@ export default function WhenToCallPage() {
         </h2>
         <Bullets items={USUALLY_NORMAL.points} />
       </section>
+      <Link href="/print/red-flags" className="inline-flex min-h-12 items-center self-start font-semibold underline underline-offset-2">
+        Print the when to call card for your fridge
+      </Link>
     </Container>
   );
 }

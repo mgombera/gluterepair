@@ -2,47 +2,69 @@
 
 import Link from "next/link";
 import { PRINT_SHEETS, pdfFor } from "@/content";
-import { useProfile } from "@/lib/profile";
-import { Card } from "../ui";
+import { useHydrated, useProfile } from "@/lib/profile";
+import { procedureLabel } from "@/lib/procedures";
+import { formatUS, fromISO } from "@/lib/recovery";
 
-// Lists the four sheets. Where Dr. Gombera has supplied his own PDF
-// (src/content/print.ts), that is offered first.
+// The print center (scope 6.10): four sheets. Where Dr. Gombera has supplied
+// his own PDF (src/content/print.ts), that is offered first.
+
+const primary = "inline-flex min-h-12 items-center rounded-xl bg-accent px-5 font-semibold text-accent-ink no-underline";
+
 export function PrintCenter() {
+  const hydrated = useHydrated();
   const profile = useProfile();
   const proc = profile?.procedure && profile.procedure !== "different" ? profile.procedure : "standard";
+  const surgery = profile?.surgeryDate ? fromISO(profile.surgeryDate) : null;
+
   return (
-    <div className="grid gap-4 md:grid-cols-2">
-      {PRINT_SHEETS.map((s) => {
-        const pdf = pdfFor(s, proc);
-        return (
-          <Card key={s.id} className="flex flex-col gap-3">
-            <h2 className="m-0 font-display text-3xl font-bold uppercase">{s.title}</h2>
-            <p className="m-0 text-muted">{s.summary}</p>
-            <div className="mt-auto flex flex-wrap items-center gap-3">
-              {pdf ? (
-                <>
-                  <a
-                    href={pdf}
-                    className="inline-flex min-h-12 items-center rounded-md bg-accent px-5 font-bold text-accent-ink no-underline"
-                  >
-                    Open PDF
-                  </a>
-                  <Link href={`/print/${s.id}`} className="inline-flex min-h-11 items-center font-semibold underline underline-offset-2">
-                    Print the web version
+    <div className="flex flex-col gap-5">
+      {hydrated && (
+        <p className="m-0 rounded-[14px] border border-border bg-surface p-4">
+          {profile && profile.procedure !== "different" ? (
+            <>
+              Sheets for <strong>{procedureLabel(proc)}</strong>
+              {surgery ? <>, with your dates from your surgery on {formatUS(surgery)}</> : null}. Your dates are added on
+              this device only. They are not sent anywhere.
+            </>
+          ) : (
+            <>
+              Sheets for the standard protocol.{" "}
+              <Link href={profile ? "/?setup=1" : "/"} className="underline underline-offset-2">
+                Add your date and procedure
+              </Link>{" "}
+              to print your own dates.
+            </>
+          )}
+        </p>
+      )}
+      <ul className="m-0 grid list-none gap-4 p-0 md:grid-cols-2">
+        {PRINT_SHEETS.map((s) => {
+          const pdf = pdfFor(s, proc);
+          return (
+            <li key={s.id} className="flex flex-col gap-3 rounded-[14px] border border-border bg-surface p-5">
+              <h2 className="m-0 text-[22px] font-bold text-brand-ink">{s.title}</h2>
+              <p className="m-0 text-muted">{s.summary}</p>
+              <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-2">
+                {pdf ? (
+                  <>
+                    <a href={pdf} className={primary}>
+                      Open PDF<span className="sr-only">: {s.title}</span>
+                    </a>
+                    <Link href={`/print/${s.id}`} className="inline-flex min-h-12 items-center font-semibold underline underline-offset-2">
+                      Print the web version<span className="sr-only">: {s.title}</span>
+                    </Link>
+                  </>
+                ) : (
+                  <Link href={`/print/${s.id}`} className={primary}>
+                    Open and print<span className="sr-only">: {s.title}</span>
                   </Link>
-                </>
-              ) : (
-                <Link
-                  href={`/print/${s.id}`}
-                  className="inline-flex min-h-12 items-center rounded-md bg-accent px-5 font-bold text-accent-ink no-underline"
-                >
-                  Open and print
-                </Link>
-              )}
-            </div>
-          </Card>
-        );
-      })}
+                )}
+              </div>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }
