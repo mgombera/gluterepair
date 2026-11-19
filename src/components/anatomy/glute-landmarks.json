@@ -1,0 +1,128 @@
+{
+ "lateral_facet": {
+  "center": [
+   -0.06464,
+   -0.01608,
+   -0.01206
+  ],
+  "normal": [
+   -0.9457,
+   0.32047,
+   -0.05436
+  ],
+  "up": [
+   0.31994,
+   0.94726,
+   0.01839
+  ],
+  "across": [
+   0.05738,
+   0,
+   -0.99835
+  ],
+  "height": 0.02954,
+  "width": 0.02227,
+  "vertices": 145
+ },
+ "superoposterior_facet": {
+  "center": [
+   -0.04589,
+   -0.00122,
+   -0.0159
+  ],
+  "normal": [
+   -0.40296,
+   0.83054,
+   -0.38448
+  ],
+  "up": [
+   0.60089,
+   0.55696,
+   0.57335
+  ],
+  "across": [
+   0.69033,
+   0,
+   -0.7235
+  ],
+  "height": 0.03949,
+  "width": 0.0313,
+  "vertices": 273
+ },
+ "anterior_facet": {
+  "center": [
+   -0.04938,
+   -0.01816,
+   0.00712
+  ],
+  "normal": [
+   -0.47855,
+   0.08336,
+   0.8741
+  ],
+  "up": [
+   0.04003,
+   0.99652,
+   -0.07312
+  ],
+  "across": [
+   -0.87715,
+   0,
+   -0.48022
+  ],
+  "height": 0.02738,
+  "width": 0.04667,
+  "vertices": 277
+ },
+ "posterior_facet": {
+  "center": [
+   -0.05295,
+   -0.01647,
+   -0.02726
+  ],
+  "normal": [
+   -0.54569,
+   0.21841,
+   -0.80902
+  ],
+  "up": [
+   0.12213,
+   0.97586,
+   0.18107
+  ],
+  "across": [
+   0.82904,
+   0,
+   -0.55919
+  ],
+  "height": 0.03214,
+  "width": 0.03681,
+  "vertices": 260
+ },
+ "greater_trochanter_tip": [
+  -0.04371,
+  0.00495,
+  -0.02216
+ ],
+ "gluteus_medius_origin": [
+  -0.01181,
+  0.08871,
+  -0.00989
+ ],
+ "iliac_crest_top": [
+  0.00321,
+  0.15162,
+  -0.03025
+ ],
+ "anterior_superior_iliac_spine": [
+  -0.02661,
+  0.0754,
+  0.0565
+ ],
+ "femoral_shaft_axis": [
+  -0.00779,
+  0.99632,
+  -0.08538
+ ],
+ "_source": "Derived by docs/3d/scripts/glute-landmarks.mjs from public/models/hip.glb (HuBMAP HRA CCF 3D Reference Object Library v1.4, Visible Human Male, CC BY 4.0). Units: meters. +Y superior, +Z anterior, lateral of this right hip is -X. Origin at the femoral head center."
+}
