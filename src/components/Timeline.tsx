@@ -102,6 +102,11 @@ export function Timeline() {
           {HOME_PROGRAM_LINE}
         </Link>
       </p>
+      <p className="m-0">
+        <Link href="/print/protocol" className="inline-flex min-h-12 items-center font-semibold underline underline-offset-2">
+          Print this protocol for your therapist
+        </Link>
+      </p>
     </div>
   );
 }

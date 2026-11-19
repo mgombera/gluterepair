@@ -15,7 +15,10 @@ export function SiteFooter() {
           .
         </p>
         <p className="m-0">Content reviewed by Dr. Gombera.</p>
-        <p className="m-0">
+        <p className="m-0 flex flex-wrap gap-x-6">
+          <Link href="/print" className="inline-flex min-h-12 items-center underline underline-offset-2">
+            Print Center
+          </Link>
           <Link href="/privacy" className="inline-flex min-h-12 items-center underline underline-offset-2">
             Privacy
           </Link>

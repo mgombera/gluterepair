@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { HOME_CARE, MEDICATION_NOTICE, MEDICATION_TIPS, STANDARD_MEDICATIONS } from "@/content";
 import { Container, InfoCards, PageHeader, SectionTitle } from "@/components/ui";
 import { routeInfo } from "@/lib/routes";
@@ -18,6 +19,9 @@ export default function HomeCarePage() {
         </p>
         <InfoCards sections={[STANDARD_MEDICATIONS, MEDICATION_TIPS]} headingLevel={3} />
       </section>
+      <Link href="/print/care" className="inline-flex min-h-12 items-center self-start font-semibold underline underline-offset-2">
+        Print the home care sheet
+      </Link>
     </Container>
   );
 }

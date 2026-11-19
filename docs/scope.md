@@ -213,6 +213,8 @@ Built 11/18/2026 (milestone 6): the bones are the fixmyhips CT mesh (same Visibl
 
 **6.10 Print center.** Four sheets per variant (before-surgery checklist, PT protocol, home care sheet, when-to-call card), light theme, US letter, 0.5 in margins, logo, address, phones, "Content reviewed by Dr. Gombera." His corrected PDFs replace them through the `pdf` slot.
 
+Built 11/19/2026 (milestone 7): /print lists the sheets and /print/checklist, /print/protocol, /print/care and /print/red-flags print them. The checklist and protocol add the patient's own dates from this browser. The protocol sheet has a procedure picker and names the protocol's exercises for the therapist. Links to print sit under the Before checklist, the Timeline, Home Care, When to Call and in the footer. On a phone the sheet stacks in one column; on paper it uses two.
+
 ## 7. Videos and home program
 
 Changed 11/01/2026: the site is educational and does not run an exercise program. The YouTube exercise picks reused from fixmyhips are removed. The Videos page shows only Dr. Gombera's own videos; he has none for gluteus repair yet, so it says they are coming. Exercises belong to the patient's therapist and, when the patient chooses it, the myHealthTrack home program (section 6.5).
