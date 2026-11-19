@@ -19,7 +19,7 @@ export function Timeline() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-2 rounded-xl border border-border bg-surface p-4">
+      <div className="flex flex-col gap-2 rounded-[14px] border border-border bg-surface p-4">
         <p className="m-0">
           <strong>Showing: {protocol.title}.</strong>{" "}
           {isDefault ? (
@@ -37,12 +37,12 @@ export function Timeline() {
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
-        <div className="rounded-xl border border-border bg-surface p-4">
-          <h2 className="m-0 mb-2 text-sm font-semibold uppercase tracking-widest text-muted">Range of motion limits, Phase I</h2>
+        <div className="rounded-[14px] border border-border bg-surface p-4">
+          <h2 className="m-0 mb-2 text-base font-semibold text-muted">Range of motion limits, Phase I</h2>
           <Bullets items={romLimits(protocol)} />
         </div>
-        <div className="rounded-xl border border-border bg-surface p-4">
-          <h2 className="m-0 mb-2 text-sm font-semibold uppercase tracking-widest text-muted">Key rules</h2>
+        <div className="rounded-[14px] border border-border bg-surface p-4">
+          <h2 className="m-0 mb-2 text-base font-semibold text-muted">Key rules</h2>
           <Bullets items={keyRules(protocol)} />
         </div>
       </div>
@@ -57,10 +57,10 @@ export function Timeline() {
             <li
               key={ph.n}
               aria-current={current ? "step" : undefined}
-              className={`flex flex-col gap-4 rounded-xl border bg-surface p-5 ${current ? "border-2 border-accent" : "border-border"} ${done ? "opacity-75" : ""}`}
+              className={`flex flex-col gap-4 rounded-[14px] border bg-surface p-5 ${current ? "border-2 border-accent" : "border-border"}`}
             >
               <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <h2 className="m-0 font-display text-3xl font-bold uppercase">
+                <h2 className="m-0 text-[22px] font-bold text-brand-ink">
                   Phase {ph.n}: {ph.name}
                 </h2>
                 <span className="font-semibold text-muted">
@@ -69,18 +69,18 @@ export function Timeline() {
                 </span>
               </div>
               {current && (
-                <span className="self-start rounded-full bg-accent px-3 py-1 text-xs font-bold uppercase text-accent-ink">
+                <span className="self-start rounded-full bg-accent px-3 py-1 text-sm font-semibold text-accent-ink">
                   You are here
                 </span>
               )}
               {done && <span className="text-sm font-semibold text-muted">Completed</span>}
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <h3 className="m-0 mb-2 text-sm font-semibold uppercase tracking-widest text-muted">Goals</h3>
+                  <h3 className="m-0 mb-2 text-base font-semibold text-muted">Goals</h3>
                   <Bullets items={ph.goals} />
                 </div>
                 <div>
-                  <h3 className="m-0 mb-2 text-sm font-semibold uppercase tracking-widest text-muted">Move on when</h3>
+                  <h3 className="m-0 mb-2 text-base font-semibold text-muted">Move on when</h3>
                   {ph.criteriaToProgress.length ? (
                     <Bullets items={ph.criteriaToProgress} />
                   ) : (

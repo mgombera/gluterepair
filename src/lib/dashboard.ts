@@ -1,5 +1,6 @@
-import { addDays, addMonths, differenceInCalendarDays } from "date-fns";
-import { formatUS, protocolFor, status } from "./recovery";
+import { addDays, differenceInCalendarDays } from "date-fns";
+import { protocolFor, status } from "./recovery";
+import { braceText } from "./protocolText";
 import type { AfterStatus, Milestone, Procedure } from "./recovery";
 import type { Phase } from "@/content";
 
@@ -24,28 +25,37 @@ export function dashboardModel(surgery: Date, today: Date, procedure: Procedure)
   const a = s as AfterStatus;
   const p = protocolFor(procedure);
 
-  const wbEnd = addDays(surgery, p.weightBearing.weeks * 7);
-  const braceEnd = addDays(surgery, p.braceWeeks * 7);
-  const braceDaysLeft = differenceInCalendarDays(braceEnd, today);
-  const running = addMonths(surgery, p.runningAfterMonths);
+  const daysUntil = (weeks: number) => differenceInCalendarDays(addDays(surgery, weeks * 7), today);
+  const days = (n: number) => `${n} ${n === 1 ? "day" : "days"}`;
+  const wb = p.weightBearing;
+  const braceLeft = daysUntil(p.braceWeeks);
+  const braceMaxLeft = p.braceWeeksUpTo ? daysUntil(p.braceWeeksUpTo) : braceLeft;
+  const drivingDay = 21; // "around 3 weeks" (PT protocol criteria, decision 10/31/2026)
 
+  // Tiles from the approved After screen (scope 6.3).
   const tiles: Tile[] = [
     a.partialWeightBearing
-      ? { label: "Weight bearing", value: `${p.weightBearing.partialLbs} lb`, note: `Foot flat with crutches or a walker until ${p.weightBearing.minimum ? "at least" : "about"} ${formatUS(wbEnd)}` }
-      : { label: "Weight bearing", value: "As tolerated", note: p.afterWeightBearing },
-    a.braceOn
+      ? {
+          label: "Crutches or walker",
+          value: days(daysUntil(wb.weeks)),
+          note: `${wb.minimum ? "left at least" : "left"}, ${wb.partialLbs} lb foot flat. ${wb.minimum ? p.afterWeightBearing : "Then a cane if you need one."}`,
+        }
+      : { label: "Crutches or walker", value: "Done", note: p.afterWeightBearing },
+    braceLeft > 0
       ? {
           label: "Brace",
-          value: `${braceDaysLeft} ${braceDaysLeft === 1 ? "day" : "days"}`,
-          note: "Left wearing it when walking",
+          value: days(braceLeft),
+          note: p.braceWeeksUpTo ? `left at least (${braceText(p)} in all). Wear it when walking.` : "left. Wear it when walking.",
         }
-      : { label: "Brace", value: "Done", note: "No longer needed when walking" },
+      : braceMaxLeft > 0
+        ? { label: "Brace", value: braceText(p), note: "in all. Wear it when walking." }
+        : { label: "Brace", value: "Done", note: "No longer needed when walking" },
     a.phase?.n === 1
-      ? { label: "Hip flexion limit", value: `${p.flexionLimitDeg}°`, note: "No sitting with the hip bent past this" }
-      : { label: "Aqua therapy", value: "Allowed", note: "Once the incision is fully healed" },
-    a.daysSince < differenceInCalendarDays(running, surgery)
-      ? { label: "Running", value: formatUS(running), note: "Earliest start of running and high impact" }
-      : { label: "Running", value: "Allowed", note: "Follow your therapist's running progression" },
+      ? { label: "Sitting", value: `${p.flexionLimitDeg}°`, note: "Do not bend the hip past a right angle." }
+      : { label: "Pool therapy", value: "Allowed", note: "Once the incision is fully healed" },
+    a.daysSince < drivingDay
+      ? { label: "Driving", value: "Not yet", note: "Off pain pills and able to lift your leg." }
+      : { label: "Driving", value: "When ready", note: "Off narcotic pain medication, able to lift your leg, and in full control of it." },
   ];
 
   const current = a.phase?.n ?? 5;
