@@ -271,6 +271,8 @@ Eight milestones, each its own branch and pull request with a preview link, then
 7. **Print and polish.** Print center, light/dark theme switch, axe and keyboard pass, Lighthouse, page-view analytics, hidden /walkthrough with checkpoint states for both variants. **Gate 2: his walkthrough.**
 8. **Launch.** Squarespace DNS to Vercel, remove /walkthrough, QR codes per variant (PNG and print PDF), swap in his corrected PDFs, add the site address and QR code to his printed letters.
 
+   Built 11/19/2026 (milestone 8): /walkthrough redirects to the home page. `docs/launch/` holds a QR code for each procedure (`/start?p=standard`, `/start?p=max-transfer`) and one for the site, each as a PNG and a letter-size print PDF (`scripts/make-launch-qr.mjs`, each checked by decoding it). Copies of the three letters add one closing block (the site QR code, "Your recovery guide online", gluterepair.com) after the last line and change nothing else; page counts in Word are unchanged (`scripts/add-site-to-letters.py`). The corrections in section 11 are not applied to these copies. The print center keeps its generated sheets until his PDFs arrive; a test checks that any PDF set in `src/content/print.ts` exists. Domain steps: `docs/launch/2026-11-19-domain-steps.md`.
+
 ## 11. Decisions, change list and sources
 
 **Decisions from Dr. Gombera (10/31/2026)**

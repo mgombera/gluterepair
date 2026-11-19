@@ -4,8 +4,8 @@ import { Card, Container, SectionTitle } from "@/components/ui";
 import { routeInfo } from "@/lib/routes";
 import { PRACTICE } from "@/lib/site";
 
-// About Dr. Gombera, from the approved sibling-site page. Credentials are
-// confirmed with him at the milestone 7 walkthrough.
+// About Dr. Gombera, from the approved sibling-site page. Credentials to be
+// confirmed with him before launch.
 
 const r = routeInfo("/about");
 export const metadata: Metadata = { title: r.title, description: r.summary, alternates: { canonical: "/about" } };

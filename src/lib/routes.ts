@@ -1,11 +1,13 @@
 // Every public route in the site map (scope section 3). Used by navigation,
-// placeholder pages, the sitemap and the route test. /start, /proof and
-// /walkthrough are internal and stay out of this list.
+// placeholder pages, the sitemap and the route test. /start and /proof are
+// internal and stay out of this list.
 
 /** Removed pages and where they now point (scope section 3). */
 export const LEGACY_REDIRECTS: { source: string; destination: string }[] = [
   { source: "/after/exercises", destination: "/after/timeline" },
   { source: "/red-flags", destination: "/after/when-to-call" },
+  // The Gate 2 review page, removed at launch (milestone 8).
+  { source: "/walkthrough", destination: "/" },
 ];
 
 export type Mode = "before" | "after" | "general";
