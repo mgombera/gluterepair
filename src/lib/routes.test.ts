@@ -27,7 +27,7 @@ function sourceFiles(dir: string): string[] {
   });
 }
 
-const INTERNAL = ["/start", "/proof", "/walkthrough"];
+const INTERNAL = ["/start", "/proof"];
 // Pages under a site-map route: the four print sheets belong to the Print Center.
 const SUBPAGES = ["/print/[id]"];
 
@@ -126,7 +126,11 @@ describe("shell copy", () => {
 
   it("redirects removed pages permanently", async () => {
     const redirects = await (await import("../../next.config")).default.redirects!();
-    for (const [from, to] of [["/after/exercises", "/after/timeline"], ["/red-flags", "/after/when-to-call"]]) {
+    for (const [from, to] of [
+      ["/after/exercises", "/after/timeline"],
+      ["/red-flags", "/after/when-to-call"],
+      ["/walkthrough", "/"],
+    ]) {
       expect(redirects).toContainEqual({ source: from, destination: to, permanent: true });
     }
   });

@@ -11,7 +11,7 @@ import { PROTOCOL_NOTICE } from "@/content";
 // to change or clear their information. Renders nothing until the browser has
 // read the saved profile, and nothing on the home page (it has its own card)
 // or the internal pages.
-const HIDDEN = ["/", "/start", "/proof", "/walkthrough"];
+const HIDDEN = ["/", "/start", "/proof"];
 
 export function StatusBar() {
   const profile = useProfile();

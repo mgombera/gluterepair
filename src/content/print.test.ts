@@ -24,6 +24,12 @@ describe("print center", () => {
       expect(s.title + s.summary).not.toMatch(/—/);
     }
   });
+
+  it("finds every PDF it points at in public/print", () => {
+    for (const s of PRINT_SHEETS) {
+      for (const f of Object.values(s.pdf)) expect(existsSync(join(__dirname, "../../public", f!)), f).toBe(true);
+    }
+  });
 });
 
 describe("printed sheets", () => {
