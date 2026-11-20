@@ -10,6 +10,10 @@
 #     so the empty spacer lines on page 2 are made shorter (no words change),
 #     which also removes the blank third page Word showed.
 #   - PT protocol: at the end, after the last line.
+#
+# Brace and weight bearing, as he asked on 11/20/2026: protected weight bearing
+# for 4 weeks and the brace for 6 weeks, matching scope section 11. EDITS lists
+# every wording change; nothing else in the text changes.
 
 import docx
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -18,11 +22,63 @@ from docx.oxml.ns import qn
 from docx.shared import Inches, Pt
 
 SRC = "docs/source/2026-10-31-{}.docx"
-OUT = "docs/launch/2026-11-19-{}-with-site.docx"
+OUT = "docs/launch/2026-11-20-{}-with-site.docx"
 QR = "docs/launch/2026-11-19-qr-site.png"
 TITLE = "Your recovery guide online"
 ADDRESS = "gluterepair.com"
 HOW = "Scan the code with your phone camera, or type the address."
+
+
+EDITS = {
+    "preop-letter": [
+        ("This typically requires 4 weeks on crutches or a walker.", "This requires 4 weeks of protected weight bearing on crutches or a walker."),
+        ("a brace for 4 to 6 weeks when walking", "a brace for 6 weeks when walking"),
+    ],
+    "discharge-instructions": [
+        ("with crutches after surgery for 6 weeks", "with crutches or a walker after surgery for 4 weeks"),
+        ("Use the brace when walking and sitting.", "Use the brace when walking."),
+        ("when walking for the first 4 weeks after surgery", "when walking for the first 6 weeks after surgery"),
+    ],
+    "pt-protocol-open-glute": [
+        ("Hip brace with ambulation x 4 weeks, 20# weight bearing with foot flat pattern during walking x 6 weeks,",
+         "Hip brace with ambulation x 6 weeks, 20# weight bearing with foot flat pattern during walking x 4 weeks, then wean from crutches or walker (some patients need a cane),"),
+        ("Wean from crutches, normalize gait pattern, restore", "Normalize gait pattern, restore"),
+        ("walking pattern x 6 weeks, then progress to full WB", "walking pattern x 4 weeks, then wean from crutches or walker and progress to full WB; some patients need a cane"),
+        ("Wear hip brace while ambulating x 4 weeks", "Wear hip brace while ambulating x 6 weeks"),
+        ("Hip brace when ambulating for 4 weeks", "Hip brace when ambulating for 6 weeks"),
+        ("foot flat gait pattern x 6 weeks, then WBAT", "foot flat gait pattern x 4 weeks, then WBAT"),
+        ("Wean from crutches, normalize gait pattern", "Normalize gait pattern"),
+    ],
+}
+
+
+def replace_in_runs(p, old, new):
+    """Replace text that may span several runs. The new text takes the first
+    run's formatting; the rest of the old text is removed from later runs."""
+    runs = [r for r in p.iter(qn("w:t"))]
+    full = "".join(t.text or "" for t in runs)
+    i = full.find(old)
+    if i < 0:
+        return False
+    end, pos, placed = i + len(old), 0, False
+    for t in runs:
+        s = t.text or ""
+        a, b = pos, pos + len(s)
+        pos = b
+        if b <= i or a >= end:
+            continue
+        lo, hi = max(i, a) - a, min(end, b) - a
+        t.text = s[:lo] + ("" if placed else new) + s[hi:]
+        t.set("{http://www.w3.org/XML/1998/namespace}space", "preserve")
+        placed = True
+    return True
+
+
+def apply_edits(d, name):
+    for old, new in EDITS[name]:
+        hits = [p for p in d.element.body.iter(qn("w:p")) if replace_in_runs(p, old, new)]
+        if len(hits) != 1:
+            raise SystemExit(f"{name}: {old!r} matched {len(hits)} paragraphs, expected 1")
 
 
 def text(el):
@@ -59,6 +115,7 @@ def side_by_side(d, qr_in, size=10):
 
 def preop():
     d = docx.Document(SRC.format("preop-letter"))
+    apply_edits(d, "preop-letter")
     body = list(d.element.body)
     # Shrink the hip diagram (the second picture) to 70 percent.
     pics = [el for el in body if list(el.iter(qn("wp:extent")))]
@@ -117,6 +174,7 @@ def shrink_blank(p, half_points):
 
 def at_end(name, qr_in, tighten_from=None):
     d = docx.Document(SRC.format(name))
+    apply_edits(d, name)
     paras = [el for el in d.element.body if el.tag == qn("w:p")]
     last = [el for el in paras if text(el).strip()][-1]
     if tighten_from:

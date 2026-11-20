@@ -91,7 +91,7 @@ export function AfterDashboard() {
         {m.tiles.map((t) => (
           <div key={t.label} className="flex flex-col gap-0.5 rounded-xl border border-border bg-surface p-3.5">
             <dt className="text-[15px] text-muted">{t.label}</dt>
-            <dd className={`m-0 font-bold leading-tight text-brand-ink ${t.value.length > 8 ? "text-[22px]" : "text-3xl"}`}>{t.value}</dd>
+            <dd className={`m-0 font-bold leading-tight text-brand-ink ${t.value.length > 8 ? "text-[22px] sm:text-3xl" : "text-3xl"}`}>{t.value}</dd>
             <dd className="m-0 text-[15px]">{t.note}</dd>
           </div>
         ))}

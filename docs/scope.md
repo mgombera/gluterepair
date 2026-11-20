@@ -169,7 +169,7 @@ Built 11/18/2026 (milestone 4): the countdown reads "12 days to go" under the pr
 
 **6.3 After dashboard.** Day count, phase and week, phase bar sized by real phase length. Tiles: weight bearing (days left on crutches or walker, then cane as needed), brace (days left), hip bending limit (90° when sitting), driving criteria, running and high impact (6 months). One line linking the optional home program. No weekly exercises. Coming up: off crutches, brace off, aqua therapy, elliptical, resisted bike, running; each labeled "estimate; your therapist decides." Snapshot tests at days 1, 18, 30, 45, 70, 100 and 130 for both variants.
 
-Built 11/18/2026 (milestone 5), following the approved After screen: tiles are crutches or walker (days left), brace (days left; "6 to 8 weeks" in the transfer's last two weeks), sitting 90° in Phase I (then pool therapy), and driving ("Not yet" before about 3 weeks, then the criteria). Running and high impact is in Coming up. "My protocol is different" shows "Standard protocol, as a guide."
+Built 11/18/2026 (milestone 5), following the approved After screen: tiles are crutches or walker (days left), brace (days left; "6 to 8 weeks" in the transfer's last two weeks), sitting 90° in Phase I (then pool therapy), and driving ("Not yet" before about 3 weeks, then the criteria). Running and high impact is in Coming up. On 11/20/2026 he asked for "left" to be part of the big number on the crutches and brace tiles ("10 days left"; "At least 24 days left" for the transfer). "My protocol is different" shows "Standard protocol, as a guide."
 
 **6.4 Timeline.** All phases, current one highlighted, goals and criteria. "Recovery is not a straight line. You move to the next phase when your therapist confirms you meet its criteria."
 
@@ -346,6 +346,8 @@ Eight milestones, each its own branch and pull request with a preview link, then
 | PT protocol | Title "REHABILIATION" | REHABILITATION |
 | New | No max transfer protocol | One-page max transfer addendum: 6 weeks protected at 20 lb, brace 6 to 8 weeks, cane in transition |
 | All three | No site address | Add gluterepair.com and the QR code at launch |
+
+Done 11/20/2026, at his request: the brace and weight-bearing rows above (protected weight bearing 4 weeks, brace 6 weeks) are applied to the launch copies in `docs/launch/2026-11-20-*-with-site.docx` and their PDFs, by `scripts/add-site-to-letters.py`. The PT protocol now says to wean from crutches or walker at week 4 (Phase I overview and progression), and "Wean from crutches" is removed from Phase II and week 7. The other rows are still open. His originals in `docs/source/` are unchanged.
 
 **Source documents (supplied 10/31/2026, in `docs/source/`)**
 
