@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { PRINT_SHEETS, pdfFor } from "./print";
+import { PRINT_LETTERS, PRINT_SHEETS, pdfFor, pdfHref } from "./print";
 
 describe("print center", () => {
   it("has the four sheets from the scope", () => {
@@ -29,6 +29,18 @@ describe("print center", () => {
     for (const s of PRINT_SHEETS) {
       for (const f of Object.values(s.pdf)) expect(existsSync(join(__dirname, "../../public", f!)), f).toBe(true);
     }
+  });
+
+  it("uses his PDFs: FAQ for everyone, post-op sheet for everyone, PT protocol for the open repair only", () => {
+    expect(PRINT_LETTERS.map((l) => l.pdf)).toEqual(["/print/OPEN Glute Repair FAQ.pdf"]);
+    expect(pdfFor(PRINT_SHEETS[2], "max-transfer")).toBe("/print/OPEN Glute Post Op Instructions.pdf");
+    expect(pdfFor(PRINT_SHEETS[1], "standard")).toBe("/print/Open Glute Repair PT Protocol.pdf");
+    expect(pdfFor(PRINT_SHEETS[1], "max-transfer")).toBeNull();
+    for (const l of PRINT_LETTERS) expect(existsSync(join(__dirname, "../../public", l.pdf)), l.pdf).toBe(true);
+  });
+
+  it("encodes spaces in PDF links", () => {
+    expect(pdfHref("/print/OPEN Glute Repair FAQ.pdf")).toBe("/print/OPEN%20Glute%20Repair%20FAQ.pdf");
   });
 });
 

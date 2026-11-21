@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { PRINT_SHEETS, pdfFor } from "@/content";
+import { PRINT_LETTERS, PRINT_SHEETS, pdfFor, pdfHref } from "@/content";
 import { useHydrated, useProfile } from "@/lib/profile";
 import { procedureLabel } from "@/lib/procedures";
 import { formatUS, fromISO } from "@/lib/recovery";
 
-// The print center (scope 6.10): four sheets. Where Dr. Gombera has supplied
-// his own PDF (src/content/print.ts), that is offered first.
+// The print center (scope 6.10): his letters as PDFs, then four sheets. Where
+// Dr. Gombera has supplied his own PDF (src/content/print.ts), that is offered
+// first.
 
 const primary = "inline-flex min-h-12 items-center rounded-xl bg-accent px-5 font-semibold text-accent-ink no-underline";
 
@@ -39,6 +40,17 @@ export function PrintCenter() {
         </p>
       )}
       <ul className="m-0 grid list-none gap-4 p-0 md:grid-cols-2">
+        {PRINT_LETTERS.map((l) => (
+          <li key={l.id} className="flex flex-col gap-3 rounded-[14px] border border-border bg-surface p-5">
+            <h2 className="m-0 text-[22px] font-bold text-brand-ink">{l.title}</h2>
+            <p className="m-0 text-muted">{l.summary}</p>
+            <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-2">
+              <a href={pdfHref(l.pdf)} className={primary}>
+                Open PDF<span className="sr-only">: {l.title}</span>
+              </a>
+            </div>
+          </li>
+        ))}
         {PRINT_SHEETS.map((s) => {
           const pdf = pdfFor(s, proc);
           return (
@@ -48,7 +60,7 @@ export function PrintCenter() {
               <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-2">
                 {pdf ? (
                   <>
-                    <a href={pdf} className={primary}>
+                    <a href={pdfHref(pdf)} className={primary}>
                       Open PDF<span className="sr-only">: {s.title}</span>
                     </a>
                     <Link href={`/print/${s.id}`} className="inline-flex min-h-12 items-center font-semibold underline underline-offset-2">
