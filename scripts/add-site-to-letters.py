@@ -28,6 +28,15 @@ ADDRESS = "gluterepair.com"
 HOW = "Scan the code with your phone camera, or type the address."
 
 
+def save(d, name):
+    """Never replace an existing copy: he edits these by hand (11/21/2026)."""
+    import os
+    out = OUT.format(name)
+    if os.path.exists(out):
+        raise SystemExit(f"{out} exists; not overwriting it (it may hold his edits)")
+    d.save(out)
+
+
 def text(el):
     return "".join(t.text or "" for t in el.iter(qn("w:t")))
 
@@ -90,7 +99,7 @@ def preop():
     for q in new:
         anchor.addnext(q._p)
         anchor = q._p
-    d.save(OUT.format("preop-letter"))
+    save(d, "preop-letter")
 
 
 def shrink_blank(p, half_points):
@@ -136,7 +145,7 @@ def at_end(name, qr_in, tighten_from=None):
         if tail:
             shrink_blank(tail[-1], 2)
     last.addnext(side_by_side(d, qr_in))
-    d.save(OUT.format(name))
+    save(d, name)
 
 
 preop()

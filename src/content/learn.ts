@@ -155,14 +155,14 @@ export const FAQ: FaqItem[] = [
     id: "shower",
     group: "after",
     q: "When can I shower?",
-    a: "48 hours after surgery. Cover the dressing with waterproof bandages when you shower. Take the brace off to shower. No baths or soaking.",
+    a: "48 hours after surgery, once the outer bulky dressing is off. Cover the rest of the dressing with waterproof bandages when you shower. Take the brace off to shower. No baths or soaking.",
     source: ["discharge"],
   },
   {
     id: "dressings-mail",
     group: "after",
     q: "What if I was sent dressing supplies?",
-    a: "Remove the waterproof dressing and apply the new dressings starting on day 4 after surgery. Otherwise, remove the outer bulky dressing 2 to 3 days after surgery, then cover the rest of the dressing with waterproof bandages until your first post-op visit.",
+    a: "Remove the remaining dressing and apply the new dressings starting on day 4 after surgery. Otherwise, remove the outer bulky dressing 2 to 3 days after surgery, then cover the rest of the dressing with waterproof bandages until your first post-op visit.",
     source: ["discharge"],
   },
   {
@@ -176,7 +176,7 @@ export const FAQ: FaqItem[] = [
     id: "brace",
     group: "after",
     q: "How long will I wear the brace?",
-    a: "When walking, for 6 weeks (6 to 8 weeks after a Gluteus Maximus Transfer). It can come off to shower, during exercises and at night.",
+    a: "When walking, for 6 weeks (6 to 8 weeks after a Gluteus Maximus Transfer). It can come off when sitting, to shower, during exercises and at night.",
     source: ["decisions", "discharge"],
   },
   {

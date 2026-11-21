@@ -2,7 +2,8 @@ import type { ProtocolId } from "./types";
 
 // Print center (scope 6.10). Four sheets for each procedure. Each sheet is generated from the site's content
 // until Dr. Gombera supplies his own edited PDF. To substitute a PDF:
-//   1. Put the file in public/print/ (name it YYYY-MM-DD-descriptive-name.pdf).
+//   1. Put the file in public/print/. His own PDFs keep his file names
+//      (11/21/2026), spaces included; links encode them with pdfHref().
 //   2. Set `pdf` below: `all` for one file for every procedure, or one entry
 //      per procedure (a procedure entry wins over `all`).
 // With a PDF set, the print center offers the PDF and the generated page is
@@ -32,14 +33,17 @@ export const PRINT_SHEETS: PrintSheet[] = [
     title: "Physical therapy protocol",
     summary: "Your four phases, restrictions, goals and when to move on. Bring it to your therapist.",
     matches: "PT protocol: Open Gluteus Tendon Repair",
-    pdf: {},
+    // His PDF is the Open Gluteus Tendon Repair protocol. Gluteus Maximus
+    // Transfer patients keep the generated sheet with their longer weight
+    // bearing and brace (his decision, 11/21/2026).
+    pdf: { standard: "/print/Open Glute Repair PT Protocol.pdf" },
   },
   {
     id: "care",
     title: "Home care sheet",
     summary: "Dressing, showering, ice, brace, activity, driving, work and medications.",
     matches: "Discharge sheet",
-    pdf: {},
+    pdf: { all: "/print/OPEN Glute Post Op Instructions.pdf" },
   },
   {
     id: "red-flags",
@@ -49,6 +53,24 @@ export const PRINT_SHEETS: PrintSheet[] = [
     pdf: {},
   },
 ];
+
+/** Dr. Gombera's letters offered as PDFs only, with no generated version. */
+export type PrintLetter = { id: string; title: string; summary: string; matches: string; pdf: string };
+
+export const PRINT_LETTERS: PrintLetter[] = [
+  {
+    id: "faq",
+    title: "What to expect (FAQ)",
+    summary: "Dr. Gombera's letter: the surgery, going home, PreAdmit, recovery, risks and pain medication.",
+    matches: "Pre-op letter",
+    pdf: "/print/OPEN Glute Repair FAQ.pdf",
+  },
+];
+
+/** A link to a file in public/print, with spaces and other characters encoded. */
+export function pdfHref(path: string): string {
+  return encodeURI(path);
+}
 
 export function printSheet(id: string): PrintSheet | undefined {
   return PRINT_SHEETS.find((s) => s.id === id);

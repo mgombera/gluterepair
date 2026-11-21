@@ -46,7 +46,7 @@ export type Milestone = { id: string; label: string; date: Date; dayAfterSurgery
 export function milestones(surgery: Date, protocol: Protocol): Milestone[] {
   const at = (day: number) => addDays(surgery, day);
   const list: Omit<Milestone, "dayAfterSurgery">[] = [
-    { id: "shower", label: "You may shower. The outer bulky dressing comes off at 2 to 3 days", date: at(2) },
+    { id: "shower", label: "The outer bulky dressing comes off (2 to 3 days); you may shower once it is off", date: at(2) },
     { id: "pt-start", label: "Formal physical therapy usually begins (days 3 to 5)", date: at(3) },
     { id: "desk-work", label: "Most office jobs can resume (1 to 2 weeks)", date: at(7) },
     { id: "first-visit", label: "First post-op visit (days 10 to 14)", date: at(10) },

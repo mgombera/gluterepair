@@ -19,6 +19,7 @@ import {
   USUALLY_NORMAL,
   exerciseById,
   pdfFor,
+  pdfHref,
   printSheet,
 } from "@/content";
 import type { InfoSection, PrintSheetId, ProtocolId } from "@/content";
@@ -241,7 +242,7 @@ export function PrintSheetView({ id }: { id: PrintSheetId }) {
             Print this page
           </button>
           {pdf && (
-            <a href={pdf} className="inline-flex min-h-12 items-center font-semibold underline underline-offset-2">
+            <a href={pdfHref(pdf)} className="inline-flex min-h-12 items-center font-semibold underline underline-offset-2">
               Open Dr. Gombera&apos;s PDF instead
             </a>
           )}

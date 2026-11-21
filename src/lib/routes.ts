@@ -37,7 +37,7 @@ export const ROUTES: RouteInfo[] = [
   { path: "/about", title: "About Dr. Gombera", summary: "Your surgeon, his training and his practice.", mode: "general", milestone: 6 },
   { path: "/contact", title: "Contact", summary: "Office, after hours, PreAdmit, email, the patient portal and the address.", mode: "general", milestone: 6 },
   { path: "/privacy", title: "Privacy", summary: "What this site stores and what it never collects.", mode: "general", milestone: 6 },
-  { path: "/print", title: "Print Center", summary: "Printable checklist, protocol, home care and when-to-call sheets for your procedure.", mode: "general", milestone: 7 },
+  { path: "/print", title: "Print Center", summary: "Dr. Gombera's What to Expect letter, and printable checklist, protocol, home care and when-to-call sheets for your procedure.", mode: "general", milestone: 7 },
 ];
 
 export const PRIMARY_NAV = [
