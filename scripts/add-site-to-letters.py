@@ -1,4 +1,4 @@
-# Copy Dr. Gombera's three letters (docs/source/) and add the gluterepair.com
+# Copy Dr. Gombera's three letters (corrected clean copies) and add the gluterepair.com
 # QR code and address. Nothing else in the text changes. Run by hand from the
 # repo root (needs python-docx 1.1.2):
 #   python scripts/add-site-to-letters.py
@@ -10,6 +10,9 @@
 #     so the empty spacer lines on page 2 are made shorter (no words change),
 #     which also removes the blank third page Word showed.
 #   - PT protocol: at the end, after the last line.
+#
+# It starts from the clean copies made by scripts/track-letter-edits.py (his
+# letters with his wording changes accepted), so run that first.
 
 import docx
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -17,8 +20,8 @@ from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Inches, Pt
 
-SRC = "docs/source/2026-10-31-{}.docx"
-OUT = "docs/launch/2026-11-19-{}-with-site.docx"
+SRC = "docs/launch/2026-11-21-{}-clean.docx"
+OUT = "docs/launch/2026-11-21-{}-with-site.docx"
 QR = "docs/launch/2026-11-19-qr-site.png"
 TITLE = "Your recovery guide online"
 ADDRESS = "gluterepair.com"
@@ -137,6 +140,6 @@ def at_end(name, qr_in, tighten_from=None):
 
 
 preop()
-at_end("discharge-instructions", 0.6, tighten_from="It is best to wait")
+at_end("discharge-instructions", 0.6, tighten_from="BATHING")
 at_end("pt-protocol-open-glute", 0.8)
 print("Wrote the three letters to docs/launch/")

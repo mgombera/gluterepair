@@ -15,18 +15,18 @@ type Row = [day: number, phase: number | null, week: number, crutches: string, b
 // Tiles from the approved After screen: crutches or walker, brace, sitting (Phase I) or pool therapy, driving.
 const EXPECTED: Record<"standard" | "max-transfer", Row[]> = {
   standard: [
-    [1, 1, 1, "27 days", "41 days", "90°", "Not yet"],
-    [18, 1, 3, "10 days", "24 days", "90°", "Not yet"], // the design example
-    [30, 1, 5, "Done", "12 days", "90°", "When ready"],
+    [1, 1, 1, "27 days left", "41 days left", "90°", "Not yet"],
+    [18, 1, 3, "10 days left", "24 days left", "90°", "Not yet"], // the design example
+    [30, 1, 5, "Done", "12 days left", "90°", "When ready"],
     [45, 2, 7, "Done", "Done", "Allowed", "When ready"],
     [70, 3, 11, "Done", "Done", "Allowed", "When ready"],
     [100, 3, 15, "Done", "Done", "Allowed", "When ready"],
     [130, 4, 19, "Done", "Done", "Allowed", "When ready"],
   ],
   "max-transfer": [
-    [1, 1, 1, "41 days", "41 days", "90°", "Not yet"],
-    [18, 1, 3, "24 days", "24 days", "90°", "Not yet"],
-    [30, 1, 5, "12 days", "12 days", "90°", "When ready"],
+    [1, 1, 1, "At least 41 days left", "At least 41 days left", "90°", "Not yet"],
+    [18, 1, 3, "At least 24 days left", "At least 24 days left", "90°", "Not yet"],
+    [30, 1, 5, "At least 12 days left", "At least 12 days left", "90°", "When ready"],
     [45, 2, 7, "Done", "6 to 8 weeks", "Allowed", "When ready"],
     [70, 3, 11, "Done", "Done", "Allowed", "When ready"],
     [100, 3, 15, "Done", "Done", "Allowed", "When ready"],
@@ -57,10 +57,10 @@ describe("dashboard details", () => {
 
   it("words the tiles as on the approved After screen", () => {
     const n = (m: ReturnType<typeof at>, l: string) => m.tiles.find((t) => t.label === l)?.note;
-    expect(n(at(18, "standard"), "Crutches or walker")).toBe("left, 20 lb foot flat. Then a cane if you need one.");
-    expect(n(at(18, "standard"), "Brace")).toBe("left. Wear it when walking.");
-    expect(n(at(18, "max-transfer"), "Crutches or walker")).toMatch(/^left at least, 20 lb foot flat\. Weight bearing as tolerated/);
-    expect(n(at(18, "max-transfer"), "Brace")).toBe("left at least (6 to 8 weeks in all). Wear it when walking.");
+    expect(n(at(18, "standard"), "Crutches or walker")).toBe("20 lb foot flat. Then a cane if you need one.");
+    expect(n(at(18, "standard"), "Brace")).toBe("Wear it when walking.");
+    expect(n(at(18, "max-transfer"), "Crutches or walker")).toMatch(/^20 lb foot flat\. Weight bearing as tolerated/);
+    expect(n(at(18, "max-transfer"), "Brace")).toBe("6 to 8 weeks in all. Wear it when walking.");
   });
 
   it("marks phases done, current and next", () => {

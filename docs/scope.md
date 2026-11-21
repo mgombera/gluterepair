@@ -60,7 +60,7 @@ After surgery tabs, in order: Dashboard, Home Care, Timeline, Home Program, When
 | / | Home | Surgery date (or "not scheduled yet") and procedure; returning visitors land on their dashboard |
 | /start?p= | QR preset | Preselects the procedure only (standard or max-transfer), never a date |
 | /before | Before Surgery | Countdown, readiness bar, PreAdmit alert, checklist (Now, 1 week before, Night before) |
-| /before/surgery-day | Surgery Day | Arrival call, Operative Permit ("Hip Gluteus Repair"), general anesthesia with possible nerve block, surgery 40 to 80 minutes, one night in the hospital |
+| /before/surgery-day | Surgery Day | Arrival call, Operative Permit ("Hip Gluteus Repair"), general anesthesia with possible nerve block, surgery 40 to 80 minutes, typically home the same day (outpatient, 11/21/2026) |
 | /before/diagnosis | Your Diagnosis | Gluteus medius and minimus tears ("rotator cuff of the hip"), why surgery, alternatives, 85 to 90% success, full risk list |
 | /before/add-ons | Add-ons | Biologic options, "Call for pricing" |
 | /after | Recovery Dashboard | Day count, phase and week, status tiles, coming-up unlocks, one home program line |
@@ -169,7 +169,7 @@ Built 11/18/2026 (milestone 4): the countdown reads "12 days to go" under the pr
 
 **6.3 After dashboard.** Day count, phase and week, phase bar sized by real phase length. Tiles: weight bearing (days left on crutches or walker, then cane as needed), brace (days left), hip bending limit (90° when sitting), driving criteria, running and high impact (6 months). One line linking the optional home program. No weekly exercises. Coming up: off crutches, brace off, aqua therapy, elliptical, resisted bike, running; each labeled "estimate; your therapist decides." Snapshot tests at days 1, 18, 30, 45, 70, 100 and 130 for both variants.
 
-Built 11/18/2026 (milestone 5), following the approved After screen: tiles are crutches or walker (days left), brace (days left; "6 to 8 weeks" in the transfer's last two weeks), sitting 90° in Phase I (then pool therapy), and driving ("Not yet" before about 3 weeks, then the criteria). Running and high impact is in Coming up. "My protocol is different" shows "Standard protocol, as a guide."
+Built 11/18/2026 (milestone 5), following the approved After screen: tiles are crutches or walker (days left), brace (days left; "6 to 8 weeks" in the transfer's last two weeks), sitting 90° in Phase I (then pool therapy), and driving ("Not yet" before about 3 weeks, then the criteria). Running and high impact is in Coming up. On 11/20/2026 he asked for "left" to be part of the big number on the crutches and brace tiles ("10 days left"; "At least 24 days left" for the transfer). "My protocol is different" shows "Standard protocol, as a guide."
 
 **6.4 Timeline.** All phases, current one highlighted, goals and criteria. "Recovery is not a straight line. You move to the next phase when your therapist confirms you meet its criteria."
 
@@ -284,6 +284,8 @@ Eight milestones, each its own branch and pull request with a preview link, then
 | Variants | Open Gluteus Tendon Repair (standard) and Gluteus Maximus Transfer |
 | Standard weight bearing | 4 weeks protected, 20 lb foot flat; wean crutches and/or walker at week 4; some patients need a cane |
 | Standard brace | When walking, 6 weeks |
+| Hospital stay (11/21/2026) | Outpatient: typically home the same day; on rare occasions a patient stays one night. Packing: a small bag in case of an overnight stay |
+| Dressing (11/21/2026) | Not waterproof. Outer bulky dressing off at 2 to 3 days; cover the rest with waterproof bandages until the first post-op visit and when showering. Shower from 48 hours. The dressing-supplies line (new dressings from day 4) stays as written |
 | Max transfer | Protected weight bearing 6 weeks minimum, 20 lb foot flat; shares the standard pre-op letter and discharge sheet; brace 6 to 8 weeks; cane in transition after 6 weeks when weight bearing as tolerated; otherwise the standard protocol |
 | Phase weeks | Unchanged; Phase III weeks 10 to 16; Phase IV from fixmyhips |
 | Running and high impact | 6 months |
@@ -346,6 +348,10 @@ Eight milestones, each its own branch and pull request with a preview link, then
 | PT protocol | Title "REHABILIATION" | REHABILITATION |
 | New | No max transfer protocol | One-page max transfer addendum: 6 weeks protected at 20 lb, brace 6 to 8 weeks, cane in transition |
 | All three | No site address | Add gluterepair.com and the QR code at launch |
+
+Done 11/20/2026, at his request: the brace and weight-bearing rows above (protected weight bearing 4 weeks, brace 6 weeks) are applied to the launch copies (now `docs/launch/2026-11-21-*`). The PT protocol now says to wean from crutches or walker at week 4 (Phase I overview and progression), and "Wean from crutches" is removed from Phase II and week 7. The other rows are still open. His originals in `docs/source/` are unchanged.
+
+Updated 11/21/2026: all of his wording changes (11/20 brace and weight bearing; 11/21 same-day surgery in the pre-op letter and the dressing lines in the discharge sheet) are made as Word tracked changes by `scripts/track-letter-edits.py`, giving `docs/launch/2026-11-21-*-tracked-changes.docx` and `-clean.docx`. `scripts/add-site-to-letters.py` adds the QR code to the clean copies (`-with-site.docx` and PDF). Word page counts match his originals, and the discharge sheet with the QR code stays on 2 pages.
 
 **Source documents (supplied 10/31/2026, in `docs/source/`)**
 

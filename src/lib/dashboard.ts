@@ -37,15 +37,15 @@ export function dashboardModel(surgery: Date, today: Date, procedure: Procedure)
     a.partialWeightBearing
       ? {
           label: "Crutches or walker",
-          value: days(daysUntil(wb.weeks)),
-          note: `${wb.minimum ? "left at least" : "left"}, ${wb.partialLbs} lb foot flat. ${wb.minimum ? p.afterWeightBearing : "Then a cane if you need one."}`,
+          value: `${wb.minimum ? "At least " : ""}${days(daysUntil(wb.weeks))} left`,
+          note: `${wb.partialLbs} lb foot flat. ${wb.minimum ? p.afterWeightBearing : "Then a cane if you need one."}`,
         }
       : { label: "Crutches or walker", value: "Done", note: p.afterWeightBearing },
     braceLeft > 0
       ? {
           label: "Brace",
-          value: days(braceLeft),
-          note: p.braceWeeksUpTo ? `left at least (${braceText(p)} in all). Wear it when walking.` : "left. Wear it when walking.",
+          value: `${p.braceWeeksUpTo ? "At least " : ""}${days(braceLeft)} left`,
+          note: p.braceWeeksUpTo ? `${braceText(p)} in all. Wear it when walking.` : "Wear it when walking.",
         }
       : braceMaxLeft > 0
         ? { label: "Brace", value: braceText(p), note: "in all. Wear it when walking." }
