@@ -31,11 +31,11 @@ describe("print center", () => {
     }
   });
 
-  it("uses his PDFs: FAQ for everyone, post-op sheet for everyone, PT protocol for the open repair only", () => {
+  it("uses his PDFs: FAQ and post-op sheet for everyone, a PT protocol for each procedure", () => {
     expect(PRINT_LETTERS.map((l) => l.pdf)).toEqual(["/print/OPEN Glute Repair FAQ.pdf"]);
     expect(pdfFor(PRINT_SHEETS[2], "max-transfer")).toBe("/print/OPEN Glute Post Op Instructions.pdf");
     expect(pdfFor(PRINT_SHEETS[1], "standard")).toBe("/print/Open Glute Repair PT Protocol.pdf");
-    expect(pdfFor(PRINT_SHEETS[1], "max-transfer")).toBeNull();
+    expect(pdfFor(PRINT_SHEETS[1], "max-transfer")).toBe("/print/Glute Max Transfer PT Protocol.pdf");
     for (const l of PRINT_LETTERS) expect(existsSync(join(__dirname, "../../public", l.pdf)), l.pdf).toBe(true);
   });
 

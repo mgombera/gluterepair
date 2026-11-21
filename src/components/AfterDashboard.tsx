@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { addDays } from "date-fns";
-import { DATES_ARE_ESTIMATES, HOME_EXERCISE_NOTE, HOME_PROGRAM_LINE, PT_OVERRIDE_NOTICE } from "@/content";
+import { DATES_ARE_ESTIMATES, HOME_PROGRAM_LINE, PT_OVERRIDE_NOTICE } from "@/content";
 import { dashboardModel } from "@/lib/dashboard";
 import { useHydrated, useProfile } from "@/lib/profile";
 import { protocolHeading } from "@/lib/procedures";
@@ -54,7 +54,7 @@ export function AfterDashboard() {
           {m.daysSince === 0 ? "Surgery day" : `Day ${m.daysSince}`}
         </h1>
         <p className="m-0 text-[19px] font-semibold">
-          {m.phase ? `Phase ${m.phase.n}, week ${m.week}: ${m.phase.name.toLowerCase()}` : "You have finished the four phases"}
+          {m.phase ? `Phase ${m.phase.n}, week ${m.week}: ${m.phase.name.toLowerCase()}` : "You have finished the formal phases"}
         </p>
       </section>
 
@@ -107,7 +107,7 @@ export function AfterDashboard() {
             See this phase&apos;s goals on your timeline
           </Link>
         ) : (
-          <p className="m-0">{HOME_EXERCISE_NOTE}</p>
+          <p className="m-0">{m.afterPhases}</p>
         )}
         <Link href="/after/home-program" className="inline-flex min-h-12 items-center font-semibold underline underline-offset-2">
           {HOME_PROGRAM_LINE}

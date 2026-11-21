@@ -45,6 +45,7 @@ export type Milestone = { id: string; label: string; date: Date; dayAfterSurgery
 /** Key dates after surgery for a protocol, sorted by date. */
 export function milestones(surgery: Date, protocol: Protocol): Milestone[] {
   const at = (day: number) => addDays(surgery, day);
+  const hasPhaseIV = protocol.phases.some((ph) => ph.n === 4);
   const list: Omit<Milestone, "dayAfterSurgery">[] = [
     { id: "shower", label: "The outer bulky dressing comes off (2 to 3 days); you may shower once it is off", date: at(2) },
     { id: "pt-start", label: "Formal physical therapy usually begins (days 3 to 5)", date: at(3) },
@@ -60,17 +61,25 @@ export function milestones(surgery: Date, protocol: Protocol): Milestone[] {
         : "Begin weaning off crutches or walker",
       date: at(protocol.weightBearing.weeks * 7),
     },
-    { id: "brace", label: protocol.braceWeeksUpTo ? "Brace may come off when walking (6 to 8 weeks)" : "Brace no longer needed when walking", date: at(protocol.braceWeeks * 7) },
+    {
+      id: "brace",
+      label: protocol.braceWeeksUpTo
+        ? "Brace may come off when walking (6 to 8 weeks, depending on your comfort and function)"
+        : "Brace no longer needed when walking",
+      date: at(protocol.braceWeeks * 7),
+    },
     ...protocol.phases.slice(1).map((ph) => ({
       id: `phase-${ph.n}`,
       label: `Phase ${ph.n} begins: ${ph.name.toLowerCase()}`,
       date: at((ph.startWeek - 1) * 7),
     })),
-    { id: "running", label: "Running and high impact can begin", date: addMonths(surgery, protocol.runningAfterMonths) },
+    // Running, high impact, agilities and jumping all at 6 months (decision 11/21/2026).
     {
-      id: "agility",
-      label: "Agility and jumping can begin",
-      date: at((protocol.agilityNotBeforeWeek - 1) * 7),
+      id: "running",
+      label: hasPhaseIV
+        ? "Running, high impact, agility and jumping can begin"
+        : "Earliest running, high impact, agility and jumping (your therapist decides)",
+      date: addMonths(surgery, protocol.runningAfterMonths),
     },
     { id: "year", label: "Home exercise program complete (1 year)", date: addMonths(surgery, 12) },
   ];
@@ -83,7 +92,7 @@ export type AfterStatus = {
   mode: "after";
   daysSince: number; // 0 = surgery day
   week: number; // 1-based
-  phase: Phase | null; // null once past Phase IV (home program)
+  phase: Phase | null; // null once past the last phase (home program)
   phaseDay: number; // 0-based day within the phase
   phaseLength: number; // days
   partialWeightBearing: boolean;

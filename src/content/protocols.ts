@@ -6,7 +6,11 @@ import type { Phase, Protocol, ProtocolId } from "./types";
 // bearing (not 6), brace 6 weeks (not 4), Phase III weeks 10 to 16, running
 // and high impact at 6 months (not 3). The Gluteus Maximus Transfer shares
 // the standard protocol except weight bearing, brace and the cane.
-// Phase IV comes from fixmyhips (decision 10/31/2026).
+// Phase IV comes from fixmyhips (decision 10/31/2026). On 11/21/2026 he
+// decided the Gluteus Maximus Transfer has no Phase IV (Phases I to III, then
+// the therapist guides return to activity, still no running or high impact
+// before 6 months), and its brace is 6 to 8 weeks depending on comfort and
+// disability ("comfort and function" for patients).
 
 const PHASE_I_WEEK_1 = [
   "hamstring-sets",
@@ -207,6 +211,10 @@ export const STANDARD: Protocol = {
   }),
 };
 
+/** After Phase III for the Gluteus Maximus Transfer (decision 11/21/2026; plain wording derived). */
+export const TRANSFER_AFTER_PHASE_III =
+  "After Phase III, your therapist guides your return to activity. No running or high-impact activity before 6 months.";
+
 export const MAX_TRANSFER: Protocol = {
   id: "max-transfer",
   title: "Gluteus Maximus Transfer",
@@ -216,17 +224,19 @@ export const MAX_TRANSFER: Protocol = {
   afterWeightBearing: "Weight bearing as tolerated, usually with a cane during the transition.",
   braceWeeks: 6,
   braceWeeksUpTo: 8,
+  braceDepends: "depending on your comfort and function",
   ...SHARED,
   therapistRom: [...THERAPIST_ROM],
   extraRestrictions: [...SHARED.extraRestrictions],
   notes: [...COMMON_NOTES],
   phases: phases({
-    braceGoal: "Hip brace when walking for 6 to 8 weeks",
+    braceGoal: "Hip brace when walking for 6 to 8 weeks, depending on your comfort and function",
     wbGoal: "20 lb weight bearing, foot flat, for at least 6 weeks",
     phaseINotes: [],
     phaseIIWeek7Notes: ["After at least 6 weeks, weight bearing as tolerated, with a cane during the transition"],
     extraSource: ["decisions"],
-  }),
+  }).slice(0, 3),
+  afterPhasesNote: TRANSFER_AFTER_PHASE_III,
 };
 
 export const PROTOCOLS: Record<ProtocolId, Protocol> = {

@@ -7,7 +7,7 @@ import { useHydrated } from "@/lib/profile";
 import { formatUS, status } from "@/lib/recovery";
 import { useProtocol } from "@/lib/useProtocol";
 import { Bullets } from "./ui";
-import { keyRules, romLimits } from "@/lib/protocolText";
+import { afterPhasesText, isLastPhase, keyRules, romLimits } from "@/lib/protocolText";
 
 export function Timeline() {
   const hydrated = useHydrated();
@@ -85,7 +85,7 @@ export function Timeline() {
                     <Bullets items={ph.criteriaToProgress} />
                   ) : (
                     <p className="m-0">
-                      {ph.n === 4 ? HOME_EXERCISE_NOTE : "Your therapist decides when you are ready for the next phase."}
+                      {isLastPhase(protocol, ph) ? afterPhasesText(protocol) : "Your therapist decides when you are ready for the next phase."}
                     </p>
                   )}
                 </div>

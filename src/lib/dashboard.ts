@@ -1,6 +1,6 @@
 import { addDays, differenceInCalendarDays } from "date-fns";
 import { protocolFor, status } from "./recovery";
-import { braceText } from "./protocolText";
+import { afterPhasesText, braceText } from "./protocolText";
 import type { AfterStatus, Milestone, Procedure } from "./recovery";
 import type { Phase } from "@/content";
 
@@ -15,6 +15,8 @@ export type DashboardModel = {
   phase: Phase | null;
   phases: { n: number; name: string; weeks: number; state: "done" | "current" | "next" }[];
   phaseProgressPct: number;
+  /** Shown once the formal phases are over. */
+  afterPhases: string;
   tiles: Tile[];
   upcoming: Milestone[];
 };
@@ -45,10 +47,10 @@ export function dashboardModel(surgery: Date, today: Date, procedure: Procedure)
       ? {
           label: "Brace",
           value: `${p.braceWeeksUpTo ? "At least " : ""}${days(braceLeft)} left`,
-          note: p.braceWeeksUpTo ? `${braceText(p)} in all. Wear it when walking.` : "Wear it when walking.",
+          note: p.braceWeeksUpTo ? `${braceText(p)} in all, ${p.braceDepends}. Wear it when walking.` : "Wear it when walking.",
         }
       : braceMaxLeft > 0
-        ? { label: "Brace", value: braceText(p), note: "in all. Wear it when walking." }
+        ? { label: "Brace", value: braceText(p), note: `in all, ${p.braceDepends}. Wear it when walking.` }
         : { label: "Brace", value: "Done", note: "No longer needed when walking" },
     a.phase?.n === 1
       ? { label: "Sitting", value: `${p.flexionLimitDeg}°`, note: "Do not bend the hip past a right angle." }
@@ -71,6 +73,7 @@ export function dashboardModel(surgery: Date, today: Date, procedure: Procedure)
       state: ph.n < current ? "done" : ph.n === current ? "current" : "next",
     })),
     phaseProgressPct: a.phase ? Math.round(((a.phaseDay + 1) / a.phaseLength) * 100) : 100,
+    afterPhases: afterPhasesText(p),
     tiles,
     upcoming: a.upcoming,
   };

@@ -40,7 +40,7 @@ export const DIAGNOSIS: InfoSection[] = [
     title: "Gluteus Maximus Transfer",
     points: [
       "Used when the gluteus medius and minimus tendons cannot be repaired back to the bone. Part of the gluteus maximus is moved over to do their job.",
-      "Recovery follows the same protocol, with longer protection: 20 lb weight bearing for at least 6 weeks and the brace for 6 to 8 weeks.",
+      "Recovery follows the same protocol through Phase III, with longer protection: 20 lb weight bearing for at least 6 weeks and the brace for 6 to 8 weeks, depending on your comfort and function. After Phase III, your therapist guides your return to activity; no running or high-impact activity before 6 months.",
     ],
     source: ["decisions"],
     derived: true,
@@ -176,7 +176,7 @@ export const FAQ: FaqItem[] = [
     id: "brace",
     group: "after",
     q: "How long will I wear the brace?",
-    a: "When walking, for 6 weeks (6 to 8 weeks after a Gluteus Maximus Transfer). It can come off when sitting, to shower, during exercises and at night.",
+    a: "When walking, for 6 weeks (6 to 8 weeks after a Gluteus Maximus Transfer, depending on your comfort and function). It can come off when sitting, to shower, during exercises and at night.",
     source: ["decisions", "discharge"],
   },
   {

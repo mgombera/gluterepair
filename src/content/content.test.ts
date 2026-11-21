@@ -9,8 +9,8 @@ const videoIds = new Set(C.VIDEOS.map((v) => v.id));
 describe("protocols", () => {
   for (const p of Object.values(C.PROTOCOLS)) {
     describe(p.id, () => {
-      it("has four phases in order with no gaps or overlaps", () => {
-        expect(p.phases.map((ph) => ph.n)).toEqual([1, 2, 3, 4]);
+      it("has its phases in order with no gaps or overlaps (no Phase IV after a transfer)", () => {
+        expect(p.phases.map((ph) => ph.n)).toEqual(p.id === "max-transfer" ? [1, 2, 3] : [1, 2, 3, 4]);
         for (let i = 1; i < p.phases.length; i++) {
           expect(p.phases[i].startWeek).toBe(p.phases[i - 1].endWeek + 1);
         }
@@ -45,14 +45,19 @@ describe("protocols", () => {
     for (const p of [standard, max]) {
       expect(p.flexionLimitDeg).toBe(90);
       expect(p.runningAfterMonths).toBe(6);
-      expect(p.phases.map((ph) => [ph.startWeek, ph.endWeek])).toEqual([[1, 6], [7, 9], [10, 16], [17, 26]]);
     }
+    expect(standard.phases.map((ph) => [ph.startWeek, ph.endWeek])).toEqual([[1, 6], [7, 9], [10, 16], [17, 26]]);
+    // 11/21/2026: no Phase IV after a transfer; brace 6 to 8 weeks depending on comfort and function.
+    expect(max.phases.map((ph) => [ph.startWeek, ph.endWeek])).toEqual([[1, 6], [7, 9], [10, 16]]);
+    expect(max.afterPhasesNote).toMatch(/No running or high-impact activity before 6 months/);
+    expect(max.braceDepends).toBe("depending on your comfort and function");
+    expect(standard.afterPhasesNote).toBeUndefined();
     expect(standard.afterWeightBearing).toMatch(/cane/);
     expect(max.afterWeightBearing).toMatch(/cane/);
   });
 
-  it("shares every exercise between the two procedures", () => {
-    const ids = (p: C.Protocol) => p.phases.flatMap((ph) => ph.weeks.flatMap((w) => w.exerciseIds));
+  it("shares Phases I to III between the two procedures", () => {
+    const ids = (p: C.Protocol) => p.phases.filter((ph) => ph.n <= 3).flatMap((ph) => ph.weeks.flatMap((w) => w.exerciseIds));
     expect(ids(C.PROTOCOLS["max-transfer"])).toEqual(ids(C.PROTOCOLS.standard));
   });
 

@@ -140,7 +140,118 @@ def roots(d):
     return out
 
 
-def apply(src, edits, tracked_out, clean_out, label, overwrite=False):
+def _mark_inserted(pPr):
+    """Mark a paragraph mark as inserted (w:ins inside pPr/rPr)."""
+    rPr = pPr.find(qn("w:rPr"))
+    if rPr is None:
+        rPr = OxmlElement("w:rPr")
+        later = [e for e in (pPr.find(qn("w:sectPr")), pPr.find(qn("w:pPrChange"))) if e is not None]
+        later[0].addprevious(rPr) if later else pPr.append(rPr)
+    mark = OxmlElement("w:ins")
+    for k, v in (("w:id", str(next(_ids))), ("w:author", AUTHOR), ("w:date", WHEN)):
+        mark.set(qn(k), v)
+    rPr.insert(0, mark)
+
+
+TAB = object()  # a tab in a run list
+PAGE_BREAK = object()  # a page break in a run list
+
+
+def new_para(template, runs):
+    """A tracked new paragraph with the template paragraph's formatting.
+    runs: a list of (rPr_source_run, text) where text may be TAB or
+    PAGE_BREAK; rPr_source_run is a w:r whose formatting is copied."""
+    p = OxmlElement("w:p")
+    tpPr = template.find(qn("w:pPr"))
+    pPr = copy.deepcopy(tpPr) if tpPr is not None else OxmlElement("w:pPr")
+    p.append(pPr)
+    _mark_inserted(pPr)
+    for src, text in runs:
+        r = OxmlElement("w:r")
+        rpr = src.find(qn("w:rPr")) if src is not None else None
+        if rpr is not None:
+            r.append(copy.deepcopy(rpr))
+        if text is TAB:
+            r.append(OxmlElement("w:tab"))
+        elif text is PAGE_BREAK:
+            br = OxmlElement("w:br")
+            br.set(qn("w:type"), "page")
+            r.append(br)
+        else:
+            t = OxmlElement("w:t")
+            t.text = text
+            t.set(XML_SPACE, "preserve")
+            r.append(t)
+        p.append(wrap("w:ins", r))
+    return p
+
+
+def new_table(rows, widths, cell_para, text_run, bold_run, header=True):
+    """A tracked new table with single borders. rows: lists of cell texts;
+    widths: column widths in twips; cell_para: a template paragraph for the
+    cells; text_run / bold_run: runs whose formatting is copied (the first row
+    and first column use bold_run when header is True)."""
+    tbl = OxmlElement("w:tbl")
+    tblPr = OxmlElement("w:tblPr")
+    tblW = OxmlElement("w:tblW")
+    tblW.set(qn("w:w"), str(sum(widths)))
+    tblW.set(qn("w:type"), "dxa")
+    tblPr.append(tblW)
+    borders = OxmlElement("w:tblBorders")
+    for b in ("top", "left", "bottom", "right", "insideH", "insideV"):
+        e = OxmlElement(f"w:{b}")
+        for k, v in (("w:val", "single"), ("w:sz", "4"), ("w:space", "0"), ("w:color", "808080")):
+            e.set(qn(k), v)
+        borders.append(e)
+    tblPr.append(borders)
+    layout = OxmlElement("w:tblLayout")
+    layout.set(qn("w:type"), "fixed")
+    tblPr.append(layout)
+    mar = OxmlElement("w:tblCellMar")
+    for side, w in (("top", 40), ("left", 80), ("bottom", 40), ("right", 80)):
+        e = OxmlElement(f"w:{side}")
+        e.set(qn("w:w"), str(w))
+        e.set(qn("w:type"), "dxa")
+        mar.append(e)
+    tblPr.append(mar)
+    tbl.append(tblPr)
+    grid = OxmlElement("w:tblGrid")
+    for w in widths:
+        g = OxmlElement("w:gridCol")
+        g.set(qn("w:w"), str(w))
+        grid.append(g)
+    tbl.append(grid)
+    for ri, row in enumerate(rows):
+        tr = OxmlElement("w:tr")
+        trPr = OxmlElement("w:trPr")
+        trPr.append(OxmlElement("w:cantSplit"))
+        mark = OxmlElement("w:ins")
+        for k, v in (("w:id", str(next(_ids))), ("w:author", AUTHOR), ("w:date", WHEN)):
+            mark.set(qn(k), v)
+        trPr.append(mark)
+        tr.append(trPr)
+        for ci, text in enumerate(row):
+            tc = OxmlElement("w:tc")
+            tcPr = OxmlElement("w:tcPr")
+            tcW = OxmlElement("w:tcW")
+            tcW.set(qn("w:w"), str(widths[ci]))
+            tcW.set(qn("w:type"), "dxa")
+            tcPr.append(tcW)
+            tc.append(tcPr)
+            bold = header and (ri == 0 or ci == 0)
+            p = new_para(cell_para, [(bold_run if bold else text_run, text)] if text else [])
+            pPr = p.find(qn("w:pPr"))
+            for drop in ("w:numPr", "w:ind", "w:pStyle"):
+                e = pPr.find(qn(drop))
+                if e is not None:
+                    pPr.remove(e)
+            tc.append(p)
+            tr.append(tc)
+        tbl.append(tr)
+    return tbl
+
+
+def apply(src, edits, tracked_out, clean_out, label, overwrite=False, post=None):
     """Copy src, make each edit a tracked change, save a tracked and a clean copy.
     An edit is (old, new), or (old, new, "every") for text repeated in several
     places, such as a footer used by more than one section. Headers and footers
@@ -159,6 +270,8 @@ def apply(src, edits, tracked_out, clean_out, label, overwrite=False):
             sys.exit(f"{label}: {old!r} is in {len(hits)} paragraphs, expected {'at least ' if every else ''}1")
         for p in hits:
             track_replace(p, old, new)
+    if post:
+        post(d)
     d.save(tracked_out)
     c = docx.Document(tracked_out)
     for r in roots(c):
