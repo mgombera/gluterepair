@@ -243,4 +243,9 @@ describe("decisions of 11/21/2026", () => {
     expect(text).toMatch(/bulky dressing 2 to 3 days after surgery/);
     expect(text).toMatch(/waterproof bandages until your first post-op visit/);
   });
+
+  it("calls the rest of the dressing the remaining dressing, and showers once the bulky dressing is off", () => {
+    expect(text).not.toMatch(/remove the waterproof dressing/i);
+    expect(text).toMatch(/shower 48 hours after surgery, once the outer bulky dressing is off/);
+  });
 });

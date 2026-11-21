@@ -130,23 +130,79 @@ def accept_all(body):
 
 
 
+def roots(d):
+    """The body, then every header and footer part (each part once)."""
+    out, seen = [d.element.body], set()
+    for rel in d.part.rels.values():
+        if rel.reltype.endswith(("/header", "/footer")) and rel.target_part not in seen:
+            seen.add(rel.target_part)
+            out.append(rel.target_part.element)
+    return out
+
+
 def apply(src, edits, tracked_out, clean_out, label, overwrite=False):
-    """Copy src, make each (old, new) edit a tracked change, save a tracked and a clean copy.
-    Existing outputs are never replaced unless overwrite=True: Dr. Gombera edits
-    these files by hand (11/21/2026 he edited the clean and with-site copies)."""
+    """Copy src, make each edit a tracked change, save a tracked and a clean copy.
+    An edit is (old, new), or (old, new, "every") for text repeated in several
+    places, such as a footer used by more than one section. Headers and footers
+    are searched too. Existing outputs are never replaced unless overwrite=True:
+    Dr. Gombera edits these files by hand (11/21/2026 he edited the clean and
+    with-site copies)."""
     import os
     for out in (tracked_out, clean_out):
         if os.path.exists(out) and not overwrite:
             sys.exit(f"{label}: {out} exists; not overwriting it (it may hold his edits)")
     d = docx.Document(src)
-    body = d.element.body
-    for old, new in edits:
-        hits = [p for p in body.iter(qn("w:p")) if old in para_text(p)]
-        if len(hits) != 1:
-            sys.exit(f"{label}: {old!r} is in {len(hits)} paragraphs, expected 1")
-        track_replace(hits[0], old, new)
+    for edit in edits:
+        old, new, every = edit[0], edit[1], len(edit) > 2
+        hits = [p for r in roots(d) for p in r.iter(qn("w:p")) if old in para_text(p)]
+        if not hits or (len(hits) != 1 and not every):
+            sys.exit(f"{label}: {old!r} is in {len(hits)} paragraphs, expected {'at least ' if every else ''}1")
+        for p in hits:
+            track_replace(p, old, new)
     d.save(tracked_out)
     c = docx.Document(tracked_out)
-    accept_all(c.element.body)
+    for r in roots(c):
+        accept_all(r)
     c.save(clean_out)
-    print(f"{label}: {len(edits)} tracked changes")
+    print(f"{label}: {len(edits)} edits")
+
+
+def shrink_blank(p, half_points):
+    """Make an empty spacer paragraph shorter by setting its mark's font size
+    (no words, fonts or margins change). Elements keep the Word schema order."""
+    pPr = p.get_or_add_pPr()
+    sp = pPr.get_or_add_spacing()
+    sp.set(qn("w:before"), "0")
+    sp.set(qn("w:after"), "0")
+    rPr = pPr.find(qn("w:rPr"))
+    if rPr is None:
+        rPr = OxmlElement("w:rPr")
+        later = [e for e in (pPr.find(qn("w:sectPr")), pPr.find(qn("w:pPrChange"))) if e is not None]
+        later[0].addprevious(rPr) if later else pPr.append(rPr)
+    for tag in ("w:sz", "w:szCs"):
+        old = rPr.find(qn(tag))
+        if old is not None:
+            rPr.remove(old)
+    after_sz = {qn(t) for t in ("w:highlight", "w:u", "w:effect", "w:bdr", "w:shd", "w:fitText", "w:vertAlign",
+                                "w:rtl", "w:cs", "w:em", "w:lang", "w:eastAsianLayout", "w:specVanish", "w:oMath")}
+    nxt = next((c for c in rPr if c.tag in after_sz), None)
+    for tag in ("w:sz", "w:szCs"):
+        e = OxmlElement(tag)
+        e.set(qn("w:val"), str(half_points))
+        nxt.addprevious(e) if nxt is not None else rPr.append(e)
+
+
+def tighten(path, from_text, half_points):
+    """Shorten every empty spacer paragraph from the paragraph starting with
+    from_text to the end of the body, in place."""
+    d = docx.Document(path)
+    paras = [el for el in d.element.body if el.tag == qn("w:p")]
+    txt = lambda el: "".join(t.text or "" for t in el.iter(qn("w:t")))
+    start = next(i for i, el in enumerate(paras) if txt(el).strip().startswith(from_text))
+    n = 0
+    for el in paras[start:]:
+        if not txt(el).strip() and not list(el.iter(qn("w:drawing"))) and el.find(f"{qn('w:pPr')}/{qn('w:sectPr')}") is None:
+            shrink_blank(el, half_points)
+            n += 1
+    d.save(path)
+    return n

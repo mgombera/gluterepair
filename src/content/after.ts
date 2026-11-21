@@ -13,8 +13,8 @@ export const HOME_CARE: InfoSection[] = [
     points: [
       "Keep your surgical dressing on. You may remove the outer bulky dressing 2 to 3 days after surgery.",
       "It is normal for the hip to bleed, swell or bruise after surgery.",
-      "Then cover the rest of the dressing with waterproof bandages until your first post-op visit.",
-      "If dressing supplies were sent to you, remove the waterproof dressing and apply the new dressings starting on day 4 after surgery.",
+      "After the bulky dressing is off, cover the rest of the dressing with waterproof bandages until your first post-op visit.",
+      "If dressing supplies were sent to you, remove the remaining dressing and apply the new dressings starting on day 4 after surgery.",
       "Do not put ointments or creams on the incision.",
     ],
     source: ["discharge"],
@@ -24,7 +24,7 @@ export const HOME_CARE: InfoSection[] = [
     title: "Showering",
     points: [
       "Keep the incision clean and dry. Cover the dressing with waterproof bandages when you shower.",
-      "You may shower 48 hours after surgery.",
+      "You may shower 48 hours after surgery, once the outer bulky dressing is off.",
       "Do not soak the operated leg, for example in a bath.",
       "Take the brace off to shower.",
     ],
@@ -46,7 +46,7 @@ export const HOME_CARE: InfoSection[] = [
     title: "Brace",
     points: [
       "Wear the brace when walking for 6 weeks (6 to 8 weeks after a Gluteus Maximus Transfer).",
-      "It can come off to shower, during exercises and at night.",
+      "It can come off when sitting, to shower, during exercises and at night.",
     ],
     source: ["decisions", "discharge"],
   },
