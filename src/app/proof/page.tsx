@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import * as C from "@/content";
 import type { Exercise, Phase, Protocol, Sourced, SourceId } from "@/content";
 import { Container, PageHeader, SectionTitle } from "@/components/ui";
-import { braceText, keyRules, romLimits } from "@/lib/protocolText";
+import { afterPhasesText, braceFull, keyRules, romLimits } from "@/lib/protocolText";
 
 // Gate 1 review tool for Dr. Gombera (scope section 10). Every clinical item on
 // the site, the protocols side by side, and the items grouped by their main
@@ -122,8 +122,9 @@ function List({ items }: { items: string[] }) {
 
 const exerciseName = (id: string) => C.exerciseById(id).name;
 
-function PhaseBlock({ ph, other }: { ph: Phase; other: Phase }) {
-  const notesDiffer = (i: number) => JSON.stringify(ph.weeks[i]?.notes ?? []) !== JSON.stringify(other.weeks[i]?.notes ?? []);
+function PhaseBlock({ ph, other }: { ph: Phase; other?: Phase }) {
+  // other is missing for Phase IV: the Gluteus Maximus Transfer has none (11/21/2026).
+  const notesDiffer = (i: number) => !!other && JSON.stringify(ph.weeks[i]?.notes ?? []) !== JSON.stringify(other.weeks[i]?.notes ?? []);
   return (
     <Box s={ph}>
       <h4 className="m-0 text-lg font-bold">
@@ -157,7 +158,8 @@ function ProtocolRows({ a, b }: { a: Protocol; b: Protocol }) {
   const rows: [string, string, string][] = [
     ["Weight bearing", keyRules(a)[0], keyRules(b)[0]],
     ["After that", a.afterWeightBearing, b.afterWeightBearing],
-    ["Brace", `When walking, ${braceText(a)}`, `When walking, ${braceText(b)}`],
+    ["Brace", `When walking, ${braceFull(a)}`, `When walking, ${braceFull(b)}`],
+    ["After the last phase", afterPhasesText(a), afterPhasesText(b)],
     ["Patient limits", romLimits(a).join("; "), romLimits(b).join("; ")],
     ["Therapist angles (not shown to patients)", a.therapistRom.join("; "), b.therapistRom.join("; ")],
     ["Prone lying", a.proneLying ? "2 to 3 hours a day in Phase I" : "No", b.proneLying ? "2 to 3 hours a day in Phase I" : "No"],
@@ -313,7 +315,7 @@ export default function ProofPage() {
 
       <section aria-labelledby="pt-protocol" className="flex flex-col gap-4">
         <SectionTitle id="pt-protocol">1. PT protocol: both procedures side by side</SectionTitle>
-        <p className="m-0 text-muted">Bold marks where the Gluteus Maximus Transfer differs. The phases are the same for both.</p>
+        <p className="m-0 text-muted">Bold marks where the Gluteus Maximus Transfer differs. Phases I to III are the same for both; the transfer has no Phase IV (11/21/2026).</p>
         <ProtocolRows a={standard} b={max} />
         <h3 className="m-0 text-xl font-bold">Phases (Open Gluteus Tendon Repair)</h3>
         {standard.phases.map((ph, i) => (

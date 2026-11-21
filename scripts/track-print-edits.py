@@ -11,7 +11,9 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from docx_track import apply, tighten  # noqa: E402
+from docx.oxml import OxmlElement  # noqa: E402
+from docx.oxml.ns import qn  # noqa: E402
+from docx_track import TAB, apply, new_para, new_table, tighten  # noqa: E402
 
 OUT = "docs/launch/2026-11-21-{}-{}.docx"
 
@@ -25,7 +27,7 @@ DOCS = [
         ("general anaesthesia", "general anesthesia"),
         # 11/21/2026 second pass, his answers: a line for transfer patients
         ("It may be removed when bathing, exercising, sitting, and sleeping.",
-         "It may be removed when bathing, exercising, sitting, and sleeping. "+"After a Gluteus Maximus Transfer: at least 6 weeks of protected weight bearing and the brace for 6 to 8 weeks."),
+         "It may be removed when bathing, exercising, sitting, and sleeping. "+"After a Gluteus Maximus Transfer: at least 6 weeks of protected weight bearing and the brace for 6 to 8 weeks, depending on comfort and function."),
         ("7401 S. Main Street", "7401 Main Street", "every"),
     ]),
     ("docs/launch/2026-11-21-discharge-instructions-with-site.docx", "open-glute-post-op-instructions", [
@@ -34,7 +36,7 @@ DOCS = [
          "Wait to drive until you can actively lift your leg (around 3 weeks) and have full control of it."),
         # 11/21/2026 second pass, his answers
         ("with crutches or a walker after surgery for 4 weeks",
-         "with crutches or a walker after surgery for 4 weeks. "+"After a Gluteus Maximus Transfer: at least 6 weeks of protected weight bearing and the brace for 6 to 8 weeks."),
+         "with crutches or a walker after surgery for 4 weeks. "+"After a Gluteus Maximus Transfer: at least 6 weeks of protected weight bearing and the brace for 6 to 8 weeks, depending on comfort and function."),
         ("remove the waterproof dressing and apply the new dressings", "remove the remaining dressing and apply the new dressings"),
         ("You may shower 48 hours after surgery.", "You may shower 48 hours after surgery, once the outer bulky dressing is off."),
         # clean-ups: no clinical change
@@ -45,7 +47,7 @@ DOCS = [
         ("it is normal to have a low grade following surgery", "it is normal to have a low-grade temperature following surgery"),
         ("7401 S. Main Street", "7401 Main Street", "every"),
     ]),
-    ("docs/launch/2026-11-21-pt-protocol-open-glute-clean.docx", "open-glute-repair-pt-protocol", [
+    ("docs/launch/2026-11-21-pt-protocol-open-glute-clean.docx", "open-glute-repair-pt-protocol", PT_EDITS := [
         ("REHABILIATION", "REHABILITATION"),
         ("Phase III (Weeks 10-15)", "Phase III (Weeks 10-16)"),
         ("Begin return to running program; functional strengthening and agility; return to sport exercises",
@@ -57,13 +59,143 @@ DOCS = [
     ]),
 ]
 
+
+def text_of(p):
+    return "".join(t.text or "" for t in p.iter(qn("w:t")))
+
+
+def find(d, start, offset=0):
+    """The paragraph starting with `start` (unique), or the one `offset` after it."""
+    ps = [e for e in d.element.body if e.tag == qn("w:p")]
+    hits = [i for i, e in enumerate(ps) if text_of(e).startswith(start)]
+    if len(hits) != 1:
+        sys.exit(f"template {start!r}: {len(hits)} matches")
+    return ps[hits[0] + offset]
+
+
+def runs(p):
+    return p.findall(qn("w:r"))
+
+
+def new_page(p):
+    """Start the paragraph on a new page (w:pageBreakBefore, in schema order)."""
+    pPr = p.find(qn("w:pPr"))
+    first_after = next((c for c in pPr if c.tag not in {qn("w:pStyle"), qn("w:keepNext"), qn("w:keepLines")}), None)
+    pbb = OxmlElement("w:pageBreakBefore")
+    first_after.addprevious(pbb) if first_after is not None else pPr.append(pbb)
+    return p
+
+
+# Phase IV for the Open Gluteus Tendon Repair (11/21/2026): fixmyhips Phase IV
+# with his decisions: months 4-6, running and agilities (single plane and
+# multi-directional) at 6 months. Formats are copied from Phase III.
+PHASE_IV_GOALS = [
+    "No complaints of pain or weakness",
+    "Functional strengthening",
+    "Safe return to sport or patient's functional activities",
+    "Maintenance of strength, endurance, and proprioception",
+    "Patient education with regards to any possible limitations",
+]
+
+
+def add_phase_iv(d):
+    heading = find(d, "PHASE III:")
+    goals_h = find(d, "PHASE III:", 2)
+    bullet = find(d, "Prevent compensation due to fatigue")
+    blank = find(d, "Progress lower extremity strength and endurance", 1)
+    ex_h = find(d, "Progress lower extremity strength and endurance", 2)
+    row = find(d, "WEEKS 10-16")
+    item = find(d, "Low-weight unilateral leg press")
+    item_blank = find(d, "Resisted biking (advance resistance", 1)
+    sub = find(d, "30 reps of each plane of motion")
+    anchor = find(d, "TRANSITION TO HEP", -1)  # the empty line before it
+    hr, gr, br, er, ir, sr = (runs(x)[0] for x in (heading, goals_h, bullet, ex_h, item, sub))
+    label_r, tab_r, text_r = runs(row)[0], runs(row)[5], runs(row)[-1]
+
+    def row_para(label, text):
+        return new_para(row, [(label_r, label), (tab_r, TAB), (text_r, text)])
+
+    paras = [
+        new_page(new_para(heading, [(hr, "PHASE IV: RETURN TO RUNNING AND ACTIVITY (MONTHS 4-6)")])),
+        new_para(find(d, "PHASE III:", 1), []),
+        new_para(goals_h, [(gr, "GOALS")]),
+        *[new_para(bullet, [(br, g)]) for g in PHASE_IV_GOALS],
+        new_para(blank, []),
+        new_para(ex_h, [(er, "EXERCISES")]),
+        new_para(blank, []),
+        row_para("MONTHS 4-6", "Continue all appropriate exercises from phase III"),
+        *[new_para(item, [(ir, t)]) for t in ("Balance squats with rotations", "Retro walking with resistance band",
+                                              "Lunge with trunk rotations (with sport cord or physioball)")],
+        new_para(item_blank, []),
+        row_para("MONTH 6", "Begin running progression and single plane agilities"),
+        *[new_para(sub, [(sr, t)]) for t in ("Quick feet", "Backpedaling", "Side shuffles",
+                                             "Double leg plyometrics (i.e. broad jumps, 4-square hops)")],
+        new_para(item, [(ir, "Begin advanced/multi-directional agilities")]),
+        *[new_para(sub, [(sr, t)]) for t in ("Z and W cuts", "Cariocas", "Transition to single leg plyometrics")],
+        new_para(item, [(ir, "Sport specific exercises")]),
+        new_para(item_blank, []),
+    ]
+    for p in paras:
+        anchor.addprevious(p)
+
+
+# Gluteus Maximus Transfer addendum (11/21/2026): his decisions in scope
+# section 11. No Phase IV; brace 6-8 weeks depending on comfort and disability.
+ADDENDUM_ROWS = [
+    ["", "Open Gluteus Tendon Repair", "Gluteus Maximus Transfer"],
+    ["Crutches or walker", "20# WB, foot flat x 4 weeks, then wean",
+     "20# WB, foot flat for at least 6 weeks, then WBAT, usually with a cane during the transition"],
+    ["Hip brace", "While ambulating x 6 weeks", "While ambulating x 6-8 weeks, depending on comfort and disability"],
+    ["Phase I", "Wean from crutches or walker at week 4", "No weaning in phase I; stay at 20# WB"],
+    ["Phase II, week 7", "Normalize gait pattern",
+     "If cleared after at least 6 weeks, progress to WBAT with a cane during the transition; then normalize gait pattern"],
+    ["Phase IV", "Months 4-6: return to running and activity",
+     "Does not apply. After phase III, transition to HEP or further therapy as needed. "
+     "No running or high-impact activity before 6 months."],
+]
+ADDENDUM_UNCHANGED = (
+    "Unchanged: ROM restrictions; no sitting with the hip flexed >90 degrees; aqua therapy after week 3 once "
+    "incisions have healed; driving; phases I-III; home program through 1 year."
+)
+
+
+def add_addendum(d):
+    heading = find(d, "PHASE III:")
+    plain = find(d, "Maintenance program for strength")
+    bold_r = runs(find(d, "TRANSITION TO HEP"))[0]
+    text_r = runs(plain)[0]
+    body = d.element.body
+    end = body.find(qn("w:sectPr"))
+    blank = find(d, "TRANSITION TO HEP", 1)
+    # The heading starts a new page (page break before), so a full last page
+    # never leaves a blank page behind.
+    title = new_page(new_para(heading, [(runs(heading)[0], "ADDENDUM: HIP GLUTEUS MAXIMUS TRANSFER")]))
+    items = [
+        title,
+        new_para(blank, []),
+        new_para(blank, [(text_r, "Use with the Open Gluteus Tendon Repair protocol above. "
+                                  "Everything in that protocol applies, except:")]),
+        new_para(blank, []),
+        new_table(ADDENDUM_ROWS, [1800, 3300, 4500], blank, text_r, bold_r),
+        new_para(blank, []),
+        new_para(blank, [(text_r, ADDENDUM_UNCHANGED)]),
+    ]
+    for el in items:
+        end.addprevious(el)
+
+
 # Layout only: the added transfer line runs each letter over by a few lines, so
 # empty spacer lines are made shorter (no words, fonts or margins change) to
 # keep his page counts: FAQ 5 pages, post-op sheet 2 (QR code at the end).
 TIGHTEN = {"open-glute-repair-faq": ("After Hip Surgery", 12), "open-glute-post-op-instructions": ("DRESSING", 2)}
 
+POST = {"open-glute-repair-pt-protocol": add_phase_iv}
+# The transfer gets his protocol (same edits, no Phase IV) plus the addendum page.
+DOCS.append(("docs/launch/2026-11-21-pt-protocol-open-glute-clean.docx", "glute-max-transfer-pt-protocol", PT_EDITS))
+POST["glute-max-transfer-pt-protocol"] = add_addendum
+
 for src, name, edits in DOCS:
-    apply(src, edits, OUT.format(name, "tracked-changes"), OUT.format(name, "clean"), name)
+    apply(src, edits, OUT.format(name, "tracked-changes"), OUT.format(name, "clean"), name, post=POST.get(name))
     if name in TIGHTEN:
         for kind in ("tracked-changes", "clean"):
             tighten(OUT.format(name, kind), *TIGHTEN[name])

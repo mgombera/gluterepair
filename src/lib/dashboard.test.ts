@@ -30,7 +30,7 @@ const EXPECTED: Record<"standard" | "max-transfer", Row[]> = {
     [45, 2, 7, "Done", "6 to 8 weeks", "Allowed", "When ready"],
     [70, 3, 11, "Done", "Done", "Allowed", "When ready"],
     [100, 3, 15, "Done", "Done", "Allowed", "When ready"],
-    [130, 4, 19, "Done", "Done", "Allowed", "When ready"],
+    [130, null, 19, "Done", "Done", "Allowed", "When ready"], // no Phase IV after a transfer (11/21/2026)
   ],
 };
 
@@ -60,7 +60,7 @@ describe("dashboard details", () => {
     expect(n(at(18, "standard"), "Crutches or walker")).toBe("20 lb foot flat. Then a cane if you need one.");
     expect(n(at(18, "standard"), "Brace")).toBe("Wear it when walking.");
     expect(n(at(18, "max-transfer"), "Crutches or walker")).toMatch(/^20 lb foot flat\. Weight bearing as tolerated/);
-    expect(n(at(18, "max-transfer"), "Brace")).toBe("6 to 8 weeks in all. Wear it when walking.");
+    expect(n(at(18, "max-transfer"), "Brace")).toBe("6 to 8 weeks in all, depending on your comfort and function. Wear it when walking.");
   });
 
   it("marks phases done, current and next", () => {
@@ -71,5 +71,18 @@ describe("dashboard details", () => {
     const m = at(200, "standard");
     expect(m.phase).toBeNull();
     expect(m.phases.every((p) => p.state === "done")).toBe(true);
+  });
+});
+
+describe("after the formal phases (decision 11/21/2026)", () => {
+  it("tells transfer patients their therapist guides them after Phase III, with the 6-month limit", () => {
+    expect(at(130, "max-transfer").afterPhases).toMatch(/^After Phase III, your therapist guides your return to activity\. No running or high-impact activity before 6 months\./);
+    expect(at(200, "standard").afterPhases).toBe("Continue your home exercise program through 1 year.");
+  });
+
+  it("labels the 6-month dates as the earliest for transfer patients", () => {
+    const labels = at(100, "max-transfer").upcoming.map((u) => u.label);
+    expect(labels).toContain("Earliest running, high impact, agility and jumping (your therapist decides)");
+    expect(at(100, "standard").upcoming.map((u) => u.label)).toContain("Running, high impact, agility and jumping can begin");
   });
 });

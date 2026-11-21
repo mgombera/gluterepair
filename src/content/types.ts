@@ -54,6 +54,8 @@ export type Protocol = {
   braceWeeks: number;
   /** Upper end when the brace time is a range, e.g. 6 to 8 weeks. */
   braceWeeksUpTo?: number;
+  /** When the brace time is a range: what decides it, in plain words. */
+  braceDepends?: string;
   flexionLimitDeg: number;
   proneLying: boolean;
   /** Range-of-motion angles for the therapist only. Patients see only the flexion limit (decision 10/31/2026). */
@@ -65,6 +67,9 @@ export type Protocol = {
   driving: string;
   notes: string[];
   phases: Phase[];
+  /** Shown after the last phase instead of the home exercise note alone
+   * (Gluteus Maximus Transfer, which has no Phase IV). */
+  afterPhasesNote?: string;
 };
 
 export type Exercise = Sourced & {
