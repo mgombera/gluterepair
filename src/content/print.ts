@@ -23,7 +23,7 @@ export const PRINT_SHEETS: PrintSheet[] = [
   {
     id: "checklist",
     title: "Before surgery checklist",
-    summary: "PreAdmit, fasting, medications and packing for one night, with your deadlines if you added a date.",
+    summary: "PreAdmit, fasting, medications and packing a small bag, with your deadlines if you added a date.",
     matches: "Pre-op letter",
     pdf: {},
   },

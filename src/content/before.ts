@@ -35,10 +35,10 @@ export const CHECKLIST: ChecklistItem[] = [
     block: "week-before",
     title: "Arrange a ride home and help at home",
     detail:
-      "You will typically spend one night in the hospital, and you cannot drive while taking narcotic pain medication, so arrange a ride home.",
-    source: ["preop-letter", "discharge"],
+      "Most patients go home the same day as surgery, and you cannot drive while taking narcotic pain medication, so arrange a ride home.",
+    source: ["preop-letter", "discharge", "decisions"],
     derived: true,
-    approvedOn: "11/18/2026",
+    approvedOn: "11/21/2026",
   },
   {
     id: "time-off",
@@ -107,13 +107,13 @@ export const CHECKLIST: ChecklistItem[] = [
   {
     id: "pack",
     block: "night-before",
-    title: "Pack for one night",
+    title: "Pack a small bag",
     detail:
-      "You will typically spend one night in the hospital, so pack for one night.",
+      "Pack a small bag in case you stay the night. Most patients go home the same day.",
     dueOffsetDays: -1,
-    source: ["preop-letter"],
+    source: ["preop-letter", "decisions"],
     derived: true,
-    approvedOn: "11/18/2026",
+    approvedOn: "11/21/2026",
   },
 ];
 
@@ -122,10 +122,10 @@ export const SURGERY_DAY: InfoSection[] = [
     id: "arrive",
     title: "Arrive in the morning",
     points: [
-      "You come to Texas Orthopedic Hospital in the morning, have surgery, and typically spend one night in the hospital.",
+      "You come to Texas Orthopedic Hospital in the morning, have surgery, and typically go home the same day. On rare occasions, a patient stays one night.",
       "Your arrival time comes by phone the day before. No call by 3 p.m.? Call (713) 794-3457.",
     ],
-    source: ["preop-letter", "fixmyhips"],
+    source: ["preop-letter", "fixmyhips", "decisions"],
   },
   {
     id: "consent",
@@ -162,7 +162,7 @@ export const SURGERY_DAY: InfoSection[] = [
     points: [
       "Ice starts right away.",
       "You will walk with crutches or a walker, putting only 20 lb on the operated leg, and wear the brace when walking.",
-      "Most patients spend one night in the hospital.",
+      "Most patients go home the same day.",
     ],
     source: ["discharge", "decisions", "preop-letter"],
   },

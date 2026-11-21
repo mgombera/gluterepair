@@ -23,7 +23,7 @@ export type RouteInfo = {
 export const ROUTES: RouteInfo[] = [
   { path: "/", title: "Home", summary: "Enter your surgery date and procedure to see what applies to you today.", mode: "general", milestone: 3 },
   { path: "/before", title: "Before Surgery", summary: "Your countdown, getting-ready checklist and PreAdmit deadline.", mode: "before", milestone: 4 },
-  { path: "/before/surgery-day", title: "Surgery Day", summary: "What happens on the day, from the arrival call to your night in the hospital.", mode: "before", milestone: 4 },
+  { path: "/before/surgery-day", title: "Surgery Day", summary: "What happens on the day, from the arrival call to going home.", mode: "before", milestone: 4 },
   { path: "/before/diagnosis", title: "Your Diagnosis", summary: "Gluteus medius and minimus tears, why surgery is recommended, your other options and the risks.", mode: "before", milestone: 4 },
   { path: "/before/add-ons", title: "Add-ons", summary: "Biologic options you can add to your surgery. Call for pricing.", mode: "before", milestone: 4 },
   { path: "/after", title: "Recovery Dashboard", summary: "Your day, phase and week, your limits and what comes next.", mode: "after", milestone: 5 },

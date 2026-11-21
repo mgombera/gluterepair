@@ -127,8 +127,8 @@ export const FAQ: FaqItem[] = [
     id: "stay",
     group: "before",
     q: "Will I stay in the hospital?",
-    a: "Yes. You come in the morning, have surgery, and typically spend one night in the hospital.",
-    source: ["preop-letter"],
+    a: "Usually not. You come in the morning, have surgery, and typically go home the same day. On rare occasions, a patient stays one night.",
+    source: ["preop-letter", "decisions"],
   },
   {
     id: "anesthesia",
@@ -155,14 +155,14 @@ export const FAQ: FaqItem[] = [
     id: "shower",
     group: "after",
     q: "When can I shower?",
-    a: "48 hours after surgery. The waterproof dressing can stay on in the shower. Take the brace off to shower. No baths or soaking.",
+    a: "48 hours after surgery. Cover the dressing with waterproof bandages when you shower. Take the brace off to shower. No baths or soaking.",
     source: ["discharge"],
   },
   {
     id: "dressings-mail",
     group: "after",
     q: "What if I was sent dressing supplies?",
-    a: "Remove the waterproof dressing and apply the new dressings starting on day 4 after surgery. Otherwise, keep the waterproof bandage on until your first post-op visit.",
+    a: "Remove the waterproof dressing and apply the new dressings starting on day 4 after surgery. Otherwise, remove the outer bulky dressing 2 to 3 days after surgery, then cover the rest of the dressing with waterproof bandages until your first post-op visit.",
     source: ["discharge"],
   },
   {

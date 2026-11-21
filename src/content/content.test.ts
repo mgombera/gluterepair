@@ -226,3 +226,21 @@ describe("home program (myHealthTrack, scope 6.5)", () => {
     );
   });
 });
+
+describe("decisions of 11/21/2026", () => {
+  const dir = join(__dirname);
+  const text = ["learn.ts", "before.ts", "after.ts", "print.ts"].map((f) => readFileSync(join(dir, f), "utf8")).join("\n");
+
+  it("describes surgery as outpatient, not a planned night in the hospital", () => {
+    expect(text).not.toMatch(/(typically|most patients) spend one night/i);
+    expect(text).not.toMatch(/pack for one night/i);
+    expect(text).toMatch(/go home the same day/);
+  });
+
+  it("never calls the dressing waterproof, and times the bulky dressing at 2 to 3 days", () => {
+    expect(text).not.toMatch(/waterproof dressing (can|may) stay on/i);
+    expect(text).not.toMatch(/bulky dressing 48 hours/i);
+    expect(text).toMatch(/bulky dressing 2 to 3 days after surgery/);
+    expect(text).toMatch(/waterproof bandages until your first post-op visit/);
+  });
+});
