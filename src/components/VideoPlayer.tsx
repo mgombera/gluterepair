@@ -9,7 +9,12 @@ import type { Video } from "@/content";
 export function VideoPlayer({ video }: { video: Video }) {
   const [playing, setPlaying] = useState(false);
   const title = video.title ?? "Video";
-  const caption = <p className="m-0 mt-1.5 text-xs text-muted">{VIDEO_NOTICE}</p>;
+  const caption = (
+    <>
+      {video.summary && <p className="m-0 mt-2.5">{video.summary}</p>}
+      <p className="m-0 mt-1.5 text-xs text-muted">{VIDEO_NOTICE}</p>
+    </>
+  );
   if (playing) {
     return (
       <div>

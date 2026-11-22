@@ -82,7 +82,7 @@ describe("exercises and videos", () => {
 
   it("links no exercise to a video (educational only, 11/01/2026)", () => {
     for (const e of C.EXERCISES) expect(Object.keys(e), e.id).not.toContain("videoIds");
-    expect(C.VIDEOS).toHaveLength(0); // he has no gluteus repair video yet
+    expect(C.VIDEOS.map((v) => v.youtubeId)).toEqual(["BpZXnE8FFTE", "W8p10IP0ToU"]); // his videos, added 11/22/2026
   });
 
   it("uses every exercise in at least one protocol", () => {
@@ -103,6 +103,14 @@ describe("exercises and videos", () => {
 
   it("has an MM/DD/YYYY approval date on every approved video", () => {
     for (const v of C.approvedVideos()) expect(v.approvedOn).toMatch(/^\d{2}\/\d{2}\/\d{4}$/);
+  });
+
+  it("gives every approved video a summary of one or two sentences, with no em dashes", () => {
+    for (const v of C.approvedVideos()) {
+      expect(v.summary, v.id).toBeTruthy();
+      expect(v.summary!.replace(/\bDr\. /g, "Dr ").split(/(?<=\.)\s+/).length, v.id).toBeLessThanOrEqual(2);
+      expect(v.summary).not.toMatch(/\u2014/);
+    }
   });
 });
 
