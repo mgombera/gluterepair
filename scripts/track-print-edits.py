@@ -13,7 +13,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from docx.oxml import OxmlElement  # noqa: E402
 from docx.oxml.ns import qn  # noqa: E402
-from docx_track import TAB, apply, new_para, new_table, tighten  # noqa: E402
+from docx_track import TAB, apply, new_para, tighten  # noqa: E402
 
 OUT = "docs/launch/2026-11-21-{}-{}.docx"
 
@@ -139,60 +139,61 @@ def add_phase_iv(d):
         anchor.addprevious(p)
 
 
-# Gluteus Maximus Transfer addendum (11/21/2026): his decisions in scope
-# section 11. No Phase IV; brace 6-8 weeks depending on comfort and disability.
-ADDENDUM_ROWS = [
-    ["", "Open Gluteus Tendon Repair", "Gluteus Maximus Transfer"],
-    ["Crutches or walker", "20# WB, foot flat x 4 weeks, then wean",
-     "20# WB, foot flat for at least 6 weeks, then WBAT, usually with a cane during the transition"],
-    ["Hip brace", "While ambulating x 6 weeks", "While ambulating x 6-8 weeks, depending on comfort and disability"],
-    ["Phase I", "Wean from crutches or walker at week 4", "No weaning in phase I; stay at 20# WB"],
-    ["Phase II, week 7", "Normalize gait pattern",
-     "If cleared after at least 6 weeks, progress to WBAT with a cane during the transition; then normalize gait pattern"],
-    ["Phase IV", "Months 4-6: return to running and activity",
-     "Does not apply. After phase III, transition to HEP or further therapy as needed. "
-     "No running or high-impact activity before 6 months."],
+# Gluteus Maximus Transfer: its own protocol (11/21/2026, he asked for a
+# separate protocol rather than an addendum). Built from his open-repair
+# protocol with his transfer decisions (scope section 11) written into each
+# section: brace 6-8 weeks depending on comfort and disability, 20# weight
+# bearing for at least 6 weeks then WBAT with a cane during the transition, no
+# Phase IV (after phase III the therapist guides return; no running or high
+# impact before 6 months). The same fixes as the open-repair protocol apply.
+TRANSFER_EDITS = [
+    ("HIP OPEN GLUTEUS TENDON REPAIR with/without BURSECTOMY", "HIP GLUTEUS MAXIMUS TRANSFER"),
+    ("REHABILIATION", "REHABILITATION"),
+    ("Hip brace with ambulation x 6 weeks, 20# weight bearing with foot flat pattern during walking x 4 weeks, "
+     "then wean from crutches or walker (some patients need a cane),",
+     "Hip brace with ambulation x 6-8 weeks (depending on comfort and disability), 20# weight bearing with foot "
+     "flat pattern during walking for at least 6 weeks,"),
+    ("Normalize gait pattern, restore full AROM",
+     "Once cleared (after at least 6 weeks), progress to WBAT with a cane during the transition, normalize gait "
+     "pattern, restore full AROM"),
+    ("Phase III (Weeks 10-15)", "Phase III (Weeks 10-16)"),
+    ("Phase IV (Months 4-6):", "After phase III:"),
+    ("Begin return to running program; functional strengthening and agility; return to sport exercises",
+     "Transition to HEP or further therapy as needed. No running or high-impact activity before 6 months"),
+    ("walking pattern x 4 weeks, then wean from crutches or walker and progress to full WB; some patients need a cane",
+     "walking pattern for at least 6 weeks, then progress to WBAT, usually with a cane during the transition"),
+    ("Wear hip brace while ambulating x 6 weeks", "Wear hip brace while ambulating x 6-8 weeks, depending on comfort and disability"),
+    ("Running: Wait until 3 months before beginning running progression",
+     "Running: No running or high-impact activity before 6 months"),
+    ("clinical judgement", "clinical judgment"),
+    ("Hip brace when ambulating for 6 weeks", "Hip brace when ambulating for 6-8 weeks, depending on comfort and disability"),
+    ("20lb Weight bearing with foot flat gait pattern x 4 weeks, then WBAT",
+     "20lb Weight bearing with foot flat gait pattern for at least 6 weeks, then WBAT with a cane during the transition"),
+    ("Scar massage at portal incisions", "Scar massage at the incision"),
+    ("7401 S. Main Street", "7401 Main Street", "every"),
 ]
-ADDENDUM_UNCHANGED = (
-    "Unchanged: ROM restrictions; no sitting with the hip flexed >90 degrees; aqua therapy after week 3 once "
-    "incisions have healed; driving; phases I-III; home program through 1 year."
-)
 
 
-def add_addendum(d):
-    heading = find(d, "PHASE III:")
-    plain = find(d, "Maintenance program for strength")
-    bold_r = runs(find(d, "TRANSITION TO HEP"))[0]
-    text_r = runs(plain)[0]
-    body = d.element.body
-    end = body.find(qn("w:sectPr"))
-    blank = find(d, "TRANSITION TO HEP", 1)
-    # The heading starts a new page (page break before), so a full last page
-    # never leaves a blank page behind.
-    title = new_page(new_para(heading, [(runs(heading)[0], "ADDENDUM: HIP GLUTEUS MAXIMUS TRANSFER")]))
-    items = [
-        title,
-        new_para(blank, []),
-        new_para(blank, [(text_r, "Use with the Open Gluteus Tendon Repair protocol above. "
-                                  "Everything in that protocol applies, except:")]),
-        new_para(blank, []),
-        new_table(ADDENDUM_ROWS, [1800, 3300, 4500], blank, text_r, bold_r),
-        new_para(blank, []),
-        new_para(blank, [(text_r, ADDENDUM_UNCHANGED)]),
-    ]
-    for el in items:
-        end.addprevious(el)
+def transfer_week_7(d):
+    """Week 7 row: "Normalize gait pattern" is also a phase II goal, so it is
+    edited here, in the WEEK 7 row only."""
+    from docx_track import track_replace
+    row = find(d, "WEEK 7")
+    track_replace(row, "Normalize gait pattern",
+                  "Once cleared, WBAT with a cane during the transition; normalize gait pattern")
 
 
 # Layout only: the added transfer line runs each letter over by a few lines, so
 # empty spacer lines are made shorter (no words, fonts or margins change) to
 # keep his page counts: FAQ 5 pages, post-op sheet 2 (QR code at the end).
-TIGHTEN = {"open-glute-repair-faq": ("After Hip Surgery", 12), "open-glute-post-op-instructions": ("DRESSING", 2)}
+TIGHTEN = {"open-glute-repair-faq": ("After Hip Surgery", 12), "open-glute-post-op-instructions": ("DRESSING", 2),
+           # the transfer protocol keeps his 3 pages
+           "glute-max-transfer-pt-protocol": ("PHASE I:", 12)}
 
 POST = {"open-glute-repair-pt-protocol": add_phase_iv}
-# The transfer gets his protocol (same edits, no Phase IV) plus the addendum page.
-DOCS.append(("docs/launch/2026-11-21-pt-protocol-open-glute-clean.docx", "glute-max-transfer-pt-protocol", PT_EDITS))
-POST["glute-max-transfer-pt-protocol"] = add_addendum
+# The transfer: its own protocol, built from his open-repair protocol.
+DOCS.append(("docs/launch/2026-11-21-pt-protocol-open-glute-clean.docx", "glute-max-transfer-pt-protocol", TRANSFER_EDITS))
+POST["glute-max-transfer-pt-protocol"] = transfer_week_7
 
 for src, name, edits in DOCS:
     apply(src, edits, OUT.format(name, "tracked-changes"), OUT.format(name, "clean"), name, post=POST.get(name))
