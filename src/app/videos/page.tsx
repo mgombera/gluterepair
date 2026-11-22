@@ -4,7 +4,7 @@ import { VideoPlayer } from "@/components/VideoPlayer";
 import { Container, PageHeader } from "@/components/ui";
 import { routeInfo } from "@/lib/routes";
 
-// Dr. Gombera's own videos only (decision 11/01/2026). None yet.
+// Dr. Gombera's own videos only (decision 11/01/2026). Two since 11/22/2026.
 
 const r = routeInfo("/videos");
 export const metadata: Metadata = { title: r.title, description: r.summary, alternates: { canonical: "/videos" } };

@@ -91,6 +91,8 @@ export type Video = {
   /** His own videos only (decision 11/01/2026). */
   source: "dr-gombera";
   topics: ("overview" | "surgery" | "recovery" | "testimonial")[];
+  /** One or two plain sentences shown under the video. */
+  summary?: string;
   /** MM/DD/YYYY. A video with no approval date never renders on the site. */
   approvedOn?: string;
 };
