@@ -25,7 +25,7 @@ import {
 import type { InfoSection, PrintSheetId, ProtocolId } from "@/content";
 import { useHydrated, useProfile } from "@/lib/profile";
 import { procedureLabel } from "@/lib/procedures";
-import { keyRules, romLimits } from "@/lib/protocolText";
+import { afterPhasesText, isLastPhase, keyRules, romLimits } from "@/lib/protocolText";
 import { formatUS, fromISO } from "@/lib/recovery";
 import { PRACTICE, SITE_NAME, SITE_TITLE } from "@/lib/site";
 
@@ -137,7 +137,7 @@ function ProtocolSheet({ id, surgery }: { id: ProtocolId; surgery: Date | null }
                 {ph.criteriaToProgress.length ? (
                   <List items={ph.criteriaToProgress} />
                 ) : (
-                  <p className="m-0">{ph.n === 4 ? HOME_EXERCISE_NOTE : "Your therapist decides when you are ready for the next phase."}</p>
+                  <p className="m-0">{isLastPhase(p, ph) ? afterPhasesText(p) : "Your therapist decides when you are ready for the next phase."}</p>
                 )}
               </div>
             </div>

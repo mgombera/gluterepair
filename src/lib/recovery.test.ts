@@ -52,7 +52,7 @@ describe("after surgery", () => {
         expect(after(first, p.id).phase?.n, `${p.id} day ${first}`).toBe(ph.n);
         expect(after(last, p.id).phase?.n, `${p.id} day ${last}`).toBe(ph.n);
       }
-      const end = p.phases[3].endWeek * 7;
+      const end = p.phases[p.phases.length - 1].endWeek * 7;
       expect(after(end, p.id).phase).toBeNull();
     });
 

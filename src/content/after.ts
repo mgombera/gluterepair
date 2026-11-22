@@ -45,7 +45,7 @@ export const HOME_CARE: InfoSection[] = [
     id: "brace",
     title: "Brace",
     points: [
-      "Wear the brace when walking for 6 weeks (6 to 8 weeks after a Gluteus Maximus Transfer).",
+      "Wear the brace when walking for 6 weeks (6 to 8 weeks after a Gluteus Maximus Transfer, depending on your comfort and function).",
       "It can come off when sitting, to shower, during exercises and at night.",
     ],
     source: ["decisions", "discharge"],

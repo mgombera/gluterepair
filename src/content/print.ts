@@ -33,10 +33,10 @@ export const PRINT_SHEETS: PrintSheet[] = [
     title: "Physical therapy protocol",
     summary: "Your four phases, restrictions, goals and when to move on. Bring it to your therapist.",
     matches: "PT protocol: Open Gluteus Tendon Repair",
-    // His PDF is the Open Gluteus Tendon Repair protocol. Gluteus Maximus
-    // Transfer patients keep the generated sheet with their longer weight
-    // bearing and brace (his decision, 11/21/2026).
-    pdf: { standard: "/print/Open Glute Repair PT Protocol.pdf" },
+    // Open Gluteus Tendon Repair: his protocol with Phase IV. Gluteus Maximus
+    // Transfer: its own protocol, with no Phase IV (his decisions, 11/21/2026;
+    // a separate protocol rather than an addendum, 11/22/2026).
+    pdf: { standard: "/print/Open Glute Repair PT Protocol.pdf", "max-transfer": "/print/Glute Max Transfer PT Protocol.pdf" },
   },
   {
     id: "care",
