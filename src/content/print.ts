@@ -65,6 +65,14 @@ export const PRINT_LETTERS: PrintLetter[] = [
     matches: "Pre-op letter",
     pdf: "/print/OPEN Glute Repair FAQ.pdf",
   },
+  {
+    // From the approved 3D model (scripts/make-poster.mjs), approved 11/22/2026.
+    id: "poster",
+    title: "The torn tendon and the repair (poster)",
+    summary: "One page with pictures of the torn tendon and the repaired tendon, from the 3D model.",
+    matches: "Poster, 11/22/2026",
+    pdf: "/print/Gluteus Tendon Tear and Repair Poster.pdf",
+  },
 ];
 
 /** A link to a file in public/print, with spaces and other characters encoded. */
