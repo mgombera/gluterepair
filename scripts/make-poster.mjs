@@ -11,7 +11,7 @@
 import { execFileSync } from "node:child_process";
 import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { registerHooks } from "node:module";
 
@@ -30,7 +30,11 @@ const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const root = fileURLToPath(new URL("..", import.meta.url));
 const b64 = (f) => readFileSync(join(root, f)).toString("base64");
 const font = `data:font/woff2;base64,${b64("node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2")}`;
-const img = (stage) => `data:image/png;base64,${b64(`docs/3d/renders/${DATE}-poster-${stage}.png`)}`;
+// Print masters (11/22/2026): POSTER_IMAGES points at higher-resolution
+// renders ("{stage}" is before or after), POSTER_OUT is the PDF to write, and
+// LABELED_ART_DIR also writes each labeled figure as its own page.
+const img = (stage) =>
+  `data:image/png;base64,${readFileSync(resolve(root, (process.env.POSTER_IMAGES ?? `docs/3d/renders/${DATE}-poster-{stage}.png`).replace("{stage}", stage))).toString("base64")}`;
 const qr = `data:image/png;base64,${b64("docs/launch/2026-11-19-qr-site.png")}`;
 
 // Render size in pixels; callout points are percentages of it.
@@ -143,6 +147,32 @@ footer img { width: 0.85in; height: 0.85in; background: #fff; padding: 3pt; bord
 const tmp = mkdtempSync(join(tmpdir(), "poster-"));
 const htmlFile = join(tmp, "poster.html");
 writeFileSync(htmlFile, html);
-const out = join(root, "docs", "launch", `${DATE}-gluteus-tendon-poster.pdf`);
-execFileSync(CHROME, ["--headless", "--disable-gpu", "--no-pdf-header-footer", `--print-to-pdf=${out}`, `file://${htmlFile}`], { stdio: "ignore" });
+const out = process.env.POSTER_OUT ? resolve(root, process.env.POSTER_OUT) : join(root, "docs", "launch", `${DATE}-gluteus-tendon-poster.pdf`);
+const print = (file, pdf) =>
+  execFileSync(CHROME, ["--headless", "--disable-gpu", "--no-pdf-header-footer", `--print-to-pdf=${pdf}`, `file://${file}`], { stdio: "ignore" });
+print(htmlFile, out);
 console.log("wrote", out);
+
+// Each labeled figure on its own page: 11 in wide art with room for the labels.
+if (process.env.LABELED_ART_DIR) {
+  const artH = (11 * H) / W;
+  for (const [stage, name, list] of [["before", "torn", TORN], ["after", "repaired", REPAIRED]]) {
+    const page = `<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face { font-family: Inter; src: url(${font}) format("woff2"); font-weight: 100 900; }
+@page { size: 13.4in ${(artH + 0.8).toFixed(2)}in; margin: 0; }
+html, body { margin: 0; }
+body { background: #1d2440; -webkit-print-color-adjust: exact; print-color-adjust: exact; padding: 0.4in 1.2in; }
+.fig { position: relative; width: 11in; }
+.fig img { display: block; width: 100%; -webkit-mask-image: linear-gradient(to bottom, transparent, #000 6%, #000 90%, transparent); }
+.fig svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.fig polyline { fill: none; stroke: #ffffff; stroke-width: 7; stroke-linejoin: round; }
+.fig circle { fill: #ffffff; }
+.fig text { fill: #ffffff; font-family: Inter, sans-serif; font-weight: 600; }
+</style></head><body>${figure(stage, list)}</body></html>`;
+    const f = join(tmp, `${name}.html`);
+    writeFileSync(f, page);
+    const pdf = resolve(root, process.env.LABELED_ART_DIR, `${DATE}-gluteus-${name}-art-labeled.pdf`);
+    print(f, pdf);
+    console.log("wrote", pdf);
+  }
+}
