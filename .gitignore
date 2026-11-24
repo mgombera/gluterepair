@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# print masters: large print files made on 11/22/2026, kept on this Mac only
+/print-masters/
